@@ -11,8 +11,6 @@ using namespace v8;
 
 static xcb_connection_t *connection;
 static xcb_screen_t *screen;
-static xcb_gcontext_t black;
-static xcb_window_t window;
 
 class XCBJS {
 
@@ -23,36 +21,15 @@ public:
     const xcb_setup_t      *setup  = xcb_get_setup(connection);
     xcb_screen_iterator_t   iter   = xcb_setup_roots_iterator(setup);
     screen = iter.data;
-    black = xcb_generate_id(connection);
-    uint32_t        mask       = XCB_GC_FOREGROUND | XCB_GC_GRAPHICS_EXPOSURES;
-    uint32_t        values[2]  = {screen->black_pixel, 0};
-    mask = XCB_CW_BACK_PIXEL | XCB_CW_EVENT_MASK;
-    values[0] = screen->white_pixel;
-    values[1] = XCB_EVENT_MASK_EXPOSURE;
-
-    window = xcb_generate_id(connection);
-    xcb_create_window(connection,                    /* Connection          */
-      XCB_COPY_FROM_PARENT,          /* depth (same as root)*/
-      window,                        /* window Id           */
-      screen->root,                  /* parent window       */
-      0, 0,                          /* x, y                */
-      600, 600,                      /* width, height       */
-      10,                            /* border_width        */
-      XCB_WINDOW_CLASS_INPUT_OUTPUT, /* class               */
-      screen->root_visual,           /* visual              */
-      mask, values );                     /* masks, not used yet */
-
-    mask      = XCB_GC_FOREGROUND | XCB_GC_GRAPHICS_EXPOSURES;
-    values[0] = screen->black_pixel;
-    values[1] = 0;
-    xcb_create_gc(connection, black, window, mask, values);
-    xcb_map_window(connection, window);
-    xcb_flush(connection);
     eio_custom(XCBJS::ELoop, EIO_PRI_DEFAULT, XCBJS::Close, NULL);
     ev_ref(EV_DEFAULT_UC);
     NODE_SET_METHOD(target, "drawRect", XCBJS::drawRect);
     NODE_SET_METHOD(target, "flush", XCBJS::flush);
     NODE_SET_METHOD(target, "clearArea", XCBJS::clearArea);
+    NODE_SET_METHOD(target, "generateId", XCBJS::generateId);
+    NODE_SET_METHOD(target, "createWindow", XCBJS::createWindow);
+    NODE_SET_METHOD(target, "createGC", XCBJS::createGC);
+    NODE_SET_METHOD(target, "mapWindow", XCBJS::mapWindow);
   }
 
   static int Close(eio_req *req) {
@@ -77,15 +54,17 @@ public:
 
   static Handle<Value> drawRect(const Arguments& args) {
     HandleScope scope;
-    const char *usage = "usage: drawRect(x, y, width, height)";
-    if (args.Length() != 4) {
+    const char *usage = "usage: drawRect(window, gcContext, x, y, width, height)";
+    if (args.Length() != 6) {
       return ThrowException(Exception::Error(String::New(usage)));
     }
+    xcb_window_t window = args[0]->Int32Value();
+    xcb_gcontext_t black = args[1]->Int32Value();
     xcb_rectangle_t rects[] =
-    { { args[0]->Int32Value()
-      , args[1]->Int32Value()
-      , args[2]->Int32Value()
+    { { args[2]->Int32Value()
       , args[3]->Int32Value()
+      , args[4]->Int32Value()
+      , args[5]->Int32Value()
       } 
     };
     xcb_poly_rectangle(connection, window, black, 1, rects);
@@ -94,15 +73,17 @@ public:
 
   static Handle<Value> clearArea(const Arguments& args) {
     HandleScope scope;
-    const char *usage = "usage: drawRect(x, y, width, height)";
-    if (args.Length() != 4) {
+    const char *usage = "usage: clearArea(window, x, y, width, height)";
+    if (args.Length() != 5) {
       return ThrowException(Exception::Error(String::New(usage)));
     }
-    xcb_clear_area(connection, 0, window
-      , args[0]->Int32Value()
+    xcb_window_t window = args[0]->Int32Value();
+    xcb_clear_area(connection, 0
+      , window
       , args[1]->Int32Value()
       , args[2]->Int32Value()
       , args[3]->Int32Value()
+      , args[4]->Int32Value()
     );
     return Undefined();
   }
@@ -110,6 +91,53 @@ public:
   static Handle<Value> flush(const Arguments& args) {
     HandleScope scope;
     xcb_flush (connection);
+    return Undefined();
+  }
+
+  static Handle<Value> generateId(const Arguments& args) {
+    HandleScope scope;
+    xcb_window_t ret = xcb_generate_id(connection);
+    return Integer::New(ret);
+  }
+
+  static Handle<Value> createWindow(const Arguments& args) {
+    HandleScope scope;
+    xcb_window_t win = args[0]->Int32Value();
+    int x = args[1]->Int32Value()
+      , y = args[2]->Int32Value()
+      , width = args[3]->Int32Value()
+      , height = args[4]->Int32Value();
+    int mask = XCB_CW_BACK_PIXEL | XCB_CW_EVENT_MASK;
+    uint32_t values[2]  = {screen->white_pixel, XCB_EVENT_MASK_EXPOSURE};
+    xcb_create_window(connection,                    /* Connection          */
+      XCB_COPY_FROM_PARENT,          /* depth (same as root)*/
+      win,                        /* window Id           */
+      screen->root,                  /* parent window       */
+      x, y,                          /* x, y                */
+      width, height,                      /* width, height       */
+      1,                            /* border_width        */
+      XCB_WINDOW_CLASS_INPUT_OUTPUT, /* class               */
+      screen->root_visual,           /* visual              */
+      mask, values );                     /* masks, not used yet */
+    
+    return Undefined();
+  }
+
+  static Handle<Value> createGC(const Arguments& args) {
+    HandleScope scope;
+    uint32_t        mask       = XCB_GC_FOREGROUND | XCB_GC_GRAPHICS_EXPOSURES;
+    uint32_t        values[2]  = {screen->black_pixel, 0};
+    xcb_gcontext_t black = args[0]->Int32Value();
+    xcb_window_t window = args[1]->Int32Value();
+    xcb_create_gc(connection, black, window, mask, values);
+    
+    return Undefined();
+  }
+
+  static Handle<Value> mapWindow(const Arguments& args) {
+    HandleScope scope;
+    xcb_window_t window = args[0]->Int32Value();
+    xcb_map_window(connection, window);
     return Undefined();
   }
 
