@@ -36,7 +36,7 @@ public:
       window,                        /* window Id           */
       screen->root,                  /* parent window       */
       0, 0,                          /* x, y                */
-      150, 150,                      /* width, height       */
+      600, 600,                      /* width, height       */
       10,                            /* border_width        */
       XCB_WINDOW_CLASS_INPUT_OUTPUT, /* class               */
       screen->root_visual,           /* visual              */
@@ -50,7 +50,9 @@ public:
     xcb_flush(connection);
     eio_custom(XCBJS::ELoop, EIO_PRI_DEFAULT, XCBJS::Close, NULL);
     ev_ref(EV_DEFAULT_UC);
-    NODE_SET_METHOD(target, "drawRect", XCBJS::DrawRect);
+    NODE_SET_METHOD(target, "drawRect", XCBJS::drawRect);
+    NODE_SET_METHOD(target, "flush", XCBJS::flush);
+    NODE_SET_METHOD(target, "clearArea", XCBJS::clearArea);
   }
 
   static int Close(eio_req *req) {
@@ -73,7 +75,7 @@ public:
     return 0;
   }
 
-  static Handle<Value> DrawRect(const Arguments& args) {
+  static Handle<Value> drawRect(const Arguments& args) {
     HandleScope scope;
     const char *usage = "usage: drawRect(x, y, width, height)";
     if (args.Length() != 4) {
@@ -86,8 +88,27 @@ public:
       , args[3]->Int32Value()
       } 
     };
-    xcb_clear_area(connection, 0, window, 0, 0, 510, 510);
     xcb_poly_rectangle(connection, window, black, 1, rects);
+    return Undefined();
+  }
+
+  static Handle<Value> clearArea(const Arguments& args) {
+    HandleScope scope;
+    const char *usage = "usage: drawRect(x, y, width, height)";
+    if (args.Length() != 4) {
+      return ThrowException(Exception::Error(String::New(usage)));
+    }
+    xcb_clear_area(connection, 0, window
+      , args[0]->Int32Value()
+      , args[1]->Int32Value()
+      , args[2]->Int32Value()
+      , args[3]->Int32Value()
+    );
+    return Undefined();
+  }
+
+  static Handle<Value> flush(const Arguments& args) {
+    HandleScope scope;
     xcb_flush (connection);
     return Undefined();
   }
