@@ -14,10 +14,9 @@ var xcb = require ('./build/default/xcb')
 
 windows.forEach(function(window, i) {
   setTimeout(function(){
-  xcb.createWindow(window, 400 * (i % 2), 300 * Math.floor(i/2), 400 - borderWidth, 300 - borderWidth, borderWidth)
-  xcb.createGC(draw[i], window)
-  xcb.mapWindow(window)
-  console.log("mapped window YO", window)
+    xcb.createWindow(window, 400 * (i % 2), 300 * Math.floor(i/2), 400 - borderWidth, 300 - borderWidth, borderWidth)
+    xcb.createGC(draw[i], window)
+    xcb.mapWindow(window)
   }, 1000 * i + 1000)
 })
 xcb.flush()
@@ -40,4 +39,10 @@ setInterval(function() {
   xcb.flush()
 }, 100);
 
-
+setTimeout(function(){
+  windows.forEach(function(window, i) {
+    setTimeout(function(){
+      xcb.unmapWindow(window)
+    }, 1000 * i)
+  })
+}, 5000)

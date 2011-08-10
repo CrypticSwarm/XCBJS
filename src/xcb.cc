@@ -14,6 +14,7 @@ static xcb_connection_t *connection;
 static xcb_screen_t *screen;
 static Persistent<Object> t;
 static Persistent<String> on_map_sym;
+static Persistent<String> on_unmap_sym;
 
 class XCBJS {
 
@@ -26,6 +27,7 @@ public:
     xcb_screen_iterator_t   iter   = xcb_setup_roots_iterator(setup);
     screen = iter.data;
     on_map_sym = NODE_PSYMBOL("onMap");
+    on_unmap_sym = NODE_PSYMBOL("onUnMap");
     NODE_SET_METHOD(target, "drawRect", XCBJS::drawRect);
     NODE_SET_METHOD(target, "flush", XCBJS::flush);
     NODE_SET_METHOD(target, "clearArea", XCBJS::clearArea);
@@ -33,6 +35,7 @@ public:
     NODE_SET_METHOD(target, "createWindow", XCBJS::createWindow);
     NODE_SET_METHOD(target, "createGC", XCBJS::createGC);
     NODE_SET_METHOD(target, "mapWindow", XCBJS::mapWindow);
+    NODE_SET_METHOD(target, "unmapWindow", XCBJS::unmapWindow);
     NODE_SET_METHOD(target, "configureWindow", XCBJS::configureWindow);
     NODE_SET_METHOD(target, "manageWindows", XCBJS::manageWindows);
     eio_custom(XCBJS::LookForEvent, EIO_PRI_DEFAULT, XCBJS::EventObtained, NULL);
@@ -46,6 +49,16 @@ public:
       cout << "Map request" << endl;
       xcb_map_request_event_t *e = (xcb_map_request_event_t *) ev;
       Local<Value> val = t->Get(on_map_sym);
+      if (val->IsFunction()) {
+        Local<Function> cb = Local<Function>::Cast(val);
+        Local<Value> win[1] = { Integer::New(e->window) };
+        cb->Call(t, 1, win);
+        delete ev;
+      }
+    }
+    else if ((ev->response_type & ~0x80) == XCB_UNMAP_NOTIFY) {
+      xcb_unmap_notify_event_t *e = (xcb_unmap_notify_event_t *)ev;
+      Local<Value> val = t->Get(on_unmap_sym);
       if (val->IsFunction()) {
         Local<Function> cb = Local<Function>::Cast(val);
         Local<Value> win[1] = { Integer::New(e->window) };
@@ -150,6 +163,13 @@ public:
     HandleScope scope;
     xcb_window_t window = args[0]->Int32Value();
     xcb_map_window(connection, window);
+    return Undefined();
+  }
+
+  static Handle<Value> unmapWindow(const Arguments& args) {
+    HandleScope scope;
+    xcb_window_t window = args[0]->Int32Value();
+    xcb_unmap_window(connection, window);
     return Undefined();
   }
 
