@@ -39,8 +39,8 @@ void giveWindow(const T& ev, Local<Function> cb) {
 
 template <typename T>
 void giveKey(const T& ev, Local<Function> cb) {
-  Local<Value> win[1] = { Integer::New(ev->state) };
-  cb->Call(t, 1, win);
+  Local<Value> win[2] = { Integer::New(ev->state), Integer::New((int)ev->detail) };
+  cb->Call(t, 2, win);
 }
 
 class Event {

@@ -71,10 +71,11 @@ xcb.onUnMap = function(window) {
   console.log('\t*unmapping win', window)
 }
 
-xcb.onKeyDown = function(mask) {
-  console.log(mask);
+xcb.onKeyDown = function(mask, detail) {
+  console.log('Keypress')
+  console.log('\tmask =>', mask);
+  console.log('\tdetail =>', detail)
   if (mask & 8) {
-    console.log("Alt Pressed");
     nextGroup(1)
   }
 }
