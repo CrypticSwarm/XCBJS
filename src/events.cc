@@ -20,7 +20,7 @@ static Persistent<String> on_destroy_sym;
 static Persistent<String> on_create_sym;
 
 template <typename T>
-int handle_event(T ev, Persistent<String> sym, void (*cb)(const T&, Local<Function>)) { 
+int handle_event(T ev, Handle<String> sym, void (*cb)(const T&, Local<Function>)) { 
   HandleScope scope;
   Local<Value> val = t->Get(sym);
   if (val->IsFunction()) {

@@ -78,7 +78,7 @@ public:
 
   static Handle<Value> flush(const Arguments& args) {
     HandleScope scope;
-    xcb_flush (connection);
+    xcb_flush(connection);
     return Undefined();
   }
 

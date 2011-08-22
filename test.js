@@ -4,7 +4,7 @@ var xcb = require ('./build/default/xcb')
     , { rect: [ 100, 200, 90, 90 ], dir: 2, range: [80, 120]  }
     , { rect: [ 20, 30, 15, 15   ], dir: 3, range: [10, 50]   }
     ]
-  , windows = [xcb.generateId(), xcb.generateId(), xcb.generateId(), xcb.generateId()]
+  , windows = [xcb.generateId(), xcb.generateId(), xcb.generateId()]
   , draw = [xcb.generateId(), xcb.generateId(), xcb.generateId(), xcb.generateId()]
   , borderWidth = 5
   , width = 800
@@ -42,7 +42,7 @@ setInterval(function() {
 setTimeout(function(){
   windows.forEach(function(window, i) {
     setTimeout(function(){
-      xcb.unmapWindow(window)
+      //xcb.unmapWindow(window)
     }, 1000 * i)
   })
 }, 5000)
