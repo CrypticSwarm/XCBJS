@@ -4,17 +4,18 @@
 #include <unistd.h>
 #include <iostream>
 #include <vector>
+#include "events.cc"
 
+namespace XCBJS {
 
 using namespace std;
-using namespace node;
 using namespace v8;
+using namespace node;
+using namespace XCBJS;
 
-static xcb_connection_t *connection;
+xcb_connection_t *connection;
 static xcb_screen_t *screen;
-static Persistent<Object> t;
-static Persistent<String> on_map_sym;
-static Persistent<String> on_unmap_sym;
+Persistent<Object> t;
 
 class XCBJS {
 
@@ -26,8 +27,6 @@ public:
     const xcb_setup_t      *setup  = xcb_get_setup(connection);
     xcb_screen_iterator_t   iter   = xcb_setup_roots_iterator(setup);
     screen = iter.data;
-    on_map_sym = NODE_PSYMBOL("onMap");
-    on_unmap_sym = NODE_PSYMBOL("onUnMap");
     NODE_SET_METHOD(target, "drawRect", XCBJS::drawRect);
     NODE_SET_METHOD(target, "flush", XCBJS::flush);
     NODE_SET_METHOD(target, "clearArea", XCBJS::clearArea);
@@ -38,42 +37,7 @@ public:
     NODE_SET_METHOD(target, "unmapWindow", XCBJS::unmapWindow);
     NODE_SET_METHOD(target, "configureWindow", XCBJS::configureWindow);
     NODE_SET_METHOD(target, "manageWindows", XCBJS::manageWindows);
-    eio_custom(XCBJS::LookForEvent, EIO_PRI_DEFAULT, XCBJS::EventObtained, NULL);
-    ev_ref(EV_DEFAULT_UC);
-  }
-
-  static int EventObtained(eio_req *req) {
-    eio_custom(XCBJS::LookForEvent, EIO_PRI_DEFAULT, XCBJS::EventObtained, NULL);
-    xcb_generic_event_t *ev = (xcb_generic_event_t*)req->data;
-    if ((ev->response_type & ~0x80) == XCB_MAP_REQUEST) {
-      cout << "Map request" << endl;
-      xcb_map_request_event_t *e = (xcb_map_request_event_t *) ev;
-      Local<Value> val = t->Get(on_map_sym);
-      if (val->IsFunction()) {
-        Local<Function> cb = Local<Function>::Cast(val);
-        Local<Value> win[1] = { Integer::New(e->window) };
-        cb->Call(t, 1, win);
-        delete ev;
-      }
-    }
-    else if ((ev->response_type & ~0x80) == XCB_UNMAP_NOTIFY) {
-      xcb_unmap_notify_event_t *e = (xcb_unmap_notify_event_t *)ev;
-      Local<Value> val = t->Get(on_unmap_sym);
-      if (val->IsFunction()) {
-        Local<Function> cb = Local<Function>::Cast(val);
-        Local<Value> win[1] = { Integer::New(e->window) };
-        cb->Call(t, 1, win);
-        delete ev;
-      }
-    }
-    return 0;
-  }
-
-  static int LookForEvent(eio_req *req) {
-    xcb_generic_event_t *event;
-    event = xcb_wait_for_event(connection);
-    req->data = event;
-    return req->result = 0;
+    Event::Init(target);
   }
 
   static Handle<Value> drawRect(const Arguments& args) {
@@ -201,11 +165,13 @@ public:
 private:
 };
 
+};
+
 extern "C" void
-init (Handle<Object> target)
+init (v8::Handle<v8::Object> target)
 {
-    HandleScope scope;
-    XCBJS::Init(target);
+  v8::HandleScope scope;
+  XCBJS::XCBJS::Init(target);
 }
 
 
