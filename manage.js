@@ -16,7 +16,7 @@ function sizeWindows() {
     , len = group.length
     , winWidth = Math.floor(width / len)
   group.forEach(function(window, i) {
-    console.log("resizing window : ", window)
+    console.log("\t*resizing window : ", window)
     xcb.configureWindow(window, 15, [i * winWidth, 0, winWidth, 600])
   })
   xcb.flush();
@@ -27,31 +27,48 @@ function changeGroups(num) {
   console.log('switching groups to', num)
   groups[curGroup].forEach(function(window) {
     xcb.unmapWindow(window)
-    console.log('\t*unmapping win', window)
   })
   curGroup = num
   groups[curGroup].forEach(function(window) {
     xcb.mapWindow(window)
-    console.log('\tmapping win', window)
   })
   sizeWindows()
 }
 
 xcb.manageWindows();
-xcb.onMap = function(win) {
+xcb.onCreate = function(win) {
+  console.log("Window being created, indexing", win);
   wins.push(win);
   if (groups[curGroup].length == 2) groups.push([])
     , changeGroups(groups.length - 1)
   groups[curGroup].push(win)
   sizeWindows()
-  console.log("Window being mapped", win);
 }
 
-xcb.onUnMap = function(win) {
+xcb.onDestroy = function(win) {
   var index = wins.indexOf(win)
-  if (index != -1) wins.splice(index, 1)
+  if (index != -1) {
+    console.log('window destroyed, removing from index', win)
+    wins.splice(index, 1)
+    groups.forEach(function(group, i) {
+      var index = group.indexOf(win)
+      if (index != -1) {
+        group.splice(index, 1)
+        if (i === curGroup) sizeWindows()
+      }
+    })
+  }
   else console.log('we werent watching the window', win)
-  sizeWindows()
+}
+
+xcb.onMap = function(window) {
+  console.log('\tmapping win', window)
+  xcb.mapWindow(window)
+  xcb.flush();
+}
+
+xcb.onUnMap = function(window) {
+  console.log('\t*unmapping win', window)
 }
 
 xcb.onKeyDown = function(mask) {
