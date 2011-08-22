@@ -155,7 +155,10 @@ public:
 
   static Handle<Value> manageWindows(const Arguments& args) {
     HandleScope scope;
-    uint32_t values[1] = { XCB_EVENT_MASK_STRUCTURE_NOTIFY | XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT | XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY };
+    uint32_t values[1] = { XCB_EVENT_MASK_STRUCTURE_NOTIFY
+                         | XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT
+                         | XCB_EVENT_MASK_SUBSTRUCTURE_NOTIFY
+                         | XCB_EVENT_MASK_KEY_PRESS };
     xcb_void_cookie_t cookie = xcb_change_window_attributes_checked(connection, screen->root, XCB_CW_EVENT_MASK, values);
     xcb_request_check(connection, cookie);
     xcb_flush(connection);

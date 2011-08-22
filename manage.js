@@ -5,25 +5,34 @@ var xcb = require ('./build/default/xcb')
   , curGroup = 0
   , groups = [[]]
 
+function nextGroup(x) {
+  var t = curGroup + x
+  t %= groups.length
+  changeGroups(t)
+}
+
 function sizeWindows() {
-  var len = wins.length
+  var group = groups[curGroup]
+    , len = group.length
     , winWidth = Math.floor(width / len)
-  wins.forEach(function(window, i) {
-    console.log("configuring window : ", window)
+  group.forEach(function(window, i) {
+    console.log("resizing window : ", window)
     xcb.configureWindow(window, 15, [i * winWidth, 0, winWidth, 600])
-    xcb.mapWindow(window)
   })
   xcb.flush();
 }
 
 function changeGroups(num) {
   if (num === curGroup) return
+  console.log('switching groups to', num)
   groups[curGroup].forEach(function(window) {
     xcb.unmapWindow(window)
+    console.log('\t*unmapping win', window)
   })
   curGroup = num
   groups[curGroup].forEach(function(window) {
     xcb.mapWindow(window)
+    console.log('\tmapping win', window)
   })
   sizeWindows()
 }
@@ -39,10 +48,16 @@ xcb.onMap = function(win) {
 }
 
 xcb.onUnMap = function(win) {
-  console.log('window being umapped. Do i need to call unmapwindow?')
   var index = wins.indexOf(win)
   if (index != -1) wins.splice(index, 1)
   else console.log('we werent watching the window', win)
   sizeWindows()
 }
 
+xcb.onKeyDown = function(mask) {
+  console.log(mask);
+  if (mask & 8) {
+    console.log("Alt Pressed");
+    nextGroup(1)
+  }
+}

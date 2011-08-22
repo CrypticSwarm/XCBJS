@@ -15,6 +15,7 @@ extern xcb_connection_t *connection;
 extern Persistent<Object> t;
 static Persistent<String> on_map_sym;
 static Persistent<String> on_unmap_sym;
+static Persistent<String> on_key_down;
 
 template <typename T>
 int handle_event(T ev, Persistent<String> sym, void (*cb)(const T&, Local<Function>)) { 
@@ -34,13 +35,21 @@ void giveWindow(const T& ev, Local<Function> cb) {
   cb->Call(t, 1, win);
 }
 
-class Event : public ObjectWrap {
+template <typename T>
+void giveKey(const T& ev, Local<Function> cb) {
+  cout << "gwah" << endl << ev->state;
+  Local<Value> win[1] = { Integer::New(ev->state) };
+  cb->Call(t, 1, win);
+}
+
+class Event {
 public:
 
   static void Init(Handle<Object> target) {
     HandleScope scope;
     on_map_sym = NODE_PSYMBOL("onMap");
     on_unmap_sym = NODE_PSYMBOL("onUnMap");
+    on_key_down = NODE_PSYMBOL("onKeyDown");
     t = Persistent<Object>::New(target);
     eio_custom(Event::LookForEvent, EIO_PRI_DEFAULT, Event::EventObtained, NULL);
     ev_ref(EV_DEFAULT_UC);
@@ -52,6 +61,7 @@ public:
     switch(ev->response_type & ~0x80) {
       case XCB_MAP_REQUEST:  return handle_event((xcb_map_request_event_t  *) ev, on_map_sym,   giveWindow);
       case XCB_UNMAP_NOTIFY: return handle_event((xcb_unmap_notify_event_t *) ev, on_unmap_sym, giveWindow);
+      case XCB_KEY_PRESS:    return handle_event((xcb_key_press_event_t    *) ev, on_key_down, giveKey);
     }
     return 0;
   }
