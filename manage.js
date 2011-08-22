@@ -5,10 +5,15 @@ var xcb = require ('./build/default/xcb')
   , curGroup = 0
   , groups = [[]]
 
+function mod(x, by) {
+  return (x > 0) ? x % by
+         : (by - (Math.abs(x) % by)) % by
+}
+
 function nextGroup(x) {
   var t = curGroup + x
-  t %= groups.length
-  changeGroups(t)
+  t = mod(t, groups.length)
+  changeGroup(t)
 }
 
 function sizeWindows() {
@@ -22,7 +27,7 @@ function sizeWindows() {
   xcb.flush();
 }
 
-function changeGroups(num) {
+function changeGroup(num) {
   if (num === curGroup) return
   console.log('switching groups to', num)
   groups[curGroup].forEach(function(window) {
@@ -40,7 +45,7 @@ xcb.onCreate = function(win) {
   console.log("Window being created, indexing", win);
   wins.push(win);
   if (groups[curGroup].length == 2) groups.push([])
-    , changeGroups(groups.length - 1)
+    , changeGroup(groups.length - 1)
   groups[curGroup].push(win)
   sizeWindows()
 }
@@ -71,11 +76,18 @@ xcb.onUnMap = function(window) {
   console.log('\t*unmapping win', window)
 }
 
-xcb.onKeyDown = function(mask, detail) {
+xcb.onKeyDown = function(mask, code) {
   console.log('Keypress')
   console.log('\tmask =>', mask);
-  console.log('\tdetail =>', detail)
+  console.log('\tdetail =>', code)
+
   if (mask & 8) {
-    nextGroup(1)
+    switch (code) {
+      case 113: return nextGroup(-1)
+      case 114: return nextGroup(1)
+      case 10:  return changeGroup(0)
+      case 11:  return changeGroup(1)
+      case 12:  return changeGroup(2)
+    }
   }
 }
