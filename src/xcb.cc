@@ -37,6 +37,7 @@ public:
     NODE_SET_METHOD(target, "unmapWindow", XCBJS::unmapWindow);
     NODE_SET_METHOD(target, "configureWindow", XCBJS::configureWindow);
     NODE_SET_METHOD(target, "manageWindows", XCBJS::manageWindows);
+    NODE_SET_METHOD(target, "getRoot", XCBJS::getRoot);
     Event::Init(target);
   }
 
@@ -163,6 +164,11 @@ public:
     xcb_request_check(connection, cookie);
     xcb_flush(connection);
     return Undefined();
+  }
+
+  static Handle<Value> getRoot(const Arguments& args) {
+    HandleScope scope;
+    return scope.Close(Integer::New(screen->root));
   }
 
 private:
