@@ -41,17 +41,19 @@ function changeGroup(num) {
 }
 
 xcb.manageWindows();
-xcb.onCreate = function(win) {
-  console.log("Window being created, indexing", win);
-  wins.push(win);
+xcb.onCreate = function(ev) {
+  console.log("Window being created, indexing", ev.window)
+  console.log('\tParent -> ', ev.parent)
+  wins.push(ev.window);
   if (groups[curGroup].length == 2) groups.push([])
     , changeGroup(groups.length - 1)
-  groups[curGroup].push(win)
+  groups[curGroup].push(ev.window)
   sizeWindows()
 }
 
-xcb.onDestroy = function(win) {
-  var index = wins.indexOf(win)
+xcb.onDestroy = function(ev) {
+  var win = ev.window
+    , index = wins.indexOf(win)
   if (index != -1) {
     console.log('window destroyed, removing from index', win)
     wins.splice(index, 1)
@@ -66,23 +68,23 @@ xcb.onDestroy = function(win) {
   else console.log('we werent watching the window', win)
 }
 
-xcb.onMap = function(window) {
-  console.log('\tmapping win', window)
-  xcb.mapWindow(window)
+xcb.onMap = function(ev) {
+  console.log('\tmapping win', ev.window)
+  xcb.mapWindow(ev.window)
   xcb.flush();
 }
 
-xcb.onUnMap = function(window) {
-  console.log('\t*unmapping win', window)
+xcb.onUnmap = function(ev) {
+  console.log('\t*unmapping win', ev.window)
 }
 
-xcb.onKeyDown = function(mask, code) {
+xcb.onKeyDown = function(event) {
   console.log('Keypress')
-  console.log('\tmask =>', mask);
-  console.log('\tdetail =>', code)
+  console.log(event)
+  
 
-  if (mask & 8) {
-    switch (code) {
+  if (event.state & 8) {
+    switch (event.detail) {
       case 113: return nextGroup(-1)
       case 114: return nextGroup(1)
       case 10:  return changeGroup(0)

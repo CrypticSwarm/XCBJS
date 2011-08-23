@@ -1,0 +1,60 @@
+{ "types":
+  { "WINDOW": "Integer"
+  , "INT16":  "Integer"
+  , "CARD16": "Integer"
+  , "BOOL":   "Boolean"
+  }
+, "events": 
+  { "CreateNotify":
+    { "alias": "Create"
+    , "attributes": 
+      { "parent": "WINDOW"
+      , "window": "WINDOW"
+      , "x": "INT16"
+      , "y": "INT16"
+      , "width": "CARD16"
+      , "height": "CARD16"
+      , "border-width": "CARD16"
+      , "override-redirect": "BOOL"
+      }
+    }
+  , "DestroyNotify":
+    { "alias": "Destroy"
+    , "attributes":
+      { "event": "WINDOW"
+      , "window": "WINDOW"
+      }
+    }
+  , "MapRequest":
+    { "alias": "Map"
+    , "attributes":
+      { "parent": "WINDOW"
+      , "window": "WINDOW"
+      }
+    }
+  , "UnmapNotify":
+    { "alias": "Unmap"
+    , "attributes":
+      { "event": "WINDOW"
+      , "window": "WINDOW"
+      , "from-configure": "BOOL"
+      }
+    }
+  , "KeyPress":
+    { "alias": "KeyDown"
+    , "attributes":
+      { "root": "WINDOW"
+      , "event": "WINDOW"
+      , "child": "WINDOW"
+      , "same-screen": "BOOL"
+      , "root-x": "INT16"
+      , "root-y": "INT16"
+      , "event-x": "INT16"
+      , "event-y": "INT16"
+      , "detail": "INT16"
+      , "state": "INT16"
+      , "time": "INT16"
+      }
+    }
+  }
+}
