@@ -1,0 +1,315 @@
+{
+  "KeyPress": {
+    "field": {
+      "detail": "KEYCODE",
+      "time": "TIMESTAMP",
+      "root": "WINDOW",
+      "event": "WINDOW",
+      "child": "WINDOW",
+      "root_x": "INT16",
+      "root_y": "INT16",
+      "event_x": "INT16",
+      "event_y": "INT16",
+      "state": "CARD16",
+      "same_screen": "BOOL"
+    },
+    "number": "2"
+  },
+  "ButtonPress": {
+    "field": {
+      "detail": "BUTTON",
+      "time": "TIMESTAMP",
+      "root": "WINDOW",
+      "event": "WINDOW",
+      "child": "WINDOW",
+      "root_x": "INT16",
+      "root_y": "INT16",
+      "event_x": "INT16",
+      "event_y": "INT16",
+      "state": "CARD16",
+      "same_screen": "BOOL"
+    },
+    "number": "4"
+  },
+  "MotionNotify": {
+    "field": {
+      "detail": "BYTE",
+      "time": "TIMESTAMP",
+      "root": "WINDOW",
+      "event": "WINDOW",
+      "child": "WINDOW",
+      "root_x": "INT16",
+      "root_y": "INT16",
+      "event_x": "INT16",
+      "event_y": "INT16",
+      "state": "CARD16",
+      "same_screen": "BOOL"
+    },
+    "number": "6"
+  },
+  "EnterNotify": {
+    "field": {
+      "detail": "BYTE",
+      "time": "TIMESTAMP",
+      "root": "WINDOW",
+      "event": "WINDOW",
+      "child": "WINDOW",
+      "root_x": "INT16",
+      "root_y": "INT16",
+      "event_x": "INT16",
+      "event_y": "INT16",
+      "state": "CARD16",
+      "mode": "BYTE",
+      "same_screen_focus": "BYTE"
+    },
+    "number": "7"
+  },
+  "FocusIn": {
+    "field": {
+      "detail": "BYTE",
+      "event": "WINDOW",
+      "mode": "BYTE"
+    },
+    "number": "9"
+  },
+  "KeymapNotify": {
+    "list": {
+      "value": "31",
+      "type": "CARD8",
+      "name": "keys"
+    },
+    "number": "11",
+    "no-sequence-number": "true"
+  },
+  "Expose": {
+    "field": {
+      "window": "WINDOW",
+      "x": "CARD16",
+      "y": "CARD16",
+      "width": "CARD16",
+      "height": "CARD16",
+      "count": "CARD16"
+    },
+    "number": "12"
+  },
+  "GraphicsExposure": {
+    "field": {
+      "drawable": "DRAWABLE",
+      "x": "CARD16",
+      "y": "CARD16",
+      "width": "CARD16",
+      "height": "CARD16",
+      "minor_opcode": "CARD16",
+      "count": "CARD16",
+      "major_opcode": "CARD8"
+    },
+    "number": "13"
+  },
+  "NoExposure": {
+    "field": {
+      "drawable": "DRAWABLE",
+      "minor_opcode": "CARD16",
+      "major_opcode": "CARD8"
+    },
+    "number": "14"
+  },
+  "VisibilityNotify": {
+    "field": {
+      "window": "WINDOW",
+      "state": "BYTE"
+    },
+    "number": "15"
+  },
+  "CreateNotify": {
+    "field": {
+      "parent": "WINDOW",
+      "window": "WINDOW",
+      "x": "INT16",
+      "y": "INT16",
+      "width": "CARD16",
+      "height": "CARD16",
+      "border_width": "CARD16",
+      "override_redirect": "BOOL"
+    },
+    "number": "16"
+  },
+  "DestroyNotify": {
+    "field": {
+      "event": "WINDOW",
+      "window": "WINDOW"
+    },
+    "number": "17"
+  },
+  "UnmapNotify": {
+    "field": {
+      "event": "WINDOW",
+      "window": "WINDOW",
+      "from_configure": "BOOL"
+    },
+    "number": "18"
+  },
+  "MapNotify": {
+    "field": {
+      "event": "WINDOW",
+      "window": "WINDOW",
+      "override_redirect": "BOOL"
+    },
+    "number": "19"
+  },
+  "MapRequest": {
+    "field": {
+      "parent": "WINDOW",
+      "window": "WINDOW"
+    },
+    "number": "20"
+  },
+  "ReparentNotify": {
+    "field": {
+      "event": "WINDOW",
+      "window": "WINDOW",
+      "parent": "WINDOW",
+      "x": "INT16",
+      "y": "INT16",
+      "override_redirect": "BOOL"
+    },
+    "number": "21"
+  },
+  "ConfigureNotify": {
+    "field": {
+      "event": "WINDOW",
+      "window": "WINDOW",
+      "above_sibling": "WINDOW",
+      "x": "INT16",
+      "y": "INT16",
+      "width": "CARD16",
+      "height": "CARD16",
+      "border_width": "CARD16",
+      "override_redirect": "BOOL"
+    },
+    "number": "22"
+  },
+  "ConfigureRequest": {
+    "field": {
+      "stack_mode": "BYTE",
+      "parent": "WINDOW",
+      "window": "WINDOW",
+      "sibling": "WINDOW",
+      "x": "INT16",
+      "y": "INT16",
+      "width": "CARD16",
+      "height": "CARD16",
+      "border_width": "CARD16",
+      "value_mask": "CARD16"
+    },
+    "number": "23"
+  },
+  "GravityNotify": {
+    "field": {
+      "event": "WINDOW",
+      "window": "WINDOW",
+      "x": "INT16",
+      "y": "INT16"
+    },
+    "number": "24"
+  },
+  "ResizeRequest": {
+    "field": {
+      "window": "WINDOW",
+      "width": "CARD16",
+      "height": "CARD16"
+    },
+    "number": "25"
+  },
+  "CirculateNotify": {
+    "field": {
+      "event": "WINDOW",
+      "window": "WINDOW",
+      "place": "BYTE"
+    },
+    "number": "26"
+  },
+  "PropertyNotify": {
+    "field": {
+      "window": "WINDOW",
+      "atom": "ATOM",
+      "time": "TIMESTAMP",
+      "state": "BYTE"
+    },
+    "number": "28"
+  },
+  "SelectionClear": {
+    "field": {
+      "time": "TIMESTAMP",
+      "owner": "WINDOW",
+      "selection": "ATOM"
+    },
+    "number": "29"
+  },
+  "SelectionRequest": {
+    "field": {
+      "time": "TIMESTAMP",
+      "owner": "WINDOW",
+      "requestor": "WINDOW",
+      "selection": "ATOM",
+      "target": "ATOM",
+      "property": "ATOM"
+    },
+    "number": "30"
+  },
+  "SelectionNotify": {
+    "field": {
+      "time": "TIMESTAMP",
+      "requestor": "WINDOW",
+      "selection": "ATOM",
+      "target": "ATOM",
+      "property": "ATOM"
+    },
+    "number": "31"
+  },
+  "ColormapNotify": {
+    "field": {
+      "window": "WINDOW",
+      "colormap": "COLORMAP",
+      "new": "BOOL",
+      "state": "BYTE"
+    },
+    "number": "32"
+  },
+  "ClientMessage": {
+    "field": {
+      "format": "CARD8",
+      "window": "WINDOW",
+      "type": "ATOM",
+      "data": "ClientMessageData"
+    },
+    "number": "33"
+  },
+  "MappingNotify": {
+    "field": {
+      "request": "BYTE",
+      "first_keycode": "KEYCODE",
+      "count": "CARD8"
+    },
+    "number": "34"
+  },
+  "KeyRelease": {
+    "number": "3",
+    "ref": "KeyPress"
+  },
+  "ButtonRelease": {
+    "number": "5",
+    "ref": "ButtonPress"
+  },
+  "LeaveNotify": {
+    "number": "8",
+    "ref": "EnterNotify"
+  },
+  "FocusOut": {
+    "number": "10",
+    "ref": "FocusIn"
+  },
+  "CirculateRequest": {
+    "number": "27",
+    "ref": "CirculateNotify"
+  }
+}

@@ -1,7 +1,6 @@
 var fs = require('fs')
-  , description = JSON.parse(fs.readFileSync('events.json'))
-  , typeLookup = description.types
-  , events = description.events
+  , events = JSON.parse(fs.readFileSync('xEvents.json'))
+  , typeLookup = JSON.parse(fs.readFileSync('xTypes.json'))
   , str = ""
 
 function getSymName(short) {
@@ -9,7 +8,12 @@ function getSymName(short) {
 }
 
 function getPrepName(short) {
+  if (events[short].ref) short = events[short].ref
   return "prepare" + short + "Event"
+}
+
+function prepPropName(short) {
+  return short === 'new' ? '_new' : short
 }
 
 str += "#ifndef __AUTOGENCTOJSXCBEVENTS__\n"
@@ -25,7 +29,7 @@ str += "}\n\n"
 str += "//{{{ BEGIN SYMBOL CREATION \n\n"
 Object.keys(events).forEach(function(eventName) { 
   str+= "static v8::Persistent<v8::String> " + getSymName(eventName) 
-     +  " = v8::Persistent<v8::String>::New(v8::String::NewSymbol(\"on" + (events[eventName].alias || eventName) + "\"));\n"
+     +  " = v8::Persistent<v8::String>::New(v8::String::NewSymbol(\"on" +eventName.replace('Notify', '') + "\"));\n"
 })
 str += "\n"
 str += "// END SYMBOL CREATION }}}\n\n"
@@ -33,14 +37,16 @@ str += "// END SYMBOL CREATION }}}\n\n"
 str += "//{{{ BEGIN EVENT PREP \n\n"
 
 Object.keys(events).forEach(function(eventName) { 
-  var event = events[eventName].attributes
+  var event = events[eventName].field
+  if (!event) return
   str += "template <typename T>\n"
   str += "void " + getPrepName(eventName) + "(const T& ev, v8::Handle<v8::Function> cb) {\n"
   str += "\tv8::HandleScope scope;\n"
   str += "\tv8::Local<v8::Object> obj = v8::Object::New();\n"
   Object.keys(event).forEach(function(propName) {
     var type = typeLookup[event[propName]]
-    str += "\tobj->Set(v8::String::New(\"" + propName + "\"), v8::" + type + "::New(ev->" + propName.replace('-', '_') + "));\n"
+    if (!type) return console.log("Couldn't find the appropriate V8 type for", propName, "in event:", eventName)
+    str += "\tobj->Set(v8::String::New(\"" + propName + "\"), v8::" + type + "::New(ev->" + prepPropName(propName) + "));\n"
   })
   str += "\tv8::Local<v8::Value> args[1] = { obj };\n"
   str += "\tcb->Call(obj, 1, args);\n"
@@ -63,7 +69,8 @@ str += "}\n\n"
 
 str += "inline int distributeEvent(xcb_generic_event_t *ev) {\n"
 str += "\tswitch(ev->response_type & ~0x80) {\n"
-Object.keys(events).forEach(function(eventName) { 
+Object.keys(events).forEach(function(eventName) {
+  if (!(events[eventName].field || events[eventName].ref)) return
   var xcbName = ("xcb" + eventName).replace(/([A-Z])/g, function(letter) {
     return '_' + letter
   })

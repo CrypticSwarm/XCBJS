@@ -70,7 +70,7 @@ xcb.onDestroy = function(ev) {
   else console.log('we werent watching the window', win)
 }
 
-xcb.onMap = function(ev) {
+xcb.onMapRequest = function(ev) {
   console.log('\tmapping win', ev.window)
   xcb.mapWindow(ev.window)
   xcb.flush();
@@ -80,7 +80,7 @@ xcb.onUnmap = function(ev) {
   console.log('\t*unmapping win', ev.window)
 }
 
-xcb.onKeyDown = function(event) {
+xcb.onKeyPress = function(event) {
   console.log('Keypress')
   console.log(event)
   

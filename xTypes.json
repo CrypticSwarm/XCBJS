@@ -1,0 +1,13 @@
+{ "WINDOW":            "Integer"
+, "INT16":             "Integer"
+, "CARD16":            "Integer"
+, "CARD8":             "Integer"
+, "BOOL":              "Boolean"
+, "TIMESTAMP":         "Date"
+, "BUTTON":            "Integer"
+, "KEYCODE":           "Integer"
+, "ATOM":              "Integer"
+, "DRAWABLE":          "Integer"
+, "COLORMAP":          "Integer"
+, "BYTE":              "Integer"
+}
