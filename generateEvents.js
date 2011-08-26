@@ -40,7 +40,7 @@ Object.keys(events).forEach(function(eventName) {
   var event = events[eventName].field
   if (!event) return
   str += "template <typename T>\n"
-  str += "void " + getPrepName(eventName) + "(const T& ev, v8::Handle<v8::Function> cb) {\n"
+  str += "v8::Handle<v8::Object> " + getPrepName(eventName) + "(const T& ev) {\n"
   str += "\tv8::HandleScope scope;\n"
   str += "\tv8::Local<v8::Object> obj = v8::Object::New();\n"
   Object.keys(event).forEach(function(propName) {
@@ -48,20 +48,21 @@ Object.keys(events).forEach(function(eventName) {
     if (!type) return console.log("Couldn't find the appropriate V8 type for", propName, "in event:", eventName)
     str += "\tobj->Set(v8::String::New(\"" + propName + "\"), v8::" + type + "::New(ev->" + prepPropName(propName) + "));\n"
   })
-  str += "\tv8::Local<v8::Value> args[1] = { obj };\n"
-  str += "\tcb->Call(obj, 1, args);\n"
+  str += "\treturn scope.Close(obj);\n"
   str += "}\n\n"
 })
 
 str += "// END EVENT PREP FUNCS}}}\n\n"
 
 str += "template <typename T>\n"
-str += "int handle_event(T ev, v8::Handle<v8::String> sym, void (*cb)(const T&, v8::Handle<v8::Function>)) {\n"
+str += "int handle_event(T ev, v8::Handle<v8::String> sym, v8::Handle<v8::Object> (*cb)(const T&)) {\n"
 str += "\tv8::HandleScope scope;\n"
 str += "\tv8::Local<v8::Value> val = t->Get(sym);\n"
 str += "\tif (val->IsFunction()) {\n"
 str += "\t\tv8::Local<v8::Function> jscb = v8::Local<v8::Function>::Cast(val);\n"
-str += "\t\tcb(ev, jscb);\n"
+str += "\t\tv8::Handle<v8::Object> obj = cb(ev);\n"
+str += "\t\tv8::Handle<v8::Value> args[1] = { obj };\n"
+str += "\t\tjscb->Call(obj, 1, args);\n"
 str += "\t\tdelete ev;\n"
 str += "\t}\n"
 str += "\treturn 0;\n"

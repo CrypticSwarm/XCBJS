@@ -49,7 +49,7 @@ static v8::Persistent<v8::String> onCirculateRequestSym = v8::Persistent<v8::Str
 //{{{ BEGIN EVENT PREP 
 
 template <typename T>
-void prepareKeyPressEvent(const T& ev, v8::Handle<v8::Function> cb) {
+v8::Handle<v8::Object> prepareKeyPressEvent(const T& ev) {
 	v8::HandleScope scope;
 	v8::Local<v8::Object> obj = v8::Object::New();
 	obj->Set(v8::String::New("detail"), v8::Integer::New(ev->detail));
@@ -63,12 +63,11 @@ void prepareKeyPressEvent(const T& ev, v8::Handle<v8::Function> cb) {
 	obj->Set(v8::String::New("event_y"), v8::Integer::New(ev->event_y));
 	obj->Set(v8::String::New("state"), v8::Integer::New(ev->state));
 	obj->Set(v8::String::New("same_screen"), v8::Boolean::New(ev->same_screen));
-	v8::Local<v8::Value> args[1] = { obj };
-	cb->Call(obj, 1, args);
+	return scope.Close(obj);
 }
 
 template <typename T>
-void prepareButtonPressEvent(const T& ev, v8::Handle<v8::Function> cb) {
+v8::Handle<v8::Object> prepareButtonPressEvent(const T& ev) {
 	v8::HandleScope scope;
 	v8::Local<v8::Object> obj = v8::Object::New();
 	obj->Set(v8::String::New("detail"), v8::Integer::New(ev->detail));
@@ -82,12 +81,11 @@ void prepareButtonPressEvent(const T& ev, v8::Handle<v8::Function> cb) {
 	obj->Set(v8::String::New("event_y"), v8::Integer::New(ev->event_y));
 	obj->Set(v8::String::New("state"), v8::Integer::New(ev->state));
 	obj->Set(v8::String::New("same_screen"), v8::Boolean::New(ev->same_screen));
-	v8::Local<v8::Value> args[1] = { obj };
-	cb->Call(obj, 1, args);
+	return scope.Close(obj);
 }
 
 template <typename T>
-void prepareMotionNotifyEvent(const T& ev, v8::Handle<v8::Function> cb) {
+v8::Handle<v8::Object> prepareMotionNotifyEvent(const T& ev) {
 	v8::HandleScope scope;
 	v8::Local<v8::Object> obj = v8::Object::New();
 	obj->Set(v8::String::New("detail"), v8::Integer::New(ev->detail));
@@ -101,12 +99,11 @@ void prepareMotionNotifyEvent(const T& ev, v8::Handle<v8::Function> cb) {
 	obj->Set(v8::String::New("event_y"), v8::Integer::New(ev->event_y));
 	obj->Set(v8::String::New("state"), v8::Integer::New(ev->state));
 	obj->Set(v8::String::New("same_screen"), v8::Boolean::New(ev->same_screen));
-	v8::Local<v8::Value> args[1] = { obj };
-	cb->Call(obj, 1, args);
+	return scope.Close(obj);
 }
 
 template <typename T>
-void prepareEnterNotifyEvent(const T& ev, v8::Handle<v8::Function> cb) {
+v8::Handle<v8::Object> prepareEnterNotifyEvent(const T& ev) {
 	v8::HandleScope scope;
 	v8::Local<v8::Object> obj = v8::Object::New();
 	obj->Set(v8::String::New("detail"), v8::Integer::New(ev->detail));
@@ -121,23 +118,21 @@ void prepareEnterNotifyEvent(const T& ev, v8::Handle<v8::Function> cb) {
 	obj->Set(v8::String::New("state"), v8::Integer::New(ev->state));
 	obj->Set(v8::String::New("mode"), v8::Integer::New(ev->mode));
 	obj->Set(v8::String::New("same_screen_focus"), v8::Integer::New(ev->same_screen_focus));
-	v8::Local<v8::Value> args[1] = { obj };
-	cb->Call(obj, 1, args);
+	return scope.Close(obj);
 }
 
 template <typename T>
-void prepareFocusInEvent(const T& ev, v8::Handle<v8::Function> cb) {
+v8::Handle<v8::Object> prepareFocusInEvent(const T& ev) {
 	v8::HandleScope scope;
 	v8::Local<v8::Object> obj = v8::Object::New();
 	obj->Set(v8::String::New("detail"), v8::Integer::New(ev->detail));
 	obj->Set(v8::String::New("event"), v8::Integer::New(ev->event));
 	obj->Set(v8::String::New("mode"), v8::Integer::New(ev->mode));
-	v8::Local<v8::Value> args[1] = { obj };
-	cb->Call(obj, 1, args);
+	return scope.Close(obj);
 }
 
 template <typename T>
-void prepareExposeEvent(const T& ev, v8::Handle<v8::Function> cb) {
+v8::Handle<v8::Object> prepareExposeEvent(const T& ev) {
 	v8::HandleScope scope;
 	v8::Local<v8::Object> obj = v8::Object::New();
 	obj->Set(v8::String::New("window"), v8::Integer::New(ev->window));
@@ -146,12 +141,11 @@ void prepareExposeEvent(const T& ev, v8::Handle<v8::Function> cb) {
 	obj->Set(v8::String::New("width"), v8::Integer::New(ev->width));
 	obj->Set(v8::String::New("height"), v8::Integer::New(ev->height));
 	obj->Set(v8::String::New("count"), v8::Integer::New(ev->count));
-	v8::Local<v8::Value> args[1] = { obj };
-	cb->Call(obj, 1, args);
+	return scope.Close(obj);
 }
 
 template <typename T>
-void prepareGraphicsExposureEvent(const T& ev, v8::Handle<v8::Function> cb) {
+v8::Handle<v8::Object> prepareGraphicsExposureEvent(const T& ev) {
 	v8::HandleScope scope;
 	v8::Local<v8::Object> obj = v8::Object::New();
 	obj->Set(v8::String::New("drawable"), v8::Integer::New(ev->drawable));
@@ -162,33 +156,30 @@ void prepareGraphicsExposureEvent(const T& ev, v8::Handle<v8::Function> cb) {
 	obj->Set(v8::String::New("minor_opcode"), v8::Integer::New(ev->minor_opcode));
 	obj->Set(v8::String::New("count"), v8::Integer::New(ev->count));
 	obj->Set(v8::String::New("major_opcode"), v8::Integer::New(ev->major_opcode));
-	v8::Local<v8::Value> args[1] = { obj };
-	cb->Call(obj, 1, args);
+	return scope.Close(obj);
 }
 
 template <typename T>
-void prepareNoExposureEvent(const T& ev, v8::Handle<v8::Function> cb) {
+v8::Handle<v8::Object> prepareNoExposureEvent(const T& ev) {
 	v8::HandleScope scope;
 	v8::Local<v8::Object> obj = v8::Object::New();
 	obj->Set(v8::String::New("drawable"), v8::Integer::New(ev->drawable));
 	obj->Set(v8::String::New("minor_opcode"), v8::Integer::New(ev->minor_opcode));
 	obj->Set(v8::String::New("major_opcode"), v8::Integer::New(ev->major_opcode));
-	v8::Local<v8::Value> args[1] = { obj };
-	cb->Call(obj, 1, args);
+	return scope.Close(obj);
 }
 
 template <typename T>
-void prepareVisibilityNotifyEvent(const T& ev, v8::Handle<v8::Function> cb) {
+v8::Handle<v8::Object> prepareVisibilityNotifyEvent(const T& ev) {
 	v8::HandleScope scope;
 	v8::Local<v8::Object> obj = v8::Object::New();
 	obj->Set(v8::String::New("window"), v8::Integer::New(ev->window));
 	obj->Set(v8::String::New("state"), v8::Integer::New(ev->state));
-	v8::Local<v8::Value> args[1] = { obj };
-	cb->Call(obj, 1, args);
+	return scope.Close(obj);
 }
 
 template <typename T>
-void prepareCreateNotifyEvent(const T& ev, v8::Handle<v8::Function> cb) {
+v8::Handle<v8::Object> prepareCreateNotifyEvent(const T& ev) {
 	v8::HandleScope scope;
 	v8::Local<v8::Object> obj = v8::Object::New();
 	obj->Set(v8::String::New("parent"), v8::Integer::New(ev->parent));
@@ -199,54 +190,49 @@ void prepareCreateNotifyEvent(const T& ev, v8::Handle<v8::Function> cb) {
 	obj->Set(v8::String::New("height"), v8::Integer::New(ev->height));
 	obj->Set(v8::String::New("border_width"), v8::Integer::New(ev->border_width));
 	obj->Set(v8::String::New("override_redirect"), v8::Boolean::New(ev->override_redirect));
-	v8::Local<v8::Value> args[1] = { obj };
-	cb->Call(obj, 1, args);
+	return scope.Close(obj);
 }
 
 template <typename T>
-void prepareDestroyNotifyEvent(const T& ev, v8::Handle<v8::Function> cb) {
+v8::Handle<v8::Object> prepareDestroyNotifyEvent(const T& ev) {
 	v8::HandleScope scope;
 	v8::Local<v8::Object> obj = v8::Object::New();
 	obj->Set(v8::String::New("event"), v8::Integer::New(ev->event));
 	obj->Set(v8::String::New("window"), v8::Integer::New(ev->window));
-	v8::Local<v8::Value> args[1] = { obj };
-	cb->Call(obj, 1, args);
+	return scope.Close(obj);
 }
 
 template <typename T>
-void prepareUnmapNotifyEvent(const T& ev, v8::Handle<v8::Function> cb) {
+v8::Handle<v8::Object> prepareUnmapNotifyEvent(const T& ev) {
 	v8::HandleScope scope;
 	v8::Local<v8::Object> obj = v8::Object::New();
 	obj->Set(v8::String::New("event"), v8::Integer::New(ev->event));
 	obj->Set(v8::String::New("window"), v8::Integer::New(ev->window));
 	obj->Set(v8::String::New("from_configure"), v8::Boolean::New(ev->from_configure));
-	v8::Local<v8::Value> args[1] = { obj };
-	cb->Call(obj, 1, args);
+	return scope.Close(obj);
 }
 
 template <typename T>
-void prepareMapNotifyEvent(const T& ev, v8::Handle<v8::Function> cb) {
+v8::Handle<v8::Object> prepareMapNotifyEvent(const T& ev) {
 	v8::HandleScope scope;
 	v8::Local<v8::Object> obj = v8::Object::New();
 	obj->Set(v8::String::New("event"), v8::Integer::New(ev->event));
 	obj->Set(v8::String::New("window"), v8::Integer::New(ev->window));
 	obj->Set(v8::String::New("override_redirect"), v8::Boolean::New(ev->override_redirect));
-	v8::Local<v8::Value> args[1] = { obj };
-	cb->Call(obj, 1, args);
+	return scope.Close(obj);
 }
 
 template <typename T>
-void prepareMapRequestEvent(const T& ev, v8::Handle<v8::Function> cb) {
+v8::Handle<v8::Object> prepareMapRequestEvent(const T& ev) {
 	v8::HandleScope scope;
 	v8::Local<v8::Object> obj = v8::Object::New();
 	obj->Set(v8::String::New("parent"), v8::Integer::New(ev->parent));
 	obj->Set(v8::String::New("window"), v8::Integer::New(ev->window));
-	v8::Local<v8::Value> args[1] = { obj };
-	cb->Call(obj, 1, args);
+	return scope.Close(obj);
 }
 
 template <typename T>
-void prepareReparentNotifyEvent(const T& ev, v8::Handle<v8::Function> cb) {
+v8::Handle<v8::Object> prepareReparentNotifyEvent(const T& ev) {
 	v8::HandleScope scope;
 	v8::Local<v8::Object> obj = v8::Object::New();
 	obj->Set(v8::String::New("event"), v8::Integer::New(ev->event));
@@ -255,12 +241,11 @@ void prepareReparentNotifyEvent(const T& ev, v8::Handle<v8::Function> cb) {
 	obj->Set(v8::String::New("x"), v8::Integer::New(ev->x));
 	obj->Set(v8::String::New("y"), v8::Integer::New(ev->y));
 	obj->Set(v8::String::New("override_redirect"), v8::Boolean::New(ev->override_redirect));
-	v8::Local<v8::Value> args[1] = { obj };
-	cb->Call(obj, 1, args);
+	return scope.Close(obj);
 }
 
 template <typename T>
-void prepareConfigureNotifyEvent(const T& ev, v8::Handle<v8::Function> cb) {
+v8::Handle<v8::Object> prepareConfigureNotifyEvent(const T& ev) {
 	v8::HandleScope scope;
 	v8::Local<v8::Object> obj = v8::Object::New();
 	obj->Set(v8::String::New("event"), v8::Integer::New(ev->event));
@@ -272,12 +257,11 @@ void prepareConfigureNotifyEvent(const T& ev, v8::Handle<v8::Function> cb) {
 	obj->Set(v8::String::New("height"), v8::Integer::New(ev->height));
 	obj->Set(v8::String::New("border_width"), v8::Integer::New(ev->border_width));
 	obj->Set(v8::String::New("override_redirect"), v8::Boolean::New(ev->override_redirect));
-	v8::Local<v8::Value> args[1] = { obj };
-	cb->Call(obj, 1, args);
+	return scope.Close(obj);
 }
 
 template <typename T>
-void prepareConfigureRequestEvent(const T& ev, v8::Handle<v8::Function> cb) {
+v8::Handle<v8::Object> prepareConfigureRequestEvent(const T& ev) {
 	v8::HandleScope scope;
 	v8::Local<v8::Object> obj = v8::Object::New();
 	obj->Set(v8::String::New("stack_mode"), v8::Integer::New(ev->stack_mode));
@@ -290,69 +274,63 @@ void prepareConfigureRequestEvent(const T& ev, v8::Handle<v8::Function> cb) {
 	obj->Set(v8::String::New("height"), v8::Integer::New(ev->height));
 	obj->Set(v8::String::New("border_width"), v8::Integer::New(ev->border_width));
 	obj->Set(v8::String::New("value_mask"), v8::Integer::New(ev->value_mask));
-	v8::Local<v8::Value> args[1] = { obj };
-	cb->Call(obj, 1, args);
+	return scope.Close(obj);
 }
 
 template <typename T>
-void prepareGravityNotifyEvent(const T& ev, v8::Handle<v8::Function> cb) {
+v8::Handle<v8::Object> prepareGravityNotifyEvent(const T& ev) {
 	v8::HandleScope scope;
 	v8::Local<v8::Object> obj = v8::Object::New();
 	obj->Set(v8::String::New("event"), v8::Integer::New(ev->event));
 	obj->Set(v8::String::New("window"), v8::Integer::New(ev->window));
 	obj->Set(v8::String::New("x"), v8::Integer::New(ev->x));
 	obj->Set(v8::String::New("y"), v8::Integer::New(ev->y));
-	v8::Local<v8::Value> args[1] = { obj };
-	cb->Call(obj, 1, args);
+	return scope.Close(obj);
 }
 
 template <typename T>
-void prepareResizeRequestEvent(const T& ev, v8::Handle<v8::Function> cb) {
+v8::Handle<v8::Object> prepareResizeRequestEvent(const T& ev) {
 	v8::HandleScope scope;
 	v8::Local<v8::Object> obj = v8::Object::New();
 	obj->Set(v8::String::New("window"), v8::Integer::New(ev->window));
 	obj->Set(v8::String::New("width"), v8::Integer::New(ev->width));
 	obj->Set(v8::String::New("height"), v8::Integer::New(ev->height));
-	v8::Local<v8::Value> args[1] = { obj };
-	cb->Call(obj, 1, args);
+	return scope.Close(obj);
 }
 
 template <typename T>
-void prepareCirculateNotifyEvent(const T& ev, v8::Handle<v8::Function> cb) {
+v8::Handle<v8::Object> prepareCirculateNotifyEvent(const T& ev) {
 	v8::HandleScope scope;
 	v8::Local<v8::Object> obj = v8::Object::New();
 	obj->Set(v8::String::New("event"), v8::Integer::New(ev->event));
 	obj->Set(v8::String::New("window"), v8::Integer::New(ev->window));
 	obj->Set(v8::String::New("place"), v8::Integer::New(ev->place));
-	v8::Local<v8::Value> args[1] = { obj };
-	cb->Call(obj, 1, args);
+	return scope.Close(obj);
 }
 
 template <typename T>
-void preparePropertyNotifyEvent(const T& ev, v8::Handle<v8::Function> cb) {
+v8::Handle<v8::Object> preparePropertyNotifyEvent(const T& ev) {
 	v8::HandleScope scope;
 	v8::Local<v8::Object> obj = v8::Object::New();
 	obj->Set(v8::String::New("window"), v8::Integer::New(ev->window));
 	obj->Set(v8::String::New("atom"), v8::Integer::New(ev->atom));
 	obj->Set(v8::String::New("time"), v8::Date::New(ev->time));
 	obj->Set(v8::String::New("state"), v8::Integer::New(ev->state));
-	v8::Local<v8::Value> args[1] = { obj };
-	cb->Call(obj, 1, args);
+	return scope.Close(obj);
 }
 
 template <typename T>
-void prepareSelectionClearEvent(const T& ev, v8::Handle<v8::Function> cb) {
+v8::Handle<v8::Object> prepareSelectionClearEvent(const T& ev) {
 	v8::HandleScope scope;
 	v8::Local<v8::Object> obj = v8::Object::New();
 	obj->Set(v8::String::New("time"), v8::Date::New(ev->time));
 	obj->Set(v8::String::New("owner"), v8::Integer::New(ev->owner));
 	obj->Set(v8::String::New("selection"), v8::Integer::New(ev->selection));
-	v8::Local<v8::Value> args[1] = { obj };
-	cb->Call(obj, 1, args);
+	return scope.Close(obj);
 }
 
 template <typename T>
-void prepareSelectionRequestEvent(const T& ev, v8::Handle<v8::Function> cb) {
+v8::Handle<v8::Object> prepareSelectionRequestEvent(const T& ev) {
 	v8::HandleScope scope;
 	v8::Local<v8::Object> obj = v8::Object::New();
 	obj->Set(v8::String::New("time"), v8::Date::New(ev->time));
@@ -361,12 +339,11 @@ void prepareSelectionRequestEvent(const T& ev, v8::Handle<v8::Function> cb) {
 	obj->Set(v8::String::New("selection"), v8::Integer::New(ev->selection));
 	obj->Set(v8::String::New("target"), v8::Integer::New(ev->target));
 	obj->Set(v8::String::New("property"), v8::Integer::New(ev->property));
-	v8::Local<v8::Value> args[1] = { obj };
-	cb->Call(obj, 1, args);
+	return scope.Close(obj);
 }
 
 template <typename T>
-void prepareSelectionNotifyEvent(const T& ev, v8::Handle<v8::Function> cb) {
+v8::Handle<v8::Object> prepareSelectionNotifyEvent(const T& ev) {
 	v8::HandleScope scope;
 	v8::Local<v8::Object> obj = v8::Object::New();
 	obj->Set(v8::String::New("time"), v8::Date::New(ev->time));
@@ -374,53 +351,51 @@ void prepareSelectionNotifyEvent(const T& ev, v8::Handle<v8::Function> cb) {
 	obj->Set(v8::String::New("selection"), v8::Integer::New(ev->selection));
 	obj->Set(v8::String::New("target"), v8::Integer::New(ev->target));
 	obj->Set(v8::String::New("property"), v8::Integer::New(ev->property));
-	v8::Local<v8::Value> args[1] = { obj };
-	cb->Call(obj, 1, args);
+	return scope.Close(obj);
 }
 
 template <typename T>
-void prepareColormapNotifyEvent(const T& ev, v8::Handle<v8::Function> cb) {
+v8::Handle<v8::Object> prepareColormapNotifyEvent(const T& ev) {
 	v8::HandleScope scope;
 	v8::Local<v8::Object> obj = v8::Object::New();
 	obj->Set(v8::String::New("window"), v8::Integer::New(ev->window));
 	obj->Set(v8::String::New("colormap"), v8::Integer::New(ev->colormap));
 	obj->Set(v8::String::New("new"), v8::Boolean::New(ev->_new));
 	obj->Set(v8::String::New("state"), v8::Integer::New(ev->state));
-	v8::Local<v8::Value> args[1] = { obj };
-	cb->Call(obj, 1, args);
+	return scope.Close(obj);
 }
 
 template <typename T>
-void prepareClientMessageEvent(const T& ev, v8::Handle<v8::Function> cb) {
+v8::Handle<v8::Object> prepareClientMessageEvent(const T& ev) {
 	v8::HandleScope scope;
 	v8::Local<v8::Object> obj = v8::Object::New();
 	obj->Set(v8::String::New("format"), v8::Integer::New(ev->format));
 	obj->Set(v8::String::New("window"), v8::Integer::New(ev->window));
 	obj->Set(v8::String::New("type"), v8::Integer::New(ev->type));
-	v8::Local<v8::Value> args[1] = { obj };
-	cb->Call(obj, 1, args);
+	return scope.Close(obj);
 }
 
 template <typename T>
-void prepareMappingNotifyEvent(const T& ev, v8::Handle<v8::Function> cb) {
+v8::Handle<v8::Object> prepareMappingNotifyEvent(const T& ev) {
 	v8::HandleScope scope;
 	v8::Local<v8::Object> obj = v8::Object::New();
 	obj->Set(v8::String::New("request"), v8::Integer::New(ev->request));
 	obj->Set(v8::String::New("first_keycode"), v8::Integer::New(ev->first_keycode));
 	obj->Set(v8::String::New("count"), v8::Integer::New(ev->count));
-	v8::Local<v8::Value> args[1] = { obj };
-	cb->Call(obj, 1, args);
+	return scope.Close(obj);
 }
 
 // END EVENT PREP FUNCS}}}
 
 template <typename T>
-int handle_event(T ev, v8::Handle<v8::String> sym, void (*cb)(const T&, v8::Handle<v8::Function>)) {
+int handle_event(T ev, v8::Handle<v8::String> sym, v8::Handle<v8::Object> (*cb)(const T&)) {
 	v8::HandleScope scope;
 	v8::Local<v8::Value> val = t->Get(sym);
 	if (val->IsFunction()) {
 		v8::Local<v8::Function> jscb = v8::Local<v8::Function>::Cast(val);
-		cb(ev, jscb);
+		v8::Handle<v8::Object> obj = cb(ev);
+		v8::Handle<v8::Value> args[1] = { obj };
+		jscb->Call(obj, 1, args);
 		delete ev;
 	}
 	return 0;
