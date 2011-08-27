@@ -6,6 +6,7 @@
 #include <vector>
 #include "config.h"
 #include "events.cc"
+#include "structs.cc"
 
 namespace XCBJS {
 
@@ -38,26 +39,27 @@ public:
     NODE_SET_METHOD(target, "configureWindow", XCBJS::configureWindow);
     NODE_SET_METHOD(target, "manageWindows", XCBJS::manageWindows);
     NODE_SET_METHOD(target, "getRoot", XCBJS::getRoot);
+    NODE_SET_METHOD(target, "getScreen", XCBJS::getScreen);
     Event::Init(target);
+  }
+
+  static Handle<Value> getScreen(const Arguments& args) {
+    HandleScope scope;
+    return toJS(screen);
   }
 
   static Handle<Value> drawRect(const Arguments& args) {
     HandleScope scope;
     const char *usage = "usage: drawRect(window, gcContext, x, y, width, height)";
-    if (args.Length() != 6) {
+    if (args.Length() != 3) {
       return ThrowException(Exception::Error(String::New(usage)));
     }
     xcb_window_t window = args[0]->Int32Value();
     xcb_gcontext_t black = args[1]->Int32Value();
-    xcb_rectangle_t rects[] =
-    { { args[2]->Int32Value()
-      , args[3]->Int32Value()
-      , args[4]->Int32Value()
-      , args[5]->Int32Value()
-      } 
-    };
+    xcb_rectangle_t rects[1];
+    fromJS(args[2]->ToObject(), rects);
     xcb_poly_rectangle(Config::connection, window, black, 1, rects);
-    return Undefined();
+    return scope.Close(toJS(rects));
   }
 
   static Handle<Value> clearArea(const Arguments& args) {

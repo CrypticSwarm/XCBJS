@@ -4,7 +4,7 @@ var xcb = require ('./build/default/xcb')
   , height = 600
   , curGroup = 0
   , groups = [[]]
-  , root = xcb.getRoot()
+  , root = xcb.getScreen()
 console.log('root: ', root)
 
 function mod(x, by) {

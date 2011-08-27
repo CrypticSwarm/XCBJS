@@ -1,6 +1,6 @@
 var fs = require('fs')
   , events = JSON.parse(fs.readFileSync('xEvents.json'))
-  , typeLookup = JSON.parse(fs.readFileSync('xTypes.json'))
+  , typeLookup = JSON.parse(fs.readFileSync('xTypes.json')).xtojs
   , str = ""
 
 function getSymName(short) {

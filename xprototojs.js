@@ -73,4 +73,5 @@ x(f.readFileSync('xproto.xml').toString(), function(err, result) {
   delete result['@']
   mergeAttr(result)
   f.writeFileSync("xEvents.json", JSON.stringify(extend(result.event, result.eventcopy),  stripTags(['comment', 'pad', 'op', 'opcode']), 2))
+  f.writeFileSync("xStructs.json", JSON.stringify(result.struct,  stripTags(['comment', 'pad', 'op', 'opcode']), 2))
 })

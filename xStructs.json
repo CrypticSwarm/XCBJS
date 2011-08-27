@@ -1,0 +1,238 @@
+{
+  "CHAR2B": {
+    "field": {
+      "byte1": "CARD8",
+      "byte2": "CARD8"
+    }
+  },
+  "POINT": {
+    "field": {
+      "x": "INT16",
+      "y": "INT16"
+    }
+  },
+  "RECTANGLE": {
+    "field": {
+      "x": "INT16",
+      "y": "INT16",
+      "width": "CARD16",
+      "height": "CARD16"
+    }
+  },
+  "ARC": {
+    "field": {
+      "x": "INT16",
+      "y": "INT16",
+      "width": "CARD16",
+      "height": "CARD16",
+      "angle1": "INT16",
+      "angle2": "INT16"
+    }
+  },
+  "FORMAT": {
+    "field": {
+      "depth": "CARD8",
+      "bits_per_pixel": "CARD8",
+      "scanline_pad": "CARD8"
+    }
+  },
+  "VISUALTYPE": {
+    "field": {
+      "visual_id": "VISUALID",
+      "class": "CARD8",
+      "bits_per_rgb_value": "CARD8",
+      "colormap_entries": "CARD16",
+      "red_mask": "CARD32",
+      "green_mask": "CARD32",
+      "blue_mask": "CARD32"
+    }
+  },
+  "DEPTH": {
+    "field": {
+      "depth": "CARD8",
+      "visuals_len": "CARD16"
+    },
+    "list": {
+      "fieldref": "visuals_len",
+      "type": "VISUALTYPE",
+      "name": "visuals"
+    }
+  },
+  "SCREEN": {
+    "field": {
+      "root": "WINDOW",
+      "default_colormap": "COLORMAP",
+      "white_pixel": "CARD32",
+      "black_pixel": "CARD32",
+      "current_input_masks": "CARD32",
+      "width_in_pixels": "CARD16",
+      "height_in_pixels": "CARD16",
+      "width_in_millimeters": "CARD16",
+      "height_in_millimeters": "CARD16",
+      "min_installed_maps": "CARD16",
+      "max_installed_maps": "CARD16",
+      "root_visual": "VISUALID",
+      "backing_stores": "BYTE",
+      "save_unders": "BOOL",
+      "root_depth": "CARD8",
+      "allowed_depths_len": "CARD8"
+    },
+    "list": {
+      "fieldref": "allowed_depths_len",
+      "type": "DEPTH",
+      "name": "allowed_depths"
+    }
+  },
+  "SetupRequest": {
+    "field": {
+      "byte_order": "CARD8",
+      "protocol_major_version": "CARD16",
+      "protocol_minor_version": "CARD16",
+      "authorization_protocol_name_len": "CARD16",
+      "authorization_protocol_data_len": "CARD16"
+    },
+    "list": {
+      "authorization_protocol_name": {
+        "fieldref": "authorization_protocol_name_len",
+        "type": "char"
+      },
+      "authorization_protocol_data": {
+        "fieldref": "authorization_protocol_data_len",
+        "type": "char"
+      }
+    }
+  },
+  "SetupFailed": {
+    "field": {
+      "status": "CARD8",
+      "reason_len": "CARD8",
+      "protocol_major_version": "CARD16",
+      "protocol_minor_version": "CARD16",
+      "length": "CARD16"
+    },
+    "list": {
+      "fieldref": "reason_len",
+      "type": "char",
+      "name": "reason"
+    }
+  },
+  "SetupAuthenticate": {
+    "field": {
+      "status": "CARD8",
+      "length": "CARD16"
+    },
+    "list": {
+      "type": "char",
+      "name": "reason"
+    }
+  },
+  "Setup": {
+    "field": {
+      "status": "CARD8",
+      "protocol_major_version": "CARD16",
+      "protocol_minor_version": "CARD16",
+      "length": "CARD16",
+      "release_number": "CARD32",
+      "resource_id_base": "CARD32",
+      "resource_id_mask": "CARD32",
+      "motion_buffer_size": "CARD32",
+      "vendor_len": "CARD16",
+      "maximum_request_length": "CARD16",
+      "roots_len": "CARD8",
+      "pixmap_formats_len": "CARD8",
+      "image_byte_order": "CARD8",
+      "bitmap_format_bit_order": "CARD8",
+      "bitmap_format_scanline_unit": "CARD8",
+      "bitmap_format_scanline_pad": "CARD8",
+      "min_keycode": "KEYCODE",
+      "max_keycode": "KEYCODE"
+    },
+    "list": {
+      "vendor": {
+        "fieldref": "vendor_len",
+        "type": "char"
+      },
+      "pixmap_formats": {
+        "fieldref": "pixmap_formats_len",
+        "type": "FORMAT"
+      },
+      "roots": {
+        "fieldref": "roots_len",
+        "type": "SCREEN"
+      }
+    }
+  },
+  "TIMECOORD": {
+    "field": {
+      "time": "TIMESTAMP",
+      "x": "INT16",
+      "y": "INT16"
+    }
+  },
+  "FONTPROP": {
+    "field": {
+      "[object Object]": {
+        "value": {
+          "type": "CARD32"
+        }
+      }
+    }
+  },
+  "CHARINFO": {
+    "field": {
+      "left_side_bearing": "INT16",
+      "right_side_bearing": "INT16",
+      "character_width": "INT16",
+      "ascent": "INT16",
+      "descent": "INT16",
+      "attributes": "CARD16"
+    }
+  },
+  "STR": {
+    "field": {
+      "name_len": {
+        "type": "CARD8"
+      }
+    },
+    "list": {
+      "fieldref": "name_len",
+      "type": "char",
+      "name": "name"
+    }
+  },
+  "SEGMENT": {
+    "field": {
+      "x1": "INT16",
+      "y1": "INT16",
+      "x2": "INT16",
+      "y2": "INT16"
+    }
+  },
+  "COLORITEM": {
+    "field": {
+      "pixel": "CARD32",
+      "red": "CARD16",
+      "green": "CARD16",
+      "blue": "CARD16",
+      "flags": "BYTE"
+    }
+  },
+  "RGB": {
+    "field": {
+      "red": "CARD16",
+      "green": "CARD16",
+      "blue": "CARD16"
+    }
+  },
+  "HOST": {
+    "field": {
+      "family": "CARD8",
+      "address_len": "CARD16"
+    },
+    "list": {
+      "fieldref": "address_len",
+      "type": "BYTE",
+      "name": "address"
+    }
+  }
+}

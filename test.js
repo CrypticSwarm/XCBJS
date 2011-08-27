@@ -29,7 +29,7 @@ setInterval(function() {
       rect.rect[2] += rect.dir
       rect.rect[3] += rect.dir
       if (rect.rect[0] >= rect.range[1] || rect.rect[0] <= rect.range[0]) rect.dir *= -1
-      xcb.drawRect(window, draw[i], rect.rect[0], rect.rect[1], rect.rect[2], rect.rect[3])
+      xcb.drawRect(window, draw[i], { x: rect.rect[0], y: rect.rect[1], width: rect.rect[2], height: rect.rect[3]})
     })
   })
   split += dir
