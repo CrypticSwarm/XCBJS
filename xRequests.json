@@ -1,0 +1,1509 @@
+{
+  "CreateWindow": {
+    "field": {
+      "depth": "CARD8",
+      "wid": "WINDOW",
+      "parent": "WINDOW",
+      "x": "INT16",
+      "y": "INT16",
+      "width": "CARD16",
+      "height": "CARD16",
+      "border_width": "CARD16",
+      "class": "CARD16",
+      "visual": "VISUALID"
+    },
+    "valueparam": {
+      "value-mask-type": "CARD32",
+      "value-mask-name": "value_mask",
+      "value-list-name": "value_list"
+    }
+  },
+  "ChangeWindowAttributes": {
+    "field": {
+      "window": "WINDOW"
+    },
+    "valueparam": {
+      "value-mask-type": "CARD32",
+      "value-mask-name": "value_mask",
+      "value-list-name": "value_list"
+    }
+  },
+  "GetWindowAttributes": {
+    "field": {
+      "window": {
+        "type": "WINDOW"
+      }
+    },
+    "reply": {
+      "field": {
+        "backing_store": "CARD8",
+        "visual": "VISUALID",
+        "class": "CARD16",
+        "bit_gravity": "CARD8",
+        "win_gravity": "CARD8",
+        "backing_planes": "CARD32",
+        "backing_pixel": "CARD32",
+        "save_under": "BOOL",
+        "map_is_installed": "BOOL",
+        "map_state": "CARD8",
+        "override_redirect": "BOOL",
+        "colormap": "COLORMAP",
+        "all_event_masks": "CARD32",
+        "your_event_mask": "CARD32",
+        "do_not_propagate_mask": "CARD16"
+      }
+    }
+  },
+  "DestroyWindow": {
+    "field": {
+      "window": {
+        "type": "WINDOW"
+      }
+    }
+  },
+  "DestroySubwindows": {
+    "field": {
+      "window": {
+        "type": "WINDOW"
+      }
+    }
+  },
+  "ChangeSaveSet": {
+    "field": {
+      "mode": "BYTE",
+      "window": "WINDOW"
+    }
+  },
+  "ReparentWindow": {
+    "field": {
+      "window": "WINDOW",
+      "parent": "WINDOW",
+      "x": "INT16",
+      "y": "INT16"
+    }
+  },
+  "MapWindow": {
+    "field": {
+      "window": {
+        "type": "WINDOW"
+      }
+    }
+  },
+  "MapSubwindows": {
+    "field": {
+      "window": {
+        "type": "WINDOW"
+      }
+    }
+  },
+  "UnmapWindow": {
+    "field": {
+      "window": {
+        "type": "WINDOW"
+      }
+    }
+  },
+  "UnmapSubwindows": {
+    "field": {
+      "window": {
+        "type": "WINDOW"
+      }
+    }
+  },
+  "ConfigureWindow": {
+    "field": {
+      "window": "WINDOW",
+      "value_mask": "CARD16"
+    },
+    "valueparam": {
+      "value-mask-type": "CARD16",
+      "value-mask-name": "value_mask",
+      "value-list-name": "value_list"
+    }
+  },
+  "CirculateWindow": {
+    "field": {
+      "direction": "CARD8",
+      "window": "WINDOW"
+    }
+  },
+  "GetGeometry": {
+    "field": {
+      "drawable": {
+        "type": "DRAWABLE"
+      }
+    },
+    "reply": {
+      "field": {
+        "depth": "CARD8",
+        "root": "WINDOW",
+        "x": "INT16",
+        "y": "INT16",
+        "width": "CARD16",
+        "height": "CARD16",
+        "border_width": "CARD16"
+      }
+    }
+  },
+  "QueryTree": {
+    "field": {
+      "window": {
+        "type": "WINDOW"
+      }
+    },
+    "reply": {
+      "field": {
+        "root": "WINDOW",
+        "parent": "WINDOW",
+        "children_len": "CARD16"
+      },
+      "list": {
+        "fieldref": "children_len",
+        "type": "WINDOW",
+        "name": "children"
+      }
+    }
+  },
+  "InternAtom": {
+    "field": {
+      "only_if_exists": "BOOL",
+      "name_len": "CARD16"
+    },
+    "list": {
+      "fieldref": "name_len",
+      "type": "char",
+      "name": "name"
+    },
+    "reply": {
+      "field": {
+        "atom": {
+          "type": "ATOM",
+          "altenum": "Atom"
+        }
+      }
+    }
+  },
+  "GetAtomName": {
+    "field": {
+      "atom": {
+        "type": "ATOM"
+      }
+    },
+    "reply": {
+      "field": {
+        "name_len": {
+          "type": "CARD16"
+        }
+      },
+      "list": {
+        "fieldref": "name_len",
+        "type": "char",
+        "name": "name"
+      }
+    }
+  },
+  "ChangeProperty": {
+    "field": {
+      "mode": "CARD8",
+      "window": "WINDOW",
+      "property": "ATOM",
+      "type": "ATOM",
+      "format": "CARD8",
+      "data_len": "CARD32"
+    },
+    "list": {
+      "type": "void",
+      "name": "data"
+    }
+  },
+  "DeleteProperty": {
+    "field": {
+      "window": "WINDOW",
+      "property": "ATOM"
+    }
+  },
+  "GetProperty": {
+    "field": {
+      "delete": "BOOL",
+      "window": "WINDOW",
+      "property": "ATOM",
+      "type": "ATOM",
+      "long_offset": "CARD32",
+      "long_length": "CARD32"
+    },
+    "reply": {
+      "field": {
+        "format": "CARD8",
+        "type": "ATOM",
+        "bytes_after": "CARD32",
+        "value_len": "CARD32"
+      },
+      "list": {
+        "type": "void",
+        "name": "value"
+      }
+    }
+  },
+  "ListProperties": {
+    "field": {
+      "window": {
+        "type": "WINDOW"
+      }
+    },
+    "reply": {
+      "field": {
+        "atoms_len": {
+          "type": "CARD16"
+        }
+      },
+      "list": {
+        "fieldref": "atoms_len",
+        "type": "ATOM",
+        "name": "atoms"
+      }
+    }
+  },
+  "SetSelectionOwner": {
+    "field": {
+      "owner": "WINDOW",
+      "selection": "ATOM",
+      "time": "TIMESTAMP"
+    }
+  },
+  "GetSelectionOwner": {
+    "field": {
+      "selection": {
+        "type": "ATOM"
+      }
+    },
+    "reply": {
+      "field": {
+        "owner": {
+          "type": "WINDOW",
+          "altenum": "Window"
+        }
+      }
+    }
+  },
+  "ConvertSelection": {
+    "field": {
+      "requestor": "WINDOW",
+      "selection": "ATOM",
+      "target": "ATOM",
+      "property": "ATOM",
+      "time": "TIMESTAMP"
+    }
+  },
+  "SendEvent": {
+    "field": {
+      "propagate": "BOOL",
+      "destination": "WINDOW",
+      "event_mask": "CARD32"
+    },
+    "list": {
+      "value": "32",
+      "type": "char",
+      "name": "event"
+    }
+  },
+  "GrabPointer": {
+    "field": {
+      "owner_events": "BOOL",
+      "grab_window": "WINDOW",
+      "event_mask": "CARD16",
+      "pointer_mode": "BYTE",
+      "keyboard_mode": "BYTE",
+      "confine_to": "WINDOW",
+      "cursor": "CURSOR",
+      "time": "TIMESTAMP"
+    },
+    "reply": {
+      "field": {
+        "status": {
+          "type": "BYTE",
+          "enum": "GrabStatus"
+        }
+      }
+    }
+  },
+  "UngrabPointer": {
+    "field": {
+      "time": {
+        "type": "TIMESTAMP",
+        "altenum": "Time"
+      }
+    }
+  },
+  "GrabButton": {
+    "field": {
+      "owner_events": "BOOL",
+      "grab_window": "WINDOW",
+      "event_mask": "CARD16",
+      "pointer_mode": "CARD8",
+      "keyboard_mode": "CARD8",
+      "confine_to": "WINDOW",
+      "cursor": "CURSOR",
+      "button": "CARD8",
+      "modifiers": "CARD16"
+    }
+  },
+  "UngrabButton": {
+    "field": {
+      "button": "CARD8",
+      "grab_window": "WINDOW",
+      "modifiers": "CARD16"
+    }
+  },
+  "ChangeActivePointerGrab": {
+    "field": {
+      "cursor": "CURSOR",
+      "time": "TIMESTAMP",
+      "event_mask": "CARD16"
+    }
+  },
+  "GrabKeyboard": {
+    "field": {
+      "owner_events": "BOOL",
+      "grab_window": "WINDOW",
+      "time": "TIMESTAMP",
+      "pointer_mode": "BYTE",
+      "keyboard_mode": "BYTE"
+    },
+    "reply": {
+      "field": {
+        "status": {
+          "type": "BYTE",
+          "enum": "GrabStatus"
+        }
+      }
+    }
+  },
+  "UngrabKeyboard": {
+    "field": {
+      "time": {
+        "type": "TIMESTAMP",
+        "altenum": "Time"
+      }
+    }
+  },
+  "GrabKey": {
+    "field": {
+      "owner_events": "BOOL",
+      "grab_window": "WINDOW",
+      "modifiers": "CARD16",
+      "key": "KEYCODE",
+      "pointer_mode": "CARD8",
+      "keyboard_mode": "CARD8"
+    }
+  },
+  "UngrabKey": {
+    "field": {
+      "key": "KEYCODE",
+      "grab_window": "WINDOW",
+      "modifiers": "CARD16"
+    }
+  },
+  "AllowEvents": {
+    "field": {
+      "mode": "CARD8",
+      "time": "TIMESTAMP"
+    }
+  },
+  "GrabServer": {},
+  "UngrabServer": {},
+  "QueryPointer": {
+    "field": {
+      "window": {
+        "type": "WINDOW"
+      }
+    },
+    "reply": {
+      "field": {
+        "same_screen": "BOOL",
+        "root": "WINDOW",
+        "child": "WINDOW",
+        "root_x": "INT16",
+        "root_y": "INT16",
+        "win_x": "INT16",
+        "win_y": "INT16",
+        "mask": "CARD16"
+      }
+    }
+  },
+  "GetMotionEvents": {
+    "field": {
+      "window": "WINDOW",
+      "start": "TIMESTAMP",
+      "stop": "TIMESTAMP"
+    },
+    "reply": {
+      "field": {
+        "events_len": {
+          "type": "CARD32"
+        }
+      },
+      "list": {
+        "fieldref": "events_len",
+        "type": "TIMECOORD",
+        "name": "events"
+      }
+    }
+  },
+  "TranslateCoordinates": {
+    "field": {
+      "src_window": "WINDOW",
+      "dst_window": "WINDOW",
+      "src_x": "INT16",
+      "src_y": "INT16"
+    },
+    "reply": {
+      "field": {
+        "same_screen": "BOOL",
+        "child": "WINDOW",
+        "dst_x": "INT16",
+        "dst_y": "INT16"
+      }
+    }
+  },
+  "WarpPointer": {
+    "field": {
+      "src_window": "WINDOW",
+      "dst_window": "WINDOW",
+      "src_x": "INT16",
+      "src_y": "INT16",
+      "src_width": "CARD16",
+      "src_height": "CARD16",
+      "dst_x": "INT16",
+      "dst_y": "INT16"
+    }
+  },
+  "SetInputFocus": {
+    "field": {
+      "revert_to": "CARD8",
+      "focus": "WINDOW",
+      "time": "TIMESTAMP"
+    }
+  },
+  "GetInputFocus": {
+    "reply": {
+      "field": {
+        "revert_to": "CARD8",
+        "focus": "WINDOW"
+      }
+    }
+  },
+  "QueryKeymap": {
+    "reply": {
+      "list": {
+        "value": "32",
+        "type": "CARD8",
+        "name": "keys"
+      }
+    }
+  },
+  "OpenFont": {
+    "field": {
+      "fid": "FONT",
+      "name_len": "CARD16"
+    },
+    "list": {
+      "fieldref": "name_len",
+      "type": "char",
+      "name": "name"
+    }
+  },
+  "CloseFont": {
+    "field": {
+      "font": {
+        "type": "FONT"
+      }
+    }
+  },
+  "QueryFont": {
+    "field": {
+      "font": {
+        "type": "FONTABLE"
+      }
+    },
+    "reply": {
+      "field": {
+        "min_bounds": "CHARINFO",
+        "max_bounds": "CHARINFO",
+        "min_char_or_byte2": "CARD16",
+        "max_char_or_byte2": "CARD16",
+        "default_char": "CARD16",
+        "properties_len": "CARD16",
+        "draw_direction": "BYTE",
+        "min_byte1": "CARD8",
+        "max_byte1": "CARD8",
+        "all_chars_exist": "BOOL",
+        "font_ascent": "INT16",
+        "font_descent": "INT16",
+        "char_infos_len": "CARD32"
+      },
+      "list": {
+        "properties": {
+          "fieldref": "properties_len",
+          "type": "FONTPROP"
+        },
+        "char_infos": {
+          "fieldref": "char_infos_len",
+          "type": "CHARINFO"
+        }
+      }
+    }
+  },
+  "QueryTextExtents": {
+    "exprfield": {
+      "type": "BOOL",
+      "name": "odd_length"
+    },
+    "field": {
+      "font": {
+        "type": "FONTABLE"
+      }
+    },
+    "list": {
+      "type": "CHAR2B",
+      "name": "string"
+    },
+    "reply": {
+      "field": {
+        "draw_direction": "BYTE",
+        "font_ascent": "INT16",
+        "font_descent": "INT16",
+        "overall_ascent": "INT16",
+        "overall_descent": "INT16",
+        "overall_width": "INT32",
+        "overall_left": "INT32",
+        "overall_right": "INT32"
+      }
+    }
+  },
+  "ListFonts": {
+    "field": {
+      "max_names": "CARD16",
+      "pattern_len": "CARD16"
+    },
+    "list": {
+      "fieldref": "pattern_len",
+      "type": "char",
+      "name": "pattern"
+    },
+    "reply": {
+      "field": {
+        "names_len": {
+          "type": "CARD16"
+        }
+      },
+      "list": {
+        "fieldref": "names_len",
+        "type": "STR",
+        "name": "names"
+      }
+    }
+  },
+  "ListFontsWithInfo": {
+    "field": {
+      "max_names": "CARD16",
+      "pattern_len": "CARD16"
+    },
+    "list": {
+      "fieldref": "pattern_len",
+      "type": "char",
+      "name": "pattern"
+    },
+    "reply": {
+      "field": {
+        "name_len": "CARD8",
+        "min_bounds": "CHARINFO",
+        "max_bounds": "CHARINFO",
+        "min_char_or_byte2": "CARD16",
+        "max_char_or_byte2": "CARD16",
+        "default_char": "CARD16",
+        "properties_len": "CARD16",
+        "draw_direction": "BYTE",
+        "min_byte1": "CARD8",
+        "max_byte1": "CARD8",
+        "all_chars_exist": "BOOL",
+        "font_ascent": "INT16",
+        "font_descent": "INT16",
+        "replies_hint": "CARD32"
+      },
+      "list": {
+        "properties": {
+          "fieldref": "properties_len",
+          "type": "FONTPROP"
+        },
+        "name": {
+          "fieldref": "name_len",
+          "type": "char"
+        }
+      }
+    }
+  },
+  "SetFontPath": {
+    "field": {
+      "font_qty": {
+        "type": "CARD16"
+      }
+    },
+    "list": {
+      "type": "char",
+      "name": "path"
+    }
+  },
+  "GetFontPath": {
+    "reply": {
+      "field": {
+        "path_len": {
+          "type": "CARD16"
+        }
+      },
+      "list": {
+        "fieldref": "path_len",
+        "type": "STR",
+        "name": "path"
+      }
+    }
+  },
+  "CreatePixmap": {
+    "field": {
+      "depth": "CARD8",
+      "pid": "PIXMAP",
+      "drawable": "DRAWABLE",
+      "width": "CARD16",
+      "height": "CARD16"
+    }
+  },
+  "FreePixmap": {
+    "field": {
+      "pixmap": {
+        "type": "PIXMAP"
+      }
+    }
+  },
+  "CreateGC": {
+    "field": {
+      "cid": "GCONTEXT",
+      "drawable": "DRAWABLE"
+    },
+    "valueparam": {
+      "value-mask-type": "CARD32",
+      "value-mask-name": "value_mask",
+      "value-list-name": "value_list"
+    }
+  },
+  "ChangeGC": {
+    "field": {
+      "gc": {
+        "type": "GCONTEXT"
+      }
+    },
+    "valueparam": {
+      "value-mask-type": "CARD32",
+      "value-mask-name": "value_mask",
+      "value-list-name": "value_list"
+    }
+  },
+  "CopyGC": {
+    "field": {
+      "src_gc": "GCONTEXT",
+      "dst_gc": "GCONTEXT",
+      "value_mask": "CARD32"
+    }
+  },
+  "SetDashes": {
+    "field": {
+      "gc": "GCONTEXT",
+      "dash_offset": "CARD16",
+      "dashes_len": "CARD16"
+    },
+    "list": {
+      "fieldref": "dashes_len",
+      "type": "CARD8",
+      "name": "dashes"
+    }
+  },
+  "SetClipRectangles": {
+    "field": {
+      "ordering": "BYTE",
+      "gc": "GCONTEXT",
+      "clip_x_origin": "INT16",
+      "clip_y_origin": "INT16"
+    },
+    "list": {
+      "type": "RECTANGLE",
+      "name": "rectangles"
+    }
+  },
+  "FreeGC": {
+    "field": {
+      "gc": {
+        "type": "GCONTEXT"
+      }
+    }
+  },
+  "ClearArea": {
+    "field": {
+      "exposures": "BOOL",
+      "window": "WINDOW",
+      "x": "INT16",
+      "y": "INT16",
+      "width": "CARD16",
+      "height": "CARD16"
+    }
+  },
+  "CopyArea": {
+    "field": {
+      "src_drawable": "DRAWABLE",
+      "dst_drawable": "DRAWABLE",
+      "gc": "GCONTEXT",
+      "src_x": "INT16",
+      "src_y": "INT16",
+      "dst_x": "INT16",
+      "dst_y": "INT16",
+      "width": "CARD16",
+      "height": "CARD16"
+    }
+  },
+  "CopyPlane": {
+    "field": {
+      "src_drawable": "DRAWABLE",
+      "dst_drawable": "DRAWABLE",
+      "gc": "GCONTEXT",
+      "src_x": "INT16",
+      "src_y": "INT16",
+      "dst_x": "INT16",
+      "dst_y": "INT16",
+      "width": "CARD16",
+      "height": "CARD16",
+      "bit_plane": "CARD32"
+    }
+  },
+  "PolyPoint": {
+    "field": {
+      "coordinate_mode": "BYTE",
+      "drawable": "DRAWABLE",
+      "gc": "GCONTEXT"
+    },
+    "list": {
+      "type": "POINT",
+      "name": "points"
+    }
+  },
+  "PolyLine": {
+    "field": {
+      "coordinate_mode": "BYTE",
+      "drawable": "DRAWABLE",
+      "gc": "GCONTEXT"
+    },
+    "list": {
+      "type": "POINT",
+      "name": "points"
+    },
+    "combine-adjacent": "true"
+  },
+  "PolySegment": {
+    "field": {
+      "drawable": "DRAWABLE",
+      "gc": "GCONTEXT"
+    },
+    "list": {
+      "type": "SEGMENT",
+      "name": "segments"
+    },
+    "combine-adjacent": "true"
+  },
+  "PolyRectangle": {
+    "field": {
+      "drawable": "DRAWABLE",
+      "gc": "GCONTEXT"
+    },
+    "list": {
+      "type": "RECTANGLE",
+      "name": "rectangles"
+    },
+    "combine-adjacent": "true"
+  },
+  "PolyArc": {
+    "field": {
+      "drawable": "DRAWABLE",
+      "gc": "GCONTEXT"
+    },
+    "list": {
+      "type": "ARC",
+      "name": "arcs"
+    }
+  },
+  "FillPoly": {
+    "field": {
+      "drawable": "DRAWABLE",
+      "gc": "GCONTEXT",
+      "shape": "CARD8",
+      "coordinate_mode": "CARD8"
+    },
+    "list": {
+      "type": "POINT",
+      "name": "points"
+    }
+  },
+  "PolyFillRectangle": {
+    "field": {
+      "drawable": "DRAWABLE",
+      "gc": "GCONTEXT"
+    },
+    "list": {
+      "type": "RECTANGLE",
+      "name": "rectangles"
+    },
+    "combine-adjacent": "true"
+  },
+  "PolyFillArc": {
+    "field": {
+      "drawable": "DRAWABLE",
+      "gc": "GCONTEXT"
+    },
+    "list": {
+      "type": "ARC",
+      "name": "arcs"
+    },
+    "combine-adjacent": "true"
+  },
+  "PutImage": {
+    "field": {
+      "format": "CARD8",
+      "drawable": "DRAWABLE",
+      "gc": "GCONTEXT",
+      "width": "CARD16",
+      "height": "CARD16",
+      "dst_x": "INT16",
+      "dst_y": "INT16",
+      "left_pad": "CARD8",
+      "depth": "CARD8"
+    },
+    "list": {
+      "type": "BYTE",
+      "name": "data"
+    }
+  },
+  "GetImage": {
+    "field": {
+      "format": "CARD8",
+      "drawable": "DRAWABLE",
+      "x": "INT16",
+      "y": "INT16",
+      "width": "CARD16",
+      "height": "CARD16",
+      "plane_mask": "CARD32"
+    },
+    "reply": {
+      "field": {
+        "depth": "CARD8",
+        "visual": "VISUALID"
+      },
+      "list": {
+        "type": "BYTE",
+        "name": "data"
+      }
+    }
+  },
+  "PolyText8": {
+    "field": {
+      "drawable": "DRAWABLE",
+      "gc": "GCONTEXT",
+      "x": "INT16",
+      "y": "INT16"
+    },
+    "list": {
+      "type": "BYTE",
+      "name": "items"
+    }
+  },
+  "PolyText16": {
+    "field": {
+      "drawable": "DRAWABLE",
+      "gc": "GCONTEXT",
+      "x": "INT16",
+      "y": "INT16"
+    },
+    "list": {
+      "type": "BYTE",
+      "name": "items"
+    }
+  },
+  "ImageText8": {
+    "field": {
+      "string_len": "BYTE",
+      "drawable": "DRAWABLE",
+      "gc": "GCONTEXT",
+      "x": "INT16",
+      "y": "INT16"
+    },
+    "list": {
+      "fieldref": "string_len",
+      "type": "char",
+      "name": "string"
+    }
+  },
+  "ImageText16": {
+    "field": {
+      "string_len": "BYTE",
+      "drawable": "DRAWABLE",
+      "gc": "GCONTEXT",
+      "x": "INT16",
+      "y": "INT16"
+    },
+    "list": {
+      "fieldref": "string_len",
+      "type": "CHAR2B",
+      "name": "string"
+    }
+  },
+  "CreateColormap": {
+    "field": {
+      "alloc": "BYTE",
+      "mid": "COLORMAP",
+      "window": "WINDOW",
+      "visual": "VISUALID"
+    }
+  },
+  "FreeColormap": {
+    "field": {
+      "cmap": {
+        "type": "COLORMAP"
+      }
+    }
+  },
+  "CopyColormapAndFree": {
+    "field": {
+      "mid": "COLORMAP",
+      "src_cmap": "COLORMAP"
+    }
+  },
+  "InstallColormap": {
+    "field": {
+      "cmap": {
+        "type": "COLORMAP"
+      }
+    }
+  },
+  "UninstallColormap": {
+    "field": {
+      "cmap": {
+        "type": "COLORMAP"
+      }
+    }
+  },
+  "ListInstalledColormaps": {
+    "field": {
+      "window": {
+        "type": "WINDOW"
+      }
+    },
+    "reply": {
+      "field": {
+        "cmaps_len": {
+          "type": "CARD16"
+        }
+      },
+      "list": {
+        "fieldref": "cmaps_len",
+        "type": "COLORMAP",
+        "name": "cmaps"
+      }
+    }
+  },
+  "AllocColor": {
+    "field": {
+      "cmap": "COLORMAP",
+      "red": "CARD16",
+      "green": "CARD16",
+      "blue": "CARD16"
+    },
+    "reply": {
+      "field": {
+        "red": "CARD16",
+        "green": "CARD16",
+        "blue": "CARD16",
+        "pixel": "CARD32"
+      }
+    }
+  },
+  "AllocNamedColor": {
+    "field": {
+      "cmap": "COLORMAP",
+      "name_len": "CARD16"
+    },
+    "list": {
+      "fieldref": "name_len",
+      "type": "char",
+      "name": "name"
+    },
+    "reply": {
+      "field": {
+        "pixel": "CARD32",
+        "exact_red": "CARD16",
+        "exact_green": "CARD16",
+        "exact_blue": "CARD16",
+        "visual_red": "CARD16",
+        "visual_green": "CARD16",
+        "visual_blue": "CARD16"
+      }
+    }
+  },
+  "AllocColorCells": {
+    "field": {
+      "contiguous": "BOOL",
+      "cmap": "COLORMAP",
+      "colors": "CARD16",
+      "planes": "CARD16"
+    },
+    "reply": {
+      "field": {
+        "pixels_len": "CARD16",
+        "masks_len": "CARD16"
+      },
+      "list": {
+        "pixels": {
+          "fieldref": "pixels_len",
+          "type": "CARD32"
+        },
+        "masks": {
+          "fieldref": "masks_len",
+          "type": "CARD32"
+        }
+      }
+    }
+  },
+  "AllocColorPlanes": {
+    "field": {
+      "contiguous": "BOOL",
+      "cmap": "COLORMAP",
+      "colors": "CARD16",
+      "reds": "CARD16",
+      "greens": "CARD16",
+      "blues": "CARD16"
+    },
+    "reply": {
+      "field": {
+        "pixels_len": "CARD16",
+        "red_mask": "CARD32",
+        "green_mask": "CARD32",
+        "blue_mask": "CARD32"
+      },
+      "list": {
+        "fieldref": "pixels_len",
+        "type": "CARD32",
+        "name": "pixels"
+      }
+    }
+  },
+  "FreeColors": {
+    "field": {
+      "cmap": "COLORMAP",
+      "plane_mask": "CARD32"
+    },
+    "list": {
+      "type": "CARD32",
+      "name": "pixels"
+    }
+  },
+  "StoreColors": {
+    "field": {
+      "cmap": {
+        "type": "COLORMAP"
+      }
+    },
+    "list": {
+      "type": "COLORITEM",
+      "name": "items"
+    },
+    "combine-adjacent": "true"
+  },
+  "StoreNamedColor": {
+    "field": {
+      "flags": "CARD8",
+      "cmap": "COLORMAP",
+      "pixel": "CARD32",
+      "name_len": "CARD16"
+    },
+    "list": {
+      "fieldref": "name_len",
+      "type": "char",
+      "name": "name"
+    }
+  },
+  "QueryColors": {
+    "field": {
+      "cmap": {
+        "type": "COLORMAP"
+      }
+    },
+    "list": {
+      "type": "CARD32",
+      "name": "pixels"
+    },
+    "reply": {
+      "field": {
+        "colors_len": {
+          "type": "CARD16"
+        }
+      },
+      "list": {
+        "fieldref": "colors_len",
+        "type": "RGB",
+        "name": "colors"
+      }
+    }
+  },
+  "LookupColor": {
+    "field": {
+      "cmap": "COLORMAP",
+      "name_len": "CARD16"
+    },
+    "list": {
+      "fieldref": "name_len",
+      "type": "char",
+      "name": "name"
+    },
+    "reply": {
+      "field": {
+        "exact_red": "CARD16",
+        "exact_green": "CARD16",
+        "exact_blue": "CARD16",
+        "visual_red": "CARD16",
+        "visual_green": "CARD16",
+        "visual_blue": "CARD16"
+      }
+    }
+  },
+  "CreateCursor": {
+    "field": {
+      "cid": "CURSOR",
+      "source": "PIXMAP",
+      "mask": "PIXMAP",
+      "fore_red": "CARD16",
+      "fore_green": "CARD16",
+      "fore_blue": "CARD16",
+      "back_red": "CARD16",
+      "back_green": "CARD16",
+      "back_blue": "CARD16",
+      "x": "CARD16",
+      "y": "CARD16"
+    }
+  },
+  "CreateGlyphCursor": {
+    "field": {
+      "cid": "CURSOR",
+      "source_font": "FONT",
+      "mask_font": "FONT",
+      "source_char": "CARD16",
+      "mask_char": "CARD16",
+      "fore_red": "CARD16",
+      "fore_green": "CARD16",
+      "fore_blue": "CARD16",
+      "back_red": "CARD16",
+      "back_green": "CARD16",
+      "back_blue": "CARD16"
+    }
+  },
+  "FreeCursor": {
+    "field": {
+      "cursor": {
+        "type": "CURSOR"
+      }
+    }
+  },
+  "RecolorCursor": {
+    "field": {
+      "cursor": "CURSOR",
+      "fore_red": "CARD16",
+      "fore_green": "CARD16",
+      "fore_blue": "CARD16",
+      "back_red": "CARD16",
+      "back_green": "CARD16",
+      "back_blue": "CARD16"
+    }
+  },
+  "QueryBestSize": {
+    "field": {
+      "class": "CARD8",
+      "drawable": "DRAWABLE",
+      "width": "CARD16",
+      "height": "CARD16"
+    },
+    "reply": {
+      "field": {
+        "width": "CARD16",
+        "height": "CARD16"
+      }
+    }
+  },
+  "QueryExtension": {
+    "field": {
+      "name_len": {
+        "type": "CARD16"
+      }
+    },
+    "list": {
+      "fieldref": "name_len",
+      "type": "char",
+      "name": "name"
+    },
+    "reply": {
+      "field": {
+        "present": "BOOL",
+        "major_opcode": "CARD8",
+        "first_event": "CARD8",
+        "first_error": "CARD8"
+      }
+    }
+  },
+  "ListExtensions": {
+    "reply": {
+      "field": {
+        "names_len": {
+          "type": "CARD8"
+        }
+      },
+      "list": {
+        "fieldref": "names_len",
+        "type": "STR",
+        "name": "names"
+      }
+    }
+  },
+  "ChangeKeyboardMapping": {
+    "field": {
+      "keycode_count": "CARD8",
+      "first_keycode": "KEYCODE",
+      "keysyms_per_keycode": "CARD8"
+    },
+    "list": {
+      "type": "KEYSYM",
+      "name": "keysyms"
+    }
+  },
+  "GetKeyboardMapping": {
+    "field": {
+      "first_keycode": "KEYCODE",
+      "count": "CARD8"
+    },
+    "reply": {
+      "field": {
+        "keysyms_per_keycode": {
+          "type": "BYTE"
+        }
+      },
+      "list": {
+        "fieldref": "length",
+        "type": "KEYSYM",
+        "name": "keysyms"
+      }
+    }
+  },
+  "ChangeKeyboardControl": {
+    "valueparam": {
+      "value-mask-type": "CARD32",
+      "value-mask-name": "value_mask",
+      "value-list-name": "value_list"
+    }
+  },
+  "GetKeyboardControl": {
+    "reply": {
+      "field": {
+        "global_auto_repeat": "BYTE",
+        "led_mask": "CARD32",
+        "key_click_percent": "CARD8",
+        "bell_percent": "CARD8",
+        "bell_pitch": "CARD16",
+        "bell_duration": "CARD16"
+      },
+      "list": {
+        "value": "32",
+        "type": "CARD8",
+        "name": "auto_repeats"
+      }
+    }
+  },
+  "Bell": {
+    "field": {
+      "percent": {
+        "type": "INT8"
+      }
+    }
+  },
+  "ChangePointerControl": {
+    "field": {
+      "acceleration_numerator": "INT16",
+      "acceleration_denominator": "INT16",
+      "threshold": "INT16",
+      "do_acceleration": "BOOL",
+      "do_threshold": "BOOL"
+    }
+  },
+  "GetPointerControl": {
+    "reply": {
+      "field": {
+        "acceleration_numerator": "CARD16",
+        "acceleration_denominator": "CARD16",
+        "threshold": "CARD16"
+      }
+    }
+  },
+  "SetScreenSaver": {
+    "field": {
+      "timeout": "INT16",
+      "interval": "INT16",
+      "prefer_blanking": "CARD8",
+      "allow_exposures": "CARD8"
+    }
+  },
+  "GetScreenSaver": {
+    "reply": {
+      "field": {
+        "timeout": "CARD16",
+        "interval": "CARD16",
+        "prefer_blanking": "BYTE",
+        "allow_exposures": "BYTE"
+      }
+    }
+  },
+  "ChangeHosts": {
+    "field": {
+      "mode": "CARD8",
+      "family": "CARD8",
+      "address_len": "CARD16"
+    },
+    "list": {
+      "fieldref": "address_len",
+      "type": "char",
+      "name": "address"
+    }
+  },
+  "ListHosts": {
+    "reply": {
+      "field": {
+        "mode": "BYTE",
+        "hosts_len": "CARD16"
+      },
+      "list": {
+        "fieldref": "hosts_len",
+        "type": "HOST",
+        "name": "hosts"
+      }
+    }
+  },
+  "SetAccessControl": {
+    "field": {
+      "mode": {
+        "type": "CARD8",
+        "enum": "AccessControl"
+      }
+    }
+  },
+  "SetCloseDownMode": {
+    "field": {
+      "mode": {
+        "type": "CARD8",
+        "enum": "CloseDown"
+      }
+    }
+  },
+  "KillClient": {
+    "field": {
+      "resource": {
+        "type": "CARD32",
+        "altenum": "Kill"
+      }
+    }
+  },
+  "RotateProperties": {
+    "field": {
+      "window": "WINDOW",
+      "atoms_len": "CARD16",
+      "delta": "INT16"
+    },
+    "list": {
+      "fieldref": "atoms_len",
+      "type": "ATOM",
+      "name": "atoms"
+    }
+  },
+  "ForceScreenSaver": {
+    "field": {
+      "mode": {
+        "type": "CARD8",
+        "enum": "ScreenSaver"
+      }
+    }
+  },
+  "SetPointerMapping": {
+    "field": {
+      "map_len": {
+        "type": "CARD8"
+      }
+    },
+    "list": {
+      "fieldref": "map_len",
+      "type": "CARD8",
+      "name": "map"
+    },
+    "reply": {
+      "field": {
+        "status": {
+          "type": "BYTE",
+          "enum": "MappingStatus"
+        }
+      }
+    }
+  },
+  "GetPointerMapping": {
+    "reply": {
+      "field": {
+        "map_len": {
+          "type": "CARD8"
+        }
+      },
+      "list": {
+        "fieldref": "map_len",
+        "type": "CARD8",
+        "name": "map"
+      }
+    }
+  },
+  "SetModifierMapping": {
+    "field": {
+      "keycodes_per_modifier": {
+        "type": "CARD8"
+      }
+    },
+    "list": {
+      "type": "KEYCODE",
+      "name": "keycodes"
+    },
+    "reply": {
+      "field": {
+        "status": {
+          "type": "BYTE",
+          "enum": "MappingStatus"
+        }
+      }
+    }
+  },
+  "GetModifierMapping": {
+    "reply": {
+      "field": {
+        "keycodes_per_modifier": {
+          "type": "CARD8"
+        }
+      },
+      "list": {
+        "type": "KEYCODE",
+        "name": "keycodes"
+      }
+    }
+  },
+  "NoOperation": {}
+}
