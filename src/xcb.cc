@@ -7,6 +7,7 @@
 #include "config.h"
 #include "events.cc"
 #include "structs.cc"
+#include "__autogen_requests.h"
 
 namespace XCBJS {
 
@@ -93,25 +94,7 @@ public:
 
   static Handle<Value> createWindow(const Arguments& args) {
     HandleScope scope;
-    xcb_window_t win = args[0]->Int32Value();
-    int x = args[1]->Int32Value()
-      , y = args[2]->Int32Value()
-      , width = args[3]->Int32Value()
-      , height = args[4]->Int32Value()
-      , borderWidth = (args.Length() > 5 ? args[5]->Int32Value() : 1);
-    int mask = XCB_CW_BACK_PIXEL | XCB_CW_EVENT_MASK;
-    uint32_t values[2]  = {screen->white_pixel, XCB_EVENT_MASK_EXPOSURE};
-    xcb_create_window(Config::connection
-      , XCB_COPY_FROM_PARENT
-      , win
-      , screen->root
-      , x, y
-      , width, height
-      , borderWidth
-      , XCB_WINDOW_CLASS_INPUT_OUTPUT
-      , screen->root_visual
-      , mask, values );                     /* masks, not used yet */
-    
+    xcbReqCreateWindow(args[0]->ToObject());
     return Undefined();
   }
 

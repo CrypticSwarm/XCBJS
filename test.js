@@ -10,10 +10,24 @@ var xcb = require ('./build/default/xcb')
   , width = 800
   , split = 400
   , dir = 5
+  , screen = xcb.getScreen()
 
 windows.forEach(function(window, i) {
   setTimeout(function(){
-    xcb.createWindow(window, 400 * (i % 2), 300 * Math.floor(i/2), 400 - borderWidth, 300 - borderWidth, borderWidth)
+    xcb.createWindow(
+      { depth: 0
+      , wid: window
+      , parent: screen.root
+      , x: 400 * (i % 2)
+      , y: 300 * Math.floor(i/2)
+      , width: 400 - borderWidth
+      , height: 300 - borderWidth
+      , border_width: borderWidth
+      , 'class': 1
+      , visual: screen.root_visual
+      , value_mask: 2050
+      , value_list: [screen.white_pixel, 32768]
+      })
     xcb.createGC(draw[i], window)
     xcb.mapWindow(window)
   }, 1000 * i + 1000)
