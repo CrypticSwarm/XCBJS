@@ -10,7 +10,7 @@ function prepPropName(short) {
 }
 
 function getXCBType(short) {
-  return cTypes[short] ? cTypes[short] : ('xcb' + short + '_t') .replace(/[a-z][A-Z]/, function(rep) {
+  return cTypes[short] ? cTypes[short] : ('xcb' + short + '_t') .replace(/[a-z][A-Z]/g, function(rep) {
     return rep[0] + '_' + rep[1]
   }).toLowerCase()
 }

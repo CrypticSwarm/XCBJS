@@ -168,7 +168,7 @@ void fromJS(v8::Handle<v8::Object> obj, xcb_screen_t *st) {
 	st->allowed_depths_len = (uint8_t) obj->Get(v8::String::New("allowed_depths_len"))->IntegerValue();
 }
 
-v8::Handle<v8::Object> toJS(xcb_setuprequest_t *st) {
+v8::Handle<v8::Object> toJS(xcb_setup_request_t *st) {
 	v8::HandleScope scope;
 	v8::Local<v8::Object> obj = v8::Object::New();
 	obj->Set(v8::String::New("byte_order"), v8::Integer::New(st->byte_order));
@@ -179,7 +179,7 @@ v8::Handle<v8::Object> toJS(xcb_setuprequest_t *st) {
 	return scope.Close(obj);
 }
 
-void fromJS(v8::Handle<v8::Object> obj, xcb_setuprequest_t *st) {
+void fromJS(v8::Handle<v8::Object> obj, xcb_setup_request_t *st) {
 	v8::HandleScope scope;
 	st->byte_order = (uint8_t) obj->Get(v8::String::New("byte_order"))->IntegerValue();
 	st->protocol_major_version = (uint16_t) obj->Get(v8::String::New("protocol_major_version"))->IntegerValue();
@@ -188,7 +188,7 @@ void fromJS(v8::Handle<v8::Object> obj, xcb_setuprequest_t *st) {
 	st->authorization_protocol_data_len = (uint16_t) obj->Get(v8::String::New("authorization_protocol_data_len"))->IntegerValue();
 }
 
-v8::Handle<v8::Object> toJS(xcb_setupfailed_t *st) {
+v8::Handle<v8::Object> toJS(xcb_setup_failed_t *st) {
 	v8::HandleScope scope;
 	v8::Local<v8::Object> obj = v8::Object::New();
 	obj->Set(v8::String::New("status"), v8::Integer::New(st->status));
@@ -199,7 +199,7 @@ v8::Handle<v8::Object> toJS(xcb_setupfailed_t *st) {
 	return scope.Close(obj);
 }
 
-void fromJS(v8::Handle<v8::Object> obj, xcb_setupfailed_t *st) {
+void fromJS(v8::Handle<v8::Object> obj, xcb_setup_failed_t *st) {
 	v8::HandleScope scope;
 	st->status = (uint8_t) obj->Get(v8::String::New("status"))->IntegerValue();
 	st->reason_len = (uint8_t) obj->Get(v8::String::New("reason_len"))->IntegerValue();
@@ -208,7 +208,7 @@ void fromJS(v8::Handle<v8::Object> obj, xcb_setupfailed_t *st) {
 	st->length = (uint16_t) obj->Get(v8::String::New("length"))->IntegerValue();
 }
 
-v8::Handle<v8::Object> toJS(xcb_setupauthenticate_t *st) {
+v8::Handle<v8::Object> toJS(xcb_setup_authenticate_t *st) {
 	v8::HandleScope scope;
 	v8::Local<v8::Object> obj = v8::Object::New();
 	obj->Set(v8::String::New("status"), v8::Integer::New(st->status));
@@ -216,7 +216,7 @@ v8::Handle<v8::Object> toJS(xcb_setupauthenticate_t *st) {
 	return scope.Close(obj);
 }
 
-void fromJS(v8::Handle<v8::Object> obj, xcb_setupauthenticate_t *st) {
+void fromJS(v8::Handle<v8::Object> obj, xcb_setup_authenticate_t *st) {
 	v8::HandleScope scope;
 	st->status = (uint8_t) obj->Get(v8::String::New("status"))->IntegerValue();
 	st->length = (uint16_t) obj->Get(v8::String::New("length"))->IntegerValue();
@@ -279,7 +279,7 @@ v8::Handle<v8::Object> toJS(xcb_timecoord_t *st) {
 
 void fromJS(v8::Handle<v8::Object> obj, xcb_timecoord_t *st) {
 	v8::HandleScope scope;
-	st->time = (xcb_timestamp_t) obj->Get(v8::String::New("time"))->DateValue();
+	st->time = (xcb_timestamp_t) obj->Get(v8::String::New("time"))->IntegerValue();
 	st->x = (int16_t) obj->Get(v8::String::New("x"))->IntegerValue();
 	st->y = (int16_t) obj->Get(v8::String::New("y"))->IntegerValue();
 }
