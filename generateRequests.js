@@ -37,7 +37,6 @@ str += "#include <config.h>\n\n"
 str += "//{{{ BEGIN REQUESTS \n\n"
 var f = 0;
 Object.keys(requests).forEach(function(requestName, f) {
-if (f) return
   var request = requests[requestName].field
     , valparam = requests[requestName].valueparam
     , params = [];
@@ -69,7 +68,7 @@ if (f) return
     str += "\t\t" + listname + "[i] = (" + getXCBType(masktype) + ") maskarr->Get(i)->" + type + "Value();\n"
     str += "\t}\n"
   }
-  str += "\t" + getXCBReqName(requestName) + "(XCBJS::Config::connection, " + params.join(', ') + ");\n"
+  str += "\t" + getXCBReqName(requestName) + "(XCBJS::Config::connection" + (params.length ? ", " : "") + params.join(', ') + ");\n"
   if (valparam) {
     str += "\tdelete [] " + listname + ";\n"
   }

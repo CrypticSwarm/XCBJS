@@ -319,11 +319,13 @@ void fromJS(v8::Handle<v8::Object> obj, xcb_charinfo_t *st) {
 v8::Handle<v8::Object> toJS(xcb_str_t *st) {
 	v8::HandleScope scope;
 	v8::Local<v8::Object> obj = v8::Object::New();
+	obj->Set(v8::String::New("name_len"), v8::Integer::New(st->name_len));
 	return scope.Close(obj);
 }
 
 void fromJS(v8::Handle<v8::Object> obj, xcb_str_t *st) {
 	v8::HandleScope scope;
+	st->name_len = (uint8_t) obj->Get(v8::String::New("name_len"))->IntegerValue();
 }
 
 v8::Handle<v8::Object> toJS(xcb_segment_t *st) {
