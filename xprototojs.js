@@ -56,7 +56,7 @@ function prepItem(item) {
 function prepField(field) {
   var ret = {}
   if ('name' in field) {
-    ret[field.name] = field
+    ret[field.name] = field.type
     delete field.name
     return ret
   }

@@ -170,13 +170,7 @@
     }
   },
   "FONTPROP": {
-    "field": {
-      "[object Object]": {
-        "value": {
-          "type": "CARD32"
-        }
-      }
-    }
+    "field": {}
   },
   "CHARINFO": {
     "field": {
@@ -190,9 +184,7 @@
   },
   "STR": {
     "field": {
-      "name_len": {
-        "type": "CARD8"
-      }
+      "name_len": "CARD8"
     },
     "list": {
       "fieldref": "name_len",
