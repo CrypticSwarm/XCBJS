@@ -19,7 +19,7 @@ function getXCBReqName(short) {
 }
 
 function prepPropName(propName) {
-  return propName in { "class": true, "new": true } ? '_' + propName : propName
+  return propName in { "class": true, "new": true, "delete": true } ? '_' + propName : propName
 }
 
 function getJSType(short,requestName) {
@@ -39,7 +39,8 @@ var f = 0;
 Object.keys(requests).forEach(function(requestName, f) {
   var request = requests[requestName].field
     , valparam = requests[requestName].valueparam
-    , params = [];
+    , params = []
+  if (requests[requestName].list) return //Not handled yet
   str += "void xcbReq" + requestName + "(v8::Handle<v8::Object> obj) {\n"
   str += "\tv8::HandleScope scope;\n"
   if (request) Object.keys(request).forEach(function(propName) {
@@ -56,11 +57,13 @@ Object.keys(requests).forEach(function(requestName, f) {
       , listname = valparam['value-list-name']
       , type = getJSType(masktype, requestName)
     if (!type) return
-    params.push(maskname)
+    if (params.indexOf(maskname) == -1) {
+      params.push(maskname)
+      str += "\t" + getXCBType(masktype) + " " + maskname + " = (" + getXCBType(masktype)
+          +  ") obj->Get(v8::String::New(\"" + maskname + "\"))->"
+          + type + "Value();\n"
+    }
     params.push(listname)
-    str += "\t" + getXCBType(masktype) + " " + maskname + " = (" + getXCBType(masktype)
-        +  ") obj->Get(v8::String::New(\"" + maskname + "\"))->"
-        + type + "Value();\n"
     str += "\t" + getXCBType(masktype) + " *" + listname + ";\n"
     str += "\tv8::Local<v8::Array> maskarr = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New(\"" + listname + "\")));\n"
     str += "\t" + listname + " = new " + getXCBType(masktype) + "[maskarr->Length()];\n"

@@ -105,14 +105,13 @@ void xcbReqConfigureWindow(v8::Handle<v8::Object> obj) {
 	v8::HandleScope scope;
 	xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
 	uint16_t value_mask = (uint16_t) obj->Get(v8::String::New("value_mask"))->IntegerValue();
-	uint16_t value_mask = (uint16_t) obj->Get(v8::String::New("value_mask"))->IntegerValue();
-	uint16_t *value_list;
+	uint32_t *value_list;
 	v8::Local<v8::Array> maskarr = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("value_list")));
-	value_list = new uint16_t[maskarr->Length()];
+	value_list = new uint32_t[maskarr->Length()];
 	for(unsigned int i = 0; i < maskarr->Length(); ++i) {
-		value_list[i] = (uint16_t) maskarr->Get(i)->IntegerValue();
+		value_list[i] = (uint32_t) maskarr->Get(i)->IntegerValue();
 	}
-	xcb_configure_window(XCBJS::Config::connection, window, value_mask, value_mask, value_list);
+	xcb_configure_window(XCBJS::Config::connection, window, value_mask, value_list);
 	delete [] value_list;
 }
 
@@ -135,28 +134,10 @@ void xcbReqQueryTree(v8::Handle<v8::Object> obj) {
 	xcb_query_tree(XCBJS::Config::connection, window);
 }
 
-void xcbReqInternAtom(v8::Handle<v8::Object> obj) {
-	v8::HandleScope scope;
-	uint8_t only_if_exists = (uint8_t) obj->Get(v8::String::New("only_if_exists"))->BooleanValue();
-	uint16_t name_len = (uint16_t) obj->Get(v8::String::New("name_len"))->IntegerValue();
-	xcb_intern_atom(XCBJS::Config::connection, only_if_exists, name_len);
-}
-
 void xcbReqGetAtomName(v8::Handle<v8::Object> obj) {
 	v8::HandleScope scope;
 	xcb_atom_t atom = (xcb_atom_t) obj->Get(v8::String::New("atom"))->IntegerValue();
 	xcb_get_atom_name(XCBJS::Config::connection, atom);
-}
-
-void xcbReqChangeProperty(v8::Handle<v8::Object> obj) {
-	v8::HandleScope scope;
-	uint8_t mode = (uint8_t) obj->Get(v8::String::New("mode"))->IntegerValue();
-	xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
-	xcb_atom_t property = (xcb_atom_t) obj->Get(v8::String::New("property"))->IntegerValue();
-	xcb_atom_t type = (xcb_atom_t) obj->Get(v8::String::New("type"))->IntegerValue();
-	uint8_t format = (uint8_t) obj->Get(v8::String::New("format"))->IntegerValue();
-	uint32_t data_len = (uint32_t) obj->Get(v8::String::New("data_len"))->IntegerValue();
-	xcb_change_property(XCBJS::Config::connection, mode, window, property, type, format, data_len);
 }
 
 void xcbReqDeleteProperty(v8::Handle<v8::Object> obj) {
@@ -168,13 +149,13 @@ void xcbReqDeleteProperty(v8::Handle<v8::Object> obj) {
 
 void xcbReqGetProperty(v8::Handle<v8::Object> obj) {
 	v8::HandleScope scope;
-	uint8_t delete = (uint8_t) obj->Get(v8::String::New("delete"))->BooleanValue();
+	uint8_t _delete = (uint8_t) obj->Get(v8::String::New("delete"))->BooleanValue();
 	xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
 	xcb_atom_t property = (xcb_atom_t) obj->Get(v8::String::New("property"))->IntegerValue();
 	xcb_atom_t type = (xcb_atom_t) obj->Get(v8::String::New("type"))->IntegerValue();
 	uint32_t long_offset = (uint32_t) obj->Get(v8::String::New("long_offset"))->IntegerValue();
 	uint32_t long_length = (uint32_t) obj->Get(v8::String::New("long_length"))->IntegerValue();
-	xcb_get_property(XCBJS::Config::connection, delete, window, property, type, long_offset, long_length);
+	xcb_get_property(XCBJS::Config::connection, _delete, window, property, type, long_offset, long_length);
 }
 
 void xcbReqListProperties(v8::Handle<v8::Object> obj) {
@@ -187,7 +168,7 @@ void xcbReqSetSelectionOwner(v8::Handle<v8::Object> obj) {
 	v8::HandleScope scope;
 	xcb_window_t owner = (xcb_window_t) obj->Get(v8::String::New("owner"))->IntegerValue();
 	xcb_atom_t selection = (xcb_atom_t) obj->Get(v8::String::New("selection"))->IntegerValue();
-	xcb_timestamp_t time = (xcb_timestamp_t) obj->Get(v8::String::New("time"))->DateValue();
+	xcb_timestamp_t time = (xcb_timestamp_t) obj->Get(v8::String::New("time"))->IntegerValue();
 	xcb_set_selection_owner(XCBJS::Config::connection, owner, selection, time);
 }
 
@@ -203,16 +184,8 @@ void xcbReqConvertSelection(v8::Handle<v8::Object> obj) {
 	xcb_atom_t selection = (xcb_atom_t) obj->Get(v8::String::New("selection"))->IntegerValue();
 	xcb_atom_t target = (xcb_atom_t) obj->Get(v8::String::New("target"))->IntegerValue();
 	xcb_atom_t property = (xcb_atom_t) obj->Get(v8::String::New("property"))->IntegerValue();
-	xcb_timestamp_t time = (xcb_timestamp_t) obj->Get(v8::String::New("time"))->DateValue();
+	xcb_timestamp_t time = (xcb_timestamp_t) obj->Get(v8::String::New("time"))->IntegerValue();
 	xcb_convert_selection(XCBJS::Config::connection, requestor, selection, target, property, time);
-}
-
-void xcbReqSendEvent(v8::Handle<v8::Object> obj) {
-	v8::HandleScope scope;
-	uint8_t propagate = (uint8_t) obj->Get(v8::String::New("propagate"))->BooleanValue();
-	xcb_window_t destination = (xcb_window_t) obj->Get(v8::String::New("destination"))->IntegerValue();
-	uint32_t event_mask = (uint32_t) obj->Get(v8::String::New("event_mask"))->IntegerValue();
-	xcb_send_event(XCBJS::Config::connection, propagate, destination, event_mask);
 }
 
 void xcbReqGrabPointer(v8::Handle<v8::Object> obj) {
@@ -224,13 +197,13 @@ void xcbReqGrabPointer(v8::Handle<v8::Object> obj) {
 	uint8_t keyboard_mode = (uint8_t) obj->Get(v8::String::New("keyboard_mode"))->IntegerValue();
 	xcb_window_t confine_to = (xcb_window_t) obj->Get(v8::String::New("confine_to"))->IntegerValue();
 	xcb_cursor_t cursor = (xcb_cursor_t) obj->Get(v8::String::New("cursor"))->IntegerValue();
-	xcb_timestamp_t time = (xcb_timestamp_t) obj->Get(v8::String::New("time"))->DateValue();
+	xcb_timestamp_t time = (xcb_timestamp_t) obj->Get(v8::String::New("time"))->IntegerValue();
 	xcb_grab_pointer(XCBJS::Config::connection, owner_events, grab_window, event_mask, pointer_mode, keyboard_mode, confine_to, cursor, time);
 }
 
 void xcbReqUngrabPointer(v8::Handle<v8::Object> obj) {
 	v8::HandleScope scope;
-	xcb_timestamp_t time = (xcb_timestamp_t) obj->Get(v8::String::New("time"))->DateValue();
+	xcb_timestamp_t time = (xcb_timestamp_t) obj->Get(v8::String::New("time"))->IntegerValue();
 	xcb_ungrab_pointer(XCBJS::Config::connection, time);
 }
 
@@ -259,7 +232,7 @@ void xcbReqUngrabButton(v8::Handle<v8::Object> obj) {
 void xcbReqChangeActivePointerGrab(v8::Handle<v8::Object> obj) {
 	v8::HandleScope scope;
 	xcb_cursor_t cursor = (xcb_cursor_t) obj->Get(v8::String::New("cursor"))->IntegerValue();
-	xcb_timestamp_t time = (xcb_timestamp_t) obj->Get(v8::String::New("time"))->DateValue();
+	xcb_timestamp_t time = (xcb_timestamp_t) obj->Get(v8::String::New("time"))->IntegerValue();
 	uint16_t event_mask = (uint16_t) obj->Get(v8::String::New("event_mask"))->IntegerValue();
 	xcb_change_active_pointer_grab(XCBJS::Config::connection, cursor, time, event_mask);
 }
@@ -268,7 +241,7 @@ void xcbReqGrabKeyboard(v8::Handle<v8::Object> obj) {
 	v8::HandleScope scope;
 	uint8_t owner_events = (uint8_t) obj->Get(v8::String::New("owner_events"))->BooleanValue();
 	xcb_window_t grab_window = (xcb_window_t) obj->Get(v8::String::New("grab_window"))->IntegerValue();
-	xcb_timestamp_t time = (xcb_timestamp_t) obj->Get(v8::String::New("time"))->DateValue();
+	xcb_timestamp_t time = (xcb_timestamp_t) obj->Get(v8::String::New("time"))->IntegerValue();
 	uint8_t pointer_mode = (uint8_t) obj->Get(v8::String::New("pointer_mode"))->IntegerValue();
 	uint8_t keyboard_mode = (uint8_t) obj->Get(v8::String::New("keyboard_mode"))->IntegerValue();
 	xcb_grab_keyboard(XCBJS::Config::connection, owner_events, grab_window, time, pointer_mode, keyboard_mode);
@@ -276,7 +249,7 @@ void xcbReqGrabKeyboard(v8::Handle<v8::Object> obj) {
 
 void xcbReqUngrabKeyboard(v8::Handle<v8::Object> obj) {
 	v8::HandleScope scope;
-	xcb_timestamp_t time = (xcb_timestamp_t) obj->Get(v8::String::New("time"))->DateValue();
+	xcb_timestamp_t time = (xcb_timestamp_t) obj->Get(v8::String::New("time"))->IntegerValue();
 	xcb_ungrab_keyboard(XCBJS::Config::connection, time);
 }
 
@@ -302,7 +275,7 @@ void xcbReqUngrabKey(v8::Handle<v8::Object> obj) {
 void xcbReqAllowEvents(v8::Handle<v8::Object> obj) {
 	v8::HandleScope scope;
 	uint8_t mode = (uint8_t) obj->Get(v8::String::New("mode"))->IntegerValue();
-	xcb_timestamp_t time = (xcb_timestamp_t) obj->Get(v8::String::New("time"))->DateValue();
+	xcb_timestamp_t time = (xcb_timestamp_t) obj->Get(v8::String::New("time"))->IntegerValue();
 	xcb_allow_events(XCBJS::Config::connection, mode, time);
 }
 
@@ -325,8 +298,8 @@ void xcbReqQueryPointer(v8::Handle<v8::Object> obj) {
 void xcbReqGetMotionEvents(v8::Handle<v8::Object> obj) {
 	v8::HandleScope scope;
 	xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
-	xcb_timestamp_t start = (xcb_timestamp_t) obj->Get(v8::String::New("start"))->DateValue();
-	xcb_timestamp_t stop = (xcb_timestamp_t) obj->Get(v8::String::New("stop"))->DateValue();
+	xcb_timestamp_t start = (xcb_timestamp_t) obj->Get(v8::String::New("start"))->IntegerValue();
+	xcb_timestamp_t stop = (xcb_timestamp_t) obj->Get(v8::String::New("stop"))->IntegerValue();
 	xcb_get_motion_events(XCBJS::Config::connection, window, start, stop);
 }
 
@@ -356,7 +329,7 @@ void xcbReqSetInputFocus(v8::Handle<v8::Object> obj) {
 	v8::HandleScope scope;
 	uint8_t revert_to = (uint8_t) obj->Get(v8::String::New("revert_to"))->IntegerValue();
 	xcb_window_t focus = (xcb_window_t) obj->Get(v8::String::New("focus"))->IntegerValue();
-	xcb_timestamp_t time = (xcb_timestamp_t) obj->Get(v8::String::New("time"))->DateValue();
+	xcb_timestamp_t time = (xcb_timestamp_t) obj->Get(v8::String::New("time"))->IntegerValue();
 	xcb_set_input_focus(XCBJS::Config::connection, revert_to, focus, time);
 }
 
@@ -370,13 +343,6 @@ void xcbReqQueryKeymap(v8::Handle<v8::Object> obj) {
 	xcb_query_keymap(XCBJS::Config::connection);
 }
 
-void xcbReqOpenFont(v8::Handle<v8::Object> obj) {
-	v8::HandleScope scope;
-	xcb_font_t fid = (xcb_font_t) obj->Get(v8::String::New("fid"))->IntegerValue();
-	uint16_t name_len = (uint16_t) obj->Get(v8::String::New("name_len"))->IntegerValue();
-	xcb_open_font(XCBJS::Config::connection, fid, name_len);
-}
-
 void xcbReqCloseFont(v8::Handle<v8::Object> obj) {
 	v8::HandleScope scope;
 	xcb_font_t font = (xcb_font_t) obj->Get(v8::String::New("font"))->IntegerValue();
@@ -387,32 +353,6 @@ void xcbReqQueryFont(v8::Handle<v8::Object> obj) {
 	v8::HandleScope scope;
 	xcb_fontable_t font = (xcb_fontable_t) obj->Get(v8::String::New("font"))->IntegerValue();
 	xcb_query_font(XCBJS::Config::connection, font);
-}
-
-void xcbReqQueryTextExtents(v8::Handle<v8::Object> obj) {
-	v8::HandleScope scope;
-	xcb_fontable_t font = (xcb_fontable_t) obj->Get(v8::String::New("font"))->IntegerValue();
-	xcb_query_text_extents(XCBJS::Config::connection, font);
-}
-
-void xcbReqListFonts(v8::Handle<v8::Object> obj) {
-	v8::HandleScope scope;
-	uint16_t max_names = (uint16_t) obj->Get(v8::String::New("max_names"))->IntegerValue();
-	uint16_t pattern_len = (uint16_t) obj->Get(v8::String::New("pattern_len"))->IntegerValue();
-	xcb_list_fonts(XCBJS::Config::connection, max_names, pattern_len);
-}
-
-void xcbReqListFontsWithInfo(v8::Handle<v8::Object> obj) {
-	v8::HandleScope scope;
-	uint16_t max_names = (uint16_t) obj->Get(v8::String::New("max_names"))->IntegerValue();
-	uint16_t pattern_len = (uint16_t) obj->Get(v8::String::New("pattern_len"))->IntegerValue();
-	xcb_list_fonts_with_info(XCBJS::Config::connection, max_names, pattern_len);
-}
-
-void xcbReqSetFontPath(v8::Handle<v8::Object> obj) {
-	v8::HandleScope scope;
-	uint16_t font_qty = (uint16_t) obj->Get(v8::String::New("font_qty"))->IntegerValue();
-	xcb_set_font_path(XCBJS::Config::connection, font_qty);
 }
 
 void xcbReqGetFontPath(v8::Handle<v8::Object> obj) {
@@ -473,23 +413,6 @@ void xcbReqCopyGC(v8::Handle<v8::Object> obj) {
 	xcb_copy_gc(XCBJS::Config::connection, src_gc, dst_gc, value_mask);
 }
 
-void xcbReqSetDashes(v8::Handle<v8::Object> obj) {
-	v8::HandleScope scope;
-	xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
-	uint16_t dash_offset = (uint16_t) obj->Get(v8::String::New("dash_offset"))->IntegerValue();
-	uint16_t dashes_len = (uint16_t) obj->Get(v8::String::New("dashes_len"))->IntegerValue();
-	xcb_set_dashes(XCBJS::Config::connection, gc, dash_offset, dashes_len);
-}
-
-void xcbReqSetClipRectangles(v8::Handle<v8::Object> obj) {
-	v8::HandleScope scope;
-	uint8_t ordering = (uint8_t) obj->Get(v8::String::New("ordering"))->IntegerValue();
-	xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
-	int16_t clip_x_origin = (int16_t) obj->Get(v8::String::New("clip_x_origin"))->IntegerValue();
-	int16_t clip_y_origin = (int16_t) obj->Get(v8::String::New("clip_y_origin"))->IntegerValue();
-	xcb_set_clip_rectangles(XCBJS::Config::connection, ordering, gc, clip_x_origin, clip_y_origin);
-}
-
 void xcbReqFreeGC(v8::Handle<v8::Object> obj) {
 	v8::HandleScope scope;
 	xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
@@ -536,80 +459,6 @@ void xcbReqCopyPlane(v8::Handle<v8::Object> obj) {
 	xcb_copy_plane(XCBJS::Config::connection, src_drawable, dst_drawable, gc, src_x, src_y, dst_x, dst_y, width, height, bit_plane);
 }
 
-void xcbReqPolyPoint(v8::Handle<v8::Object> obj) {
-	v8::HandleScope scope;
-	uint8_t coordinate_mode = (uint8_t) obj->Get(v8::String::New("coordinate_mode"))->IntegerValue();
-	xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
-	xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
-	xcb_poly_point(XCBJS::Config::connection, coordinate_mode, drawable, gc);
-}
-
-void xcbReqPolyLine(v8::Handle<v8::Object> obj) {
-	v8::HandleScope scope;
-	uint8_t coordinate_mode = (uint8_t) obj->Get(v8::String::New("coordinate_mode"))->IntegerValue();
-	xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
-	xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
-	xcb_poly_line(XCBJS::Config::connection, coordinate_mode, drawable, gc);
-}
-
-void xcbReqPolySegment(v8::Handle<v8::Object> obj) {
-	v8::HandleScope scope;
-	xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
-	xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
-	xcb_poly_segment(XCBJS::Config::connection, drawable, gc);
-}
-
-void xcbReqPolyRectangle(v8::Handle<v8::Object> obj) {
-	v8::HandleScope scope;
-	xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
-	xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
-	xcb_poly_rectangle(XCBJS::Config::connection, drawable, gc);
-}
-
-void xcbReqPolyArc(v8::Handle<v8::Object> obj) {
-	v8::HandleScope scope;
-	xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
-	xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
-	xcb_poly_arc(XCBJS::Config::connection, drawable, gc);
-}
-
-void xcbReqFillPoly(v8::Handle<v8::Object> obj) {
-	v8::HandleScope scope;
-	xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
-	xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
-	uint8_t shape = (uint8_t) obj->Get(v8::String::New("shape"))->IntegerValue();
-	uint8_t coordinate_mode = (uint8_t) obj->Get(v8::String::New("coordinate_mode"))->IntegerValue();
-	xcb_fill_poly(XCBJS::Config::connection, drawable, gc, shape, coordinate_mode);
-}
-
-void xcbReqPolyFillRectangle(v8::Handle<v8::Object> obj) {
-	v8::HandleScope scope;
-	xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
-	xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
-	xcb_poly_fill_rectangle(XCBJS::Config::connection, drawable, gc);
-}
-
-void xcbReqPolyFillArc(v8::Handle<v8::Object> obj) {
-	v8::HandleScope scope;
-	xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
-	xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
-	xcb_poly_fill_arc(XCBJS::Config::connection, drawable, gc);
-}
-
-void xcbReqPutImage(v8::Handle<v8::Object> obj) {
-	v8::HandleScope scope;
-	uint8_t format = (uint8_t) obj->Get(v8::String::New("format"))->IntegerValue();
-	xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
-	xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
-	uint16_t width = (uint16_t) obj->Get(v8::String::New("width"))->IntegerValue();
-	uint16_t height = (uint16_t) obj->Get(v8::String::New("height"))->IntegerValue();
-	int16_t dst_x = (int16_t) obj->Get(v8::String::New("dst_x"))->IntegerValue();
-	int16_t dst_y = (int16_t) obj->Get(v8::String::New("dst_y"))->IntegerValue();
-	uint8_t left_pad = (uint8_t) obj->Get(v8::String::New("left_pad"))->IntegerValue();
-	uint8_t depth = (uint8_t) obj->Get(v8::String::New("depth"))->IntegerValue();
-	xcb_put_image(XCBJS::Config::connection, format, drawable, gc, width, height, dst_x, dst_y, left_pad, depth);
-}
-
 void xcbReqGetImage(v8::Handle<v8::Object> obj) {
 	v8::HandleScope scope;
 	uint8_t format = (uint8_t) obj->Get(v8::String::New("format"))->IntegerValue();
@@ -620,44 +469,6 @@ void xcbReqGetImage(v8::Handle<v8::Object> obj) {
 	uint16_t height = (uint16_t) obj->Get(v8::String::New("height"))->IntegerValue();
 	uint32_t plane_mask = (uint32_t) obj->Get(v8::String::New("plane_mask"))->IntegerValue();
 	xcb_get_image(XCBJS::Config::connection, format, drawable, x, y, width, height, plane_mask);
-}
-
-void xcbReqPolyText8(v8::Handle<v8::Object> obj) {
-	v8::HandleScope scope;
-	xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
-	xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
-	int16_t x = (int16_t) obj->Get(v8::String::New("x"))->IntegerValue();
-	int16_t y = (int16_t) obj->Get(v8::String::New("y"))->IntegerValue();
-	xcb_poly_text8(XCBJS::Config::connection, drawable, gc, x, y);
-}
-
-void xcbReqPolyText16(v8::Handle<v8::Object> obj) {
-	v8::HandleScope scope;
-	xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
-	xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
-	int16_t x = (int16_t) obj->Get(v8::String::New("x"))->IntegerValue();
-	int16_t y = (int16_t) obj->Get(v8::String::New("y"))->IntegerValue();
-	xcb_poly_text16(XCBJS::Config::connection, drawable, gc, x, y);
-}
-
-void xcbReqImageText8(v8::Handle<v8::Object> obj) {
-	v8::HandleScope scope;
-	uint8_t string_len = (uint8_t) obj->Get(v8::String::New("string_len"))->IntegerValue();
-	xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
-	xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
-	int16_t x = (int16_t) obj->Get(v8::String::New("x"))->IntegerValue();
-	int16_t y = (int16_t) obj->Get(v8::String::New("y"))->IntegerValue();
-	xcb_image_text8(XCBJS::Config::connection, string_len, drawable, gc, x, y);
-}
-
-void xcbReqImageText16(v8::Handle<v8::Object> obj) {
-	v8::HandleScope scope;
-	uint8_t string_len = (uint8_t) obj->Get(v8::String::New("string_len"))->IntegerValue();
-	xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
-	xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
-	int16_t x = (int16_t) obj->Get(v8::String::New("x"))->IntegerValue();
-	int16_t y = (int16_t) obj->Get(v8::String::New("y"))->IntegerValue();
-	xcb_image_text16(XCBJS::Config::connection, string_len, drawable, gc, x, y);
 }
 
 void xcbReqCreateColormap(v8::Handle<v8::Object> obj) {
@@ -709,13 +520,6 @@ void xcbReqAllocColor(v8::Handle<v8::Object> obj) {
 	xcb_alloc_color(XCBJS::Config::connection, cmap, red, green, blue);
 }
 
-void xcbReqAllocNamedColor(v8::Handle<v8::Object> obj) {
-	v8::HandleScope scope;
-	xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
-	uint16_t name_len = (uint16_t) obj->Get(v8::String::New("name_len"))->IntegerValue();
-	xcb_alloc_named_color(XCBJS::Config::connection, cmap, name_len);
-}
-
 void xcbReqAllocColorCells(v8::Handle<v8::Object> obj) {
 	v8::HandleScope scope;
 	uint8_t contiguous = (uint8_t) obj->Get(v8::String::New("contiguous"))->BooleanValue();
@@ -734,41 +538,6 @@ void xcbReqAllocColorPlanes(v8::Handle<v8::Object> obj) {
 	uint16_t greens = (uint16_t) obj->Get(v8::String::New("greens"))->IntegerValue();
 	uint16_t blues = (uint16_t) obj->Get(v8::String::New("blues"))->IntegerValue();
 	xcb_alloc_color_planes(XCBJS::Config::connection, contiguous, cmap, colors, reds, greens, blues);
-}
-
-void xcbReqFreeColors(v8::Handle<v8::Object> obj) {
-	v8::HandleScope scope;
-	xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
-	uint32_t plane_mask = (uint32_t) obj->Get(v8::String::New("plane_mask"))->IntegerValue();
-	xcb_free_colors(XCBJS::Config::connection, cmap, plane_mask);
-}
-
-void xcbReqStoreColors(v8::Handle<v8::Object> obj) {
-	v8::HandleScope scope;
-	xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
-	xcb_store_colors(XCBJS::Config::connection, cmap);
-}
-
-void xcbReqStoreNamedColor(v8::Handle<v8::Object> obj) {
-	v8::HandleScope scope;
-	uint8_t flags = (uint8_t) obj->Get(v8::String::New("flags"))->IntegerValue();
-	xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
-	uint32_t pixel = (uint32_t) obj->Get(v8::String::New("pixel"))->IntegerValue();
-	uint16_t name_len = (uint16_t) obj->Get(v8::String::New("name_len"))->IntegerValue();
-	xcb_store_named_color(XCBJS::Config::connection, flags, cmap, pixel, name_len);
-}
-
-void xcbReqQueryColors(v8::Handle<v8::Object> obj) {
-	v8::HandleScope scope;
-	xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
-	xcb_query_colors(XCBJS::Config::connection, cmap);
-}
-
-void xcbReqLookupColor(v8::Handle<v8::Object> obj) {
-	v8::HandleScope scope;
-	xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
-	uint16_t name_len = (uint16_t) obj->Get(v8::String::New("name_len"))->IntegerValue();
-	xcb_lookup_color(XCBJS::Config::connection, cmap, name_len);
 }
 
 void xcbReqCreateCursor(v8::Handle<v8::Object> obj) {
@@ -830,23 +599,9 @@ void xcbReqQueryBestSize(v8::Handle<v8::Object> obj) {
 	xcb_query_best_size(XCBJS::Config::connection, _class, drawable, width, height);
 }
 
-void xcbReqQueryExtension(v8::Handle<v8::Object> obj) {
-	v8::HandleScope scope;
-	uint16_t name_len = (uint16_t) obj->Get(v8::String::New("name_len"))->IntegerValue();
-	xcb_query_extension(XCBJS::Config::connection, name_len);
-}
-
 void xcbReqListExtensions(v8::Handle<v8::Object> obj) {
 	v8::HandleScope scope;
 	xcb_list_extensions(XCBJS::Config::connection);
-}
-
-void xcbReqChangeKeyboardMapping(v8::Handle<v8::Object> obj) {
-	v8::HandleScope scope;
-	uint8_t keycode_count = (uint8_t) obj->Get(v8::String::New("keycode_count"))->IntegerValue();
-	xcb_keycode_t first_keycode = (xcb_keycode_t) obj->Get(v8::String::New("first_keycode"))->IntegerValue();
-	uint8_t keysyms_per_keycode = (uint8_t) obj->Get(v8::String::New("keysyms_per_keycode"))->IntegerValue();
-	xcb_change_keyboard_mapping(XCBJS::Config::connection, keycode_count, first_keycode, keysyms_per_keycode);
 }
 
 void xcbReqGetKeyboardMapping(v8::Handle<v8::Object> obj) {
@@ -909,14 +664,6 @@ void xcbReqGetScreenSaver(v8::Handle<v8::Object> obj) {
 	xcb_get_screen_saver(XCBJS::Config::connection);
 }
 
-void xcbReqChangeHosts(v8::Handle<v8::Object> obj) {
-	v8::HandleScope scope;
-	uint8_t mode = (uint8_t) obj->Get(v8::String::New("mode"))->IntegerValue();
-	uint8_t family = (uint8_t) obj->Get(v8::String::New("family"))->IntegerValue();
-	uint16_t address_len = (uint16_t) obj->Get(v8::String::New("address_len"))->IntegerValue();
-	xcb_change_hosts(XCBJS::Config::connection, mode, family, address_len);
-}
-
 void xcbReqListHosts(v8::Handle<v8::Object> obj) {
 	v8::HandleScope scope;
 	xcb_list_hosts(XCBJS::Config::connection);
@@ -940,35 +687,15 @@ void xcbReqKillClient(v8::Handle<v8::Object> obj) {
 	xcb_kill_client(XCBJS::Config::connection, resource);
 }
 
-void xcbReqRotateProperties(v8::Handle<v8::Object> obj) {
-	v8::HandleScope scope;
-	xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
-	uint16_t atoms_len = (uint16_t) obj->Get(v8::String::New("atoms_len"))->IntegerValue();
-	int16_t delta = (int16_t) obj->Get(v8::String::New("delta"))->IntegerValue();
-	xcb_rotate_properties(XCBJS::Config::connection, window, atoms_len, delta);
-}
-
 void xcbReqForceScreenSaver(v8::Handle<v8::Object> obj) {
 	v8::HandleScope scope;
 	uint8_t mode = (uint8_t) obj->Get(v8::String::New("mode"))->IntegerValue();
 	xcb_force_screen_saver(XCBJS::Config::connection, mode);
 }
 
-void xcbReqSetPointerMapping(v8::Handle<v8::Object> obj) {
-	v8::HandleScope scope;
-	uint8_t map_len = (uint8_t) obj->Get(v8::String::New("map_len"))->IntegerValue();
-	xcb_set_pointer_mapping(XCBJS::Config::connection, map_len);
-}
-
 void xcbReqGetPointerMapping(v8::Handle<v8::Object> obj) {
 	v8::HandleScope scope;
 	xcb_get_pointer_mapping(XCBJS::Config::connection);
-}
-
-void xcbReqSetModifierMapping(v8::Handle<v8::Object> obj) {
-	v8::HandleScope scope;
-	uint8_t keycodes_per_modifier = (uint8_t) obj->Get(v8::String::New("keycodes_per_modifier"))->IntegerValue();
-	xcb_set_modifier_mapping(XCBJS::Config::connection, keycodes_per_modifier);
 }
 
 void xcbReqGetModifierMapping(v8::Handle<v8::Object> obj) {
