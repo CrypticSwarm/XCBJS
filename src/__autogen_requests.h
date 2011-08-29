@@ -20,10 +20,10 @@ void xcbReqCreateWindow(v8::Handle<v8::Object> obj) {
 	xcb_visualid_t visual = (xcb_visualid_t) obj->Get(v8::String::New("visual"))->IntegerValue();
 	uint32_t value_mask = (uint32_t) obj->Get(v8::String::New("value_mask"))->IntegerValue();
 	uint32_t *value_list;
-	v8::Local<v8::Array> maskarr = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("value_list")));
-	value_list = new uint32_t[maskarr->Length()];
-	for(unsigned int i = 0; i < maskarr->Length(); ++i) {
-		value_list[i] = (uint32_t) maskarr->Get(i)->IntegerValue();
+	v8::Local<v8::Array> maskarr_value_list = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("value_list")));
+	value_list = new uint32_t[maskarr_value_list->Length()];
+	for(unsigned int i = 0; i < maskarr_value_list->Length(); ++i) {
+		value_list[i] = (uint32_t) maskarr_value_list->Get(i)->IntegerValue();
 	}
 	xcb_create_window(XCBJS::Config::connection, depth, wid, parent, x, y, width, height, border_width, _class, visual, value_mask, value_list);
 	delete [] value_list;
@@ -34,10 +34,10 @@ void xcbReqChangeWindowAttributes(v8::Handle<v8::Object> obj) {
 	xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
 	uint32_t value_mask = (uint32_t) obj->Get(v8::String::New("value_mask"))->IntegerValue();
 	uint32_t *value_list;
-	v8::Local<v8::Array> maskarr = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("value_list")));
-	value_list = new uint32_t[maskarr->Length()];
-	for(unsigned int i = 0; i < maskarr->Length(); ++i) {
-		value_list[i] = (uint32_t) maskarr->Get(i)->IntegerValue();
+	v8::Local<v8::Array> maskarr_value_list = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("value_list")));
+	value_list = new uint32_t[maskarr_value_list->Length()];
+	for(unsigned int i = 0; i < maskarr_value_list->Length(); ++i) {
+		value_list[i] = (uint32_t) maskarr_value_list->Get(i)->IntegerValue();
 	}
 	xcb_change_window_attributes(XCBJS::Config::connection, window, value_mask, value_list);
 	delete [] value_list;
@@ -106,10 +106,10 @@ void xcbReqConfigureWindow(v8::Handle<v8::Object> obj) {
 	xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
 	uint16_t value_mask = (uint16_t) obj->Get(v8::String::New("value_mask"))->IntegerValue();
 	uint32_t *value_list;
-	v8::Local<v8::Array> maskarr = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("value_list")));
-	value_list = new uint32_t[maskarr->Length()];
-	for(unsigned int i = 0; i < maskarr->Length(); ++i) {
-		value_list[i] = (uint32_t) maskarr->Get(i)->IntegerValue();
+	v8::Local<v8::Array> maskarr_value_list = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("value_list")));
+	value_list = new uint32_t[maskarr_value_list->Length()];
+	for(unsigned int i = 0; i < maskarr_value_list->Length(); ++i) {
+		value_list[i] = (uint32_t) maskarr_value_list->Get(i)->IntegerValue();
 	}
 	xcb_configure_window(XCBJS::Config::connection, window, value_mask, value_list);
 	delete [] value_list;
@@ -134,10 +134,40 @@ void xcbReqQueryTree(v8::Handle<v8::Object> obj) {
 	xcb_query_tree(XCBJS::Config::connection, window);
 }
 
+void xcbReqInternAtom(v8::Handle<v8::Object> obj) {
+	v8::HandleScope scope;
+	uint8_t only_if_exists = (uint8_t) obj->Get(v8::String::New("only_if_exists"))->BooleanValue();
+	uint16_t name_len = (uint16_t) obj->Get(v8::String::New("name_len"))->IntegerValue();
+	char *name;
+	v8::Local<v8::String> strval_name = v8::Local<v8::String>::Cast(obj->Get(v8::String::New("name")));
+	name = new char[strval_name->Length()];
+	strcpy(name, *v8::String::AsciiValue(strval_name));
+	xcb_intern_atom(XCBJS::Config::connection, only_if_exists, name_len, name);
+	delete [] name;
+}
+
 void xcbReqGetAtomName(v8::Handle<v8::Object> obj) {
 	v8::HandleScope scope;
 	xcb_atom_t atom = (xcb_atom_t) obj->Get(v8::String::New("atom"))->IntegerValue();
 	xcb_get_atom_name(XCBJS::Config::connection, atom);
+}
+
+void xcbReqChangeProperty(v8::Handle<v8::Object> obj) {
+	v8::HandleScope scope;
+	uint8_t mode = (uint8_t) obj->Get(v8::String::New("mode"))->IntegerValue();
+	xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
+	xcb_atom_t property = (xcb_atom_t) obj->Get(v8::String::New("property"))->IntegerValue();
+	xcb_atom_t type = (xcb_atom_t) obj->Get(v8::String::New("type"))->IntegerValue();
+	uint8_t format = (uint8_t) obj->Get(v8::String::New("format"))->IntegerValue();
+	uint32_t data_len = (uint32_t) obj->Get(v8::String::New("data_len"))->IntegerValue();
+	char *data;
+	v8::Local<v8::Array> maskarr_data = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("data")));
+	data = new char[maskarr_data->Length()];
+	for(unsigned int i = 0; i < maskarr_data->Length(); ++i) {
+		data[i] = (char) maskarr_data->Get(i)->IntegerValue();
+	}
+	xcb_change_property(XCBJS::Config::connection, mode, window, property, type, format, data_len, data);
+	delete [] data;
 }
 
 void xcbReqDeleteProperty(v8::Handle<v8::Object> obj) {
@@ -186,6 +216,19 @@ void xcbReqConvertSelection(v8::Handle<v8::Object> obj) {
 	xcb_atom_t property = (xcb_atom_t) obj->Get(v8::String::New("property"))->IntegerValue();
 	xcb_timestamp_t time = (xcb_timestamp_t) obj->Get(v8::String::New("time"))->IntegerValue();
 	xcb_convert_selection(XCBJS::Config::connection, requestor, selection, target, property, time);
+}
+
+void xcbReqSendEvent(v8::Handle<v8::Object> obj) {
+	v8::HandleScope scope;
+	uint8_t propagate = (uint8_t) obj->Get(v8::String::New("propagate"))->BooleanValue();
+	xcb_window_t destination = (xcb_window_t) obj->Get(v8::String::New("destination"))->IntegerValue();
+	uint32_t event_mask = (uint32_t) obj->Get(v8::String::New("event_mask"))->IntegerValue();
+	char *event;
+	v8::Local<v8::String> strval_event = v8::Local<v8::String>::Cast(obj->Get(v8::String::New("event")));
+	event = new char[strval_event->Length()];
+	strcpy(event, *v8::String::AsciiValue(strval_event));
+	xcb_send_event(XCBJS::Config::connection, propagate, destination, event_mask, event);
+	delete [] event;
 }
 
 void xcbReqGrabPointer(v8::Handle<v8::Object> obj) {
@@ -343,6 +386,18 @@ void xcbReqQueryKeymap(v8::Handle<v8::Object> obj) {
 	xcb_query_keymap(XCBJS::Config::connection);
 }
 
+void xcbReqOpenFont(v8::Handle<v8::Object> obj) {
+	v8::HandleScope scope;
+	xcb_font_t fid = (xcb_font_t) obj->Get(v8::String::New("fid"))->IntegerValue();
+	uint16_t name_len = (uint16_t) obj->Get(v8::String::New("name_len"))->IntegerValue();
+	char *name;
+	v8::Local<v8::String> strval_name = v8::Local<v8::String>::Cast(obj->Get(v8::String::New("name")));
+	name = new char[strval_name->Length()];
+	strcpy(name, *v8::String::AsciiValue(strval_name));
+	xcb_open_font(XCBJS::Config::connection, fid, name_len, name);
+	delete [] name;
+}
+
 void xcbReqCloseFont(v8::Handle<v8::Object> obj) {
 	v8::HandleScope scope;
 	xcb_font_t font = (xcb_font_t) obj->Get(v8::String::New("font"))->IntegerValue();
@@ -353,6 +408,57 @@ void xcbReqQueryFont(v8::Handle<v8::Object> obj) {
 	v8::HandleScope scope;
 	xcb_fontable_t font = (xcb_fontable_t) obj->Get(v8::String::New("font"))->IntegerValue();
 	xcb_query_font(XCBJS::Config::connection, font);
+}
+
+void xcbReqQueryTextExtents(v8::Handle<v8::Object> obj) {
+	v8::HandleScope scope;
+	xcb_fontable_t font = (xcb_fontable_t) obj->Get(v8::String::New("font"))->IntegerValue();
+	uint32_t string_len = (uint32_t) obj->Get(v8::String::New("string_len"))->IntegerValue();
+	xcb_char2b_t *string;
+	v8::Local<v8::Array> maskarr_string = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("string")));
+	string = new xcb_char2b_t[maskarr_string->Length()];
+	for(unsigned int i = 0; i < maskarr_string->Length(); ++i) {
+		v8::Local<v8::Object> maskarr_string = v8::Local<v8::Object>::Cast(obj->Get(v8::String::New("string")));
+		fromJS(v8::Local<v8::Object>::Cast(maskarr_string->Get(i)), string + i);
+	}
+	xcb_query_text_extents(XCBJS::Config::connection, font, string_len, string);
+	delete [] string;
+}
+
+void xcbReqListFonts(v8::Handle<v8::Object> obj) {
+	v8::HandleScope scope;
+	uint16_t max_names = (uint16_t) obj->Get(v8::String::New("max_names"))->IntegerValue();
+	uint16_t pattern_len = (uint16_t) obj->Get(v8::String::New("pattern_len"))->IntegerValue();
+	char *pattern;
+	v8::Local<v8::String> strval_pattern = v8::Local<v8::String>::Cast(obj->Get(v8::String::New("pattern")));
+	pattern = new char[strval_pattern->Length()];
+	strcpy(pattern, *v8::String::AsciiValue(strval_pattern));
+	xcb_list_fonts(XCBJS::Config::connection, max_names, pattern_len, pattern);
+	delete [] pattern;
+}
+
+void xcbReqListFontsWithInfo(v8::Handle<v8::Object> obj) {
+	v8::HandleScope scope;
+	uint16_t max_names = (uint16_t) obj->Get(v8::String::New("max_names"))->IntegerValue();
+	uint16_t pattern_len = (uint16_t) obj->Get(v8::String::New("pattern_len"))->IntegerValue();
+	char *pattern;
+	v8::Local<v8::String> strval_pattern = v8::Local<v8::String>::Cast(obj->Get(v8::String::New("pattern")));
+	pattern = new char[strval_pattern->Length()];
+	strcpy(pattern, *v8::String::AsciiValue(strval_pattern));
+	xcb_list_fonts_with_info(XCBJS::Config::connection, max_names, pattern_len, pattern);
+	delete [] pattern;
+}
+
+void xcbReqSetFontPath(v8::Handle<v8::Object> obj) {
+	v8::HandleScope scope;
+	uint16_t font_qty = (uint16_t) obj->Get(v8::String::New("font_qty"))->IntegerValue();
+	uint32_t path_len = (uint32_t) obj->Get(v8::String::New("path_len"))->IntegerValue();
+	char *path;
+	v8::Local<v8::String> strval_path = v8::Local<v8::String>::Cast(obj->Get(v8::String::New("path")));
+	path = new char[strval_path->Length()];
+	strcpy(path, *v8::String::AsciiValue(strval_path));
+	xcb_set_font_path(XCBJS::Config::connection, font_qty, path_len, path);
+	delete [] path;
 }
 
 void xcbReqGetFontPath(v8::Handle<v8::Object> obj) {
@@ -382,10 +488,10 @@ void xcbReqCreateGC(v8::Handle<v8::Object> obj) {
 	xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
 	uint32_t value_mask = (uint32_t) obj->Get(v8::String::New("value_mask"))->IntegerValue();
 	uint32_t *value_list;
-	v8::Local<v8::Array> maskarr = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("value_list")));
-	value_list = new uint32_t[maskarr->Length()];
-	for(unsigned int i = 0; i < maskarr->Length(); ++i) {
-		value_list[i] = (uint32_t) maskarr->Get(i)->IntegerValue();
+	v8::Local<v8::Array> maskarr_value_list = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("value_list")));
+	value_list = new uint32_t[maskarr_value_list->Length()];
+	for(unsigned int i = 0; i < maskarr_value_list->Length(); ++i) {
+		value_list[i] = (uint32_t) maskarr_value_list->Get(i)->IntegerValue();
 	}
 	xcb_create_gc(XCBJS::Config::connection, cid, drawable, value_mask, value_list);
 	delete [] value_list;
@@ -396,10 +502,10 @@ void xcbReqChangeGC(v8::Handle<v8::Object> obj) {
 	xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
 	uint32_t value_mask = (uint32_t) obj->Get(v8::String::New("value_mask"))->IntegerValue();
 	uint32_t *value_list;
-	v8::Local<v8::Array> maskarr = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("value_list")));
-	value_list = new uint32_t[maskarr->Length()];
-	for(unsigned int i = 0; i < maskarr->Length(); ++i) {
-		value_list[i] = (uint32_t) maskarr->Get(i)->IntegerValue();
+	v8::Local<v8::Array> maskarr_value_list = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("value_list")));
+	value_list = new uint32_t[maskarr_value_list->Length()];
+	for(unsigned int i = 0; i < maskarr_value_list->Length(); ++i) {
+		value_list[i] = (uint32_t) maskarr_value_list->Get(i)->IntegerValue();
 	}
 	xcb_change_gc(XCBJS::Config::connection, gc, value_mask, value_list);
 	delete [] value_list;
@@ -411,6 +517,39 @@ void xcbReqCopyGC(v8::Handle<v8::Object> obj) {
 	xcb_gcontext_t dst_gc = (xcb_gcontext_t) obj->Get(v8::String::New("dst_gc"))->IntegerValue();
 	uint32_t value_mask = (uint32_t) obj->Get(v8::String::New("value_mask"))->IntegerValue();
 	xcb_copy_gc(XCBJS::Config::connection, src_gc, dst_gc, value_mask);
+}
+
+void xcbReqSetDashes(v8::Handle<v8::Object> obj) {
+	v8::HandleScope scope;
+	xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
+	uint16_t dash_offset = (uint16_t) obj->Get(v8::String::New("dash_offset"))->IntegerValue();
+	uint16_t dashes_len = (uint16_t) obj->Get(v8::String::New("dashes_len"))->IntegerValue();
+	uint8_t *dashes;
+	v8::Local<v8::Array> maskarr_dashes = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("dashes")));
+	dashes = new uint8_t[maskarr_dashes->Length()];
+	for(unsigned int i = 0; i < maskarr_dashes->Length(); ++i) {
+		dashes[i] = (uint8_t) maskarr_dashes->Get(i)->IntegerValue();
+	}
+	xcb_set_dashes(XCBJS::Config::connection, gc, dash_offset, dashes_len, dashes);
+	delete [] dashes;
+}
+
+void xcbReqSetClipRectangles(v8::Handle<v8::Object> obj) {
+	v8::HandleScope scope;
+	uint8_t ordering = (uint8_t) obj->Get(v8::String::New("ordering"))->IntegerValue();
+	xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
+	int16_t clip_x_origin = (int16_t) obj->Get(v8::String::New("clip_x_origin"))->IntegerValue();
+	int16_t clip_y_origin = (int16_t) obj->Get(v8::String::New("clip_y_origin"))->IntegerValue();
+	uint32_t rectangles_len = (uint32_t) obj->Get(v8::String::New("rectangles_len"))->IntegerValue();
+	xcb_rectangle_t *rectangles;
+	v8::Local<v8::Array> maskarr_rectangles = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("rectangles")));
+	rectangles = new xcb_rectangle_t[maskarr_rectangles->Length()];
+	for(unsigned int i = 0; i < maskarr_rectangles->Length(); ++i) {
+		v8::Local<v8::Object> maskarr_rectangles = v8::Local<v8::Object>::Cast(obj->Get(v8::String::New("rectangles")));
+		fromJS(v8::Local<v8::Object>::Cast(maskarr_rectangles->Get(i)), rectangles + i);
+	}
+	xcb_set_clip_rectangles(XCBJS::Config::connection, ordering, gc, clip_x_origin, clip_y_origin, rectangles_len, rectangles);
+	delete [] rectangles;
 }
 
 void xcbReqFreeGC(v8::Handle<v8::Object> obj) {
@@ -459,6 +598,160 @@ void xcbReqCopyPlane(v8::Handle<v8::Object> obj) {
 	xcb_copy_plane(XCBJS::Config::connection, src_drawable, dst_drawable, gc, src_x, src_y, dst_x, dst_y, width, height, bit_plane);
 }
 
+void xcbReqPolyPoint(v8::Handle<v8::Object> obj) {
+	v8::HandleScope scope;
+	uint8_t coordinate_mode = (uint8_t) obj->Get(v8::String::New("coordinate_mode"))->IntegerValue();
+	xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
+	xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
+	uint32_t points_len = (uint32_t) obj->Get(v8::String::New("points_len"))->IntegerValue();
+	xcb_point_t *points;
+	v8::Local<v8::Array> maskarr_points = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("points")));
+	points = new xcb_point_t[maskarr_points->Length()];
+	for(unsigned int i = 0; i < maskarr_points->Length(); ++i) {
+		v8::Local<v8::Object> maskarr_points = v8::Local<v8::Object>::Cast(obj->Get(v8::String::New("points")));
+		fromJS(v8::Local<v8::Object>::Cast(maskarr_points->Get(i)), points + i);
+	}
+	xcb_poly_point(XCBJS::Config::connection, coordinate_mode, drawable, gc, points_len, points);
+	delete [] points;
+}
+
+void xcbReqPolyLine(v8::Handle<v8::Object> obj) {
+	v8::HandleScope scope;
+	uint8_t coordinate_mode = (uint8_t) obj->Get(v8::String::New("coordinate_mode"))->IntegerValue();
+	xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
+	xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
+	uint32_t points_len = (uint32_t) obj->Get(v8::String::New("points_len"))->IntegerValue();
+	xcb_point_t *points;
+	v8::Local<v8::Array> maskarr_points = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("points")));
+	points = new xcb_point_t[maskarr_points->Length()];
+	for(unsigned int i = 0; i < maskarr_points->Length(); ++i) {
+		v8::Local<v8::Object> maskarr_points = v8::Local<v8::Object>::Cast(obj->Get(v8::String::New("points")));
+		fromJS(v8::Local<v8::Object>::Cast(maskarr_points->Get(i)), points + i);
+	}
+	xcb_poly_line(XCBJS::Config::connection, coordinate_mode, drawable, gc, points_len, points);
+	delete [] points;
+}
+
+void xcbReqPolySegment(v8::Handle<v8::Object> obj) {
+	v8::HandleScope scope;
+	xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
+	xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
+	uint32_t segments_len = (uint32_t) obj->Get(v8::String::New("segments_len"))->IntegerValue();
+	xcb_segment_t *segments;
+	v8::Local<v8::Array> maskarr_segments = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("segments")));
+	segments = new xcb_segment_t[maskarr_segments->Length()];
+	for(unsigned int i = 0; i < maskarr_segments->Length(); ++i) {
+		v8::Local<v8::Object> maskarr_segments = v8::Local<v8::Object>::Cast(obj->Get(v8::String::New("segments")));
+		fromJS(v8::Local<v8::Object>::Cast(maskarr_segments->Get(i)), segments + i);
+	}
+	xcb_poly_segment(XCBJS::Config::connection, drawable, gc, segments_len, segments);
+	delete [] segments;
+}
+
+void xcbReqPolyRectangle(v8::Handle<v8::Object> obj) {
+	v8::HandleScope scope;
+	xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
+	xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
+	uint32_t rectangles_len = (uint32_t) obj->Get(v8::String::New("rectangles_len"))->IntegerValue();
+	xcb_rectangle_t *rectangles;
+	v8::Local<v8::Array> maskarr_rectangles = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("rectangles")));
+	rectangles = new xcb_rectangle_t[maskarr_rectangles->Length()];
+	for(unsigned int i = 0; i < maskarr_rectangles->Length(); ++i) {
+		v8::Local<v8::Object> maskarr_rectangles = v8::Local<v8::Object>::Cast(obj->Get(v8::String::New("rectangles")));
+		fromJS(v8::Local<v8::Object>::Cast(maskarr_rectangles->Get(i)), rectangles + i);
+	}
+	xcb_poly_rectangle(XCBJS::Config::connection, drawable, gc, rectangles_len, rectangles);
+	delete [] rectangles;
+}
+
+void xcbReqPolyArc(v8::Handle<v8::Object> obj) {
+	v8::HandleScope scope;
+	xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
+	xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
+	uint32_t arcs_len = (uint32_t) obj->Get(v8::String::New("arcs_len"))->IntegerValue();
+	xcb_arc_t *arcs;
+	v8::Local<v8::Array> maskarr_arcs = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("arcs")));
+	arcs = new xcb_arc_t[maskarr_arcs->Length()];
+	for(unsigned int i = 0; i < maskarr_arcs->Length(); ++i) {
+		v8::Local<v8::Object> maskarr_arcs = v8::Local<v8::Object>::Cast(obj->Get(v8::String::New("arcs")));
+		fromJS(v8::Local<v8::Object>::Cast(maskarr_arcs->Get(i)), arcs + i);
+	}
+	xcb_poly_arc(XCBJS::Config::connection, drawable, gc, arcs_len, arcs);
+	delete [] arcs;
+}
+
+void xcbReqFillPoly(v8::Handle<v8::Object> obj) {
+	v8::HandleScope scope;
+	xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
+	xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
+	uint8_t shape = (uint8_t) obj->Get(v8::String::New("shape"))->IntegerValue();
+	uint8_t coordinate_mode = (uint8_t) obj->Get(v8::String::New("coordinate_mode"))->IntegerValue();
+	uint32_t points_len = (uint32_t) obj->Get(v8::String::New("points_len"))->IntegerValue();
+	xcb_point_t *points;
+	v8::Local<v8::Array> maskarr_points = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("points")));
+	points = new xcb_point_t[maskarr_points->Length()];
+	for(unsigned int i = 0; i < maskarr_points->Length(); ++i) {
+		v8::Local<v8::Object> maskarr_points = v8::Local<v8::Object>::Cast(obj->Get(v8::String::New("points")));
+		fromJS(v8::Local<v8::Object>::Cast(maskarr_points->Get(i)), points + i);
+	}
+	xcb_fill_poly(XCBJS::Config::connection, drawable, gc, shape, coordinate_mode, points_len, points);
+	delete [] points;
+}
+
+void xcbReqPolyFillRectangle(v8::Handle<v8::Object> obj) {
+	v8::HandleScope scope;
+	xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
+	xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
+	uint32_t rectangles_len = (uint32_t) obj->Get(v8::String::New("rectangles_len"))->IntegerValue();
+	xcb_rectangle_t *rectangles;
+	v8::Local<v8::Array> maskarr_rectangles = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("rectangles")));
+	rectangles = new xcb_rectangle_t[maskarr_rectangles->Length()];
+	for(unsigned int i = 0; i < maskarr_rectangles->Length(); ++i) {
+		v8::Local<v8::Object> maskarr_rectangles = v8::Local<v8::Object>::Cast(obj->Get(v8::String::New("rectangles")));
+		fromJS(v8::Local<v8::Object>::Cast(maskarr_rectangles->Get(i)), rectangles + i);
+	}
+	xcb_poly_fill_rectangle(XCBJS::Config::connection, drawable, gc, rectangles_len, rectangles);
+	delete [] rectangles;
+}
+
+void xcbReqPolyFillArc(v8::Handle<v8::Object> obj) {
+	v8::HandleScope scope;
+	xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
+	xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
+	uint32_t arcs_len = (uint32_t) obj->Get(v8::String::New("arcs_len"))->IntegerValue();
+	xcb_arc_t *arcs;
+	v8::Local<v8::Array> maskarr_arcs = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("arcs")));
+	arcs = new xcb_arc_t[maskarr_arcs->Length()];
+	for(unsigned int i = 0; i < maskarr_arcs->Length(); ++i) {
+		v8::Local<v8::Object> maskarr_arcs = v8::Local<v8::Object>::Cast(obj->Get(v8::String::New("arcs")));
+		fromJS(v8::Local<v8::Object>::Cast(maskarr_arcs->Get(i)), arcs + i);
+	}
+	xcb_poly_fill_arc(XCBJS::Config::connection, drawable, gc, arcs_len, arcs);
+	delete [] arcs;
+}
+
+void xcbReqPutImage(v8::Handle<v8::Object> obj) {
+	v8::HandleScope scope;
+	uint8_t format = (uint8_t) obj->Get(v8::String::New("format"))->IntegerValue();
+	xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
+	xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
+	uint16_t width = (uint16_t) obj->Get(v8::String::New("width"))->IntegerValue();
+	uint16_t height = (uint16_t) obj->Get(v8::String::New("height"))->IntegerValue();
+	int16_t dst_x = (int16_t) obj->Get(v8::String::New("dst_x"))->IntegerValue();
+	int16_t dst_y = (int16_t) obj->Get(v8::String::New("dst_y"))->IntegerValue();
+	uint8_t left_pad = (uint8_t) obj->Get(v8::String::New("left_pad"))->IntegerValue();
+	uint8_t depth = (uint8_t) obj->Get(v8::String::New("depth"))->IntegerValue();
+	uint32_t data_len = (uint32_t) obj->Get(v8::String::New("data_len"))->IntegerValue();
+	uint8_t *data;
+	v8::Local<v8::Array> maskarr_data = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("data")));
+	data = new uint8_t[maskarr_data->Length()];
+	for(unsigned int i = 0; i < maskarr_data->Length(); ++i) {
+		data[i] = (uint8_t) maskarr_data->Get(i)->IntegerValue();
+	}
+	xcb_put_image(XCBJS::Config::connection, format, drawable, gc, width, height, dst_x, dst_y, left_pad, depth, data_len, data);
+	delete [] data;
+}
+
 void xcbReqGetImage(v8::Handle<v8::Object> obj) {
 	v8::HandleScope scope;
 	uint8_t format = (uint8_t) obj->Get(v8::String::New("format"))->IntegerValue();
@@ -469,6 +762,73 @@ void xcbReqGetImage(v8::Handle<v8::Object> obj) {
 	uint16_t height = (uint16_t) obj->Get(v8::String::New("height"))->IntegerValue();
 	uint32_t plane_mask = (uint32_t) obj->Get(v8::String::New("plane_mask"))->IntegerValue();
 	xcb_get_image(XCBJS::Config::connection, format, drawable, x, y, width, height, plane_mask);
+}
+
+void xcbReqPolyText8(v8::Handle<v8::Object> obj) {
+	v8::HandleScope scope;
+	xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
+	xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
+	int16_t x = (int16_t) obj->Get(v8::String::New("x"))->IntegerValue();
+	int16_t y = (int16_t) obj->Get(v8::String::New("y"))->IntegerValue();
+	uint32_t items_len = (uint32_t) obj->Get(v8::String::New("items_len"))->IntegerValue();
+	uint8_t *items;
+	v8::Local<v8::Array> maskarr_items = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("items")));
+	items = new uint8_t[maskarr_items->Length()];
+	for(unsigned int i = 0; i < maskarr_items->Length(); ++i) {
+		items[i] = (uint8_t) maskarr_items->Get(i)->IntegerValue();
+	}
+	xcb_poly_text_8(XCBJS::Config::connection, drawable, gc, x, y, items_len, items);
+	delete [] items;
+}
+
+void xcbReqPolyText16(v8::Handle<v8::Object> obj) {
+	v8::HandleScope scope;
+	xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
+	xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
+	int16_t x = (int16_t) obj->Get(v8::String::New("x"))->IntegerValue();
+	int16_t y = (int16_t) obj->Get(v8::String::New("y"))->IntegerValue();
+	uint32_t items_len = (uint32_t) obj->Get(v8::String::New("items_len"))->IntegerValue();
+	uint8_t *items;
+	v8::Local<v8::Array> maskarr_items = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("items")));
+	items = new uint8_t[maskarr_items->Length()];
+	for(unsigned int i = 0; i < maskarr_items->Length(); ++i) {
+		items[i] = (uint8_t) maskarr_items->Get(i)->IntegerValue();
+	}
+	xcb_poly_text_16(XCBJS::Config::connection, drawable, gc, x, y, items_len, items);
+	delete [] items;
+}
+
+void xcbReqImageText8(v8::Handle<v8::Object> obj) {
+	v8::HandleScope scope;
+	uint8_t string_len = (uint8_t) obj->Get(v8::String::New("string_len"))->IntegerValue();
+	xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
+	xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
+	int16_t x = (int16_t) obj->Get(v8::String::New("x"))->IntegerValue();
+	int16_t y = (int16_t) obj->Get(v8::String::New("y"))->IntegerValue();
+	char *string;
+	v8::Local<v8::String> strval_string = v8::Local<v8::String>::Cast(obj->Get(v8::String::New("string")));
+	string = new char[strval_string->Length()];
+	strcpy(string, *v8::String::AsciiValue(strval_string));
+	xcb_image_text_8(XCBJS::Config::connection, string_len, drawable, gc, x, y, string);
+	delete [] string;
+}
+
+void xcbReqImageText16(v8::Handle<v8::Object> obj) {
+	v8::HandleScope scope;
+	uint8_t string_len = (uint8_t) obj->Get(v8::String::New("string_len"))->IntegerValue();
+	xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
+	xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
+	int16_t x = (int16_t) obj->Get(v8::String::New("x"))->IntegerValue();
+	int16_t y = (int16_t) obj->Get(v8::String::New("y"))->IntegerValue();
+	xcb_char2b_t *string;
+	v8::Local<v8::Array> maskarr_string = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("string")));
+	string = new xcb_char2b_t[maskarr_string->Length()];
+	for(unsigned int i = 0; i < maskarr_string->Length(); ++i) {
+		v8::Local<v8::Object> maskarr_string = v8::Local<v8::Object>::Cast(obj->Get(v8::String::New("string")));
+		fromJS(v8::Local<v8::Object>::Cast(maskarr_string->Get(i)), string + i);
+	}
+	xcb_image_text_16(XCBJS::Config::connection, string_len, drawable, gc, x, y, string);
+	delete [] string;
 }
 
 void xcbReqCreateColormap(v8::Handle<v8::Object> obj) {
@@ -520,6 +880,18 @@ void xcbReqAllocColor(v8::Handle<v8::Object> obj) {
 	xcb_alloc_color(XCBJS::Config::connection, cmap, red, green, blue);
 }
 
+void xcbReqAllocNamedColor(v8::Handle<v8::Object> obj) {
+	v8::HandleScope scope;
+	xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
+	uint16_t name_len = (uint16_t) obj->Get(v8::String::New("name_len"))->IntegerValue();
+	char *name;
+	v8::Local<v8::String> strval_name = v8::Local<v8::String>::Cast(obj->Get(v8::String::New("name")));
+	name = new char[strval_name->Length()];
+	strcpy(name, *v8::String::AsciiValue(strval_name));
+	xcb_alloc_named_color(XCBJS::Config::connection, cmap, name_len, name);
+	delete [] name;
+}
+
 void xcbReqAllocColorCells(v8::Handle<v8::Object> obj) {
 	v8::HandleScope scope;
 	uint8_t contiguous = (uint8_t) obj->Get(v8::String::New("contiguous"))->BooleanValue();
@@ -538,6 +910,76 @@ void xcbReqAllocColorPlanes(v8::Handle<v8::Object> obj) {
 	uint16_t greens = (uint16_t) obj->Get(v8::String::New("greens"))->IntegerValue();
 	uint16_t blues = (uint16_t) obj->Get(v8::String::New("blues"))->IntegerValue();
 	xcb_alloc_color_planes(XCBJS::Config::connection, contiguous, cmap, colors, reds, greens, blues);
+}
+
+void xcbReqFreeColors(v8::Handle<v8::Object> obj) {
+	v8::HandleScope scope;
+	xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
+	uint32_t plane_mask = (uint32_t) obj->Get(v8::String::New("plane_mask"))->IntegerValue();
+	uint32_t pixels_len = (uint32_t) obj->Get(v8::String::New("pixels_len"))->IntegerValue();
+	uint32_t *pixels;
+	v8::Local<v8::Array> maskarr_pixels = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("pixels")));
+	pixels = new uint32_t[maskarr_pixels->Length()];
+	for(unsigned int i = 0; i < maskarr_pixels->Length(); ++i) {
+		pixels[i] = (uint32_t) maskarr_pixels->Get(i)->IntegerValue();
+	}
+	xcb_free_colors(XCBJS::Config::connection, cmap, plane_mask, pixels_len, pixels);
+	delete [] pixels;
+}
+
+void xcbReqStoreColors(v8::Handle<v8::Object> obj) {
+	v8::HandleScope scope;
+	xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
+	uint32_t items_len = (uint32_t) obj->Get(v8::String::New("items_len"))->IntegerValue();
+	xcb_coloritem_t *items;
+	v8::Local<v8::Array> maskarr_items = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("items")));
+	items = new xcb_coloritem_t[maskarr_items->Length()];
+	for(unsigned int i = 0; i < maskarr_items->Length(); ++i) {
+		v8::Local<v8::Object> maskarr_items = v8::Local<v8::Object>::Cast(obj->Get(v8::String::New("items")));
+		fromJS(v8::Local<v8::Object>::Cast(maskarr_items->Get(i)), items + i);
+	}
+	xcb_store_colors(XCBJS::Config::connection, cmap, items_len, items);
+	delete [] items;
+}
+
+void xcbReqStoreNamedColor(v8::Handle<v8::Object> obj) {
+	v8::HandleScope scope;
+	uint8_t flags = (uint8_t) obj->Get(v8::String::New("flags"))->IntegerValue();
+	xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
+	uint32_t pixel = (uint32_t) obj->Get(v8::String::New("pixel"))->IntegerValue();
+	uint16_t name_len = (uint16_t) obj->Get(v8::String::New("name_len"))->IntegerValue();
+	char *name;
+	v8::Local<v8::String> strval_name = v8::Local<v8::String>::Cast(obj->Get(v8::String::New("name")));
+	name = new char[strval_name->Length()];
+	strcpy(name, *v8::String::AsciiValue(strval_name));
+	xcb_store_named_color(XCBJS::Config::connection, flags, cmap, pixel, name_len, name);
+	delete [] name;
+}
+
+void xcbReqQueryColors(v8::Handle<v8::Object> obj) {
+	v8::HandleScope scope;
+	xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
+	uint32_t pixels_len = (uint32_t) obj->Get(v8::String::New("pixels_len"))->IntegerValue();
+	uint32_t *pixels;
+	v8::Local<v8::Array> maskarr_pixels = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("pixels")));
+	pixels = new uint32_t[maskarr_pixels->Length()];
+	for(unsigned int i = 0; i < maskarr_pixels->Length(); ++i) {
+		pixels[i] = (uint32_t) maskarr_pixels->Get(i)->IntegerValue();
+	}
+	xcb_query_colors(XCBJS::Config::connection, cmap, pixels_len, pixels);
+	delete [] pixels;
+}
+
+void xcbReqLookupColor(v8::Handle<v8::Object> obj) {
+	v8::HandleScope scope;
+	xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
+	uint16_t name_len = (uint16_t) obj->Get(v8::String::New("name_len"))->IntegerValue();
+	char *name;
+	v8::Local<v8::String> strval_name = v8::Local<v8::String>::Cast(obj->Get(v8::String::New("name")));
+	name = new char[strval_name->Length()];
+	strcpy(name, *v8::String::AsciiValue(strval_name));
+	xcb_lookup_color(XCBJS::Config::connection, cmap, name_len, name);
+	delete [] name;
 }
 
 void xcbReqCreateCursor(v8::Handle<v8::Object> obj) {
@@ -599,9 +1041,35 @@ void xcbReqQueryBestSize(v8::Handle<v8::Object> obj) {
 	xcb_query_best_size(XCBJS::Config::connection, _class, drawable, width, height);
 }
 
+void xcbReqQueryExtension(v8::Handle<v8::Object> obj) {
+	v8::HandleScope scope;
+	uint16_t name_len = (uint16_t) obj->Get(v8::String::New("name_len"))->IntegerValue();
+	char *name;
+	v8::Local<v8::String> strval_name = v8::Local<v8::String>::Cast(obj->Get(v8::String::New("name")));
+	name = new char[strval_name->Length()];
+	strcpy(name, *v8::String::AsciiValue(strval_name));
+	xcb_query_extension(XCBJS::Config::connection, name_len, name);
+	delete [] name;
+}
+
 void xcbReqListExtensions(v8::Handle<v8::Object> obj) {
 	v8::HandleScope scope;
 	xcb_list_extensions(XCBJS::Config::connection);
+}
+
+void xcbReqChangeKeyboardMapping(v8::Handle<v8::Object> obj) {
+	v8::HandleScope scope;
+	uint8_t keycode_count = (uint8_t) obj->Get(v8::String::New("keycode_count"))->IntegerValue();
+	xcb_keycode_t first_keycode = (xcb_keycode_t) obj->Get(v8::String::New("first_keycode"))->IntegerValue();
+	uint8_t keysyms_per_keycode = (uint8_t) obj->Get(v8::String::New("keysyms_per_keycode"))->IntegerValue();
+	xcb_keysym_t *keysyms;
+	v8::Local<v8::Array> maskarr_keysyms = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("keysyms")));
+	keysyms = new xcb_keysym_t[maskarr_keysyms->Length()];
+	for(unsigned int i = 0; i < maskarr_keysyms->Length(); ++i) {
+		keysyms[i] = (xcb_keysym_t) maskarr_keysyms->Get(i)->IntegerValue();
+	}
+	xcb_change_keyboard_mapping(XCBJS::Config::connection, keycode_count, first_keycode, keysyms_per_keycode, keysyms);
+	delete [] keysyms;
 }
 
 void xcbReqGetKeyboardMapping(v8::Handle<v8::Object> obj) {
@@ -615,10 +1083,10 @@ void xcbReqChangeKeyboardControl(v8::Handle<v8::Object> obj) {
 	v8::HandleScope scope;
 	uint32_t value_mask = (uint32_t) obj->Get(v8::String::New("value_mask"))->IntegerValue();
 	uint32_t *value_list;
-	v8::Local<v8::Array> maskarr = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("value_list")));
-	value_list = new uint32_t[maskarr->Length()];
-	for(unsigned int i = 0; i < maskarr->Length(); ++i) {
-		value_list[i] = (uint32_t) maskarr->Get(i)->IntegerValue();
+	v8::Local<v8::Array> maskarr_value_list = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("value_list")));
+	value_list = new uint32_t[maskarr_value_list->Length()];
+	for(unsigned int i = 0; i < maskarr_value_list->Length(); ++i) {
+		value_list[i] = (uint32_t) maskarr_value_list->Get(i)->IntegerValue();
 	}
 	xcb_change_keyboard_control(XCBJS::Config::connection, value_mask, value_list);
 	delete [] value_list;
@@ -664,6 +1132,19 @@ void xcbReqGetScreenSaver(v8::Handle<v8::Object> obj) {
 	xcb_get_screen_saver(XCBJS::Config::connection);
 }
 
+void xcbReqChangeHosts(v8::Handle<v8::Object> obj) {
+	v8::HandleScope scope;
+	uint8_t mode = (uint8_t) obj->Get(v8::String::New("mode"))->IntegerValue();
+	uint8_t family = (uint8_t) obj->Get(v8::String::New("family"))->IntegerValue();
+	uint16_t address_len = (uint16_t) obj->Get(v8::String::New("address_len"))->IntegerValue();
+	char *address;
+	v8::Local<v8::String> strval_address = v8::Local<v8::String>::Cast(obj->Get(v8::String::New("address")));
+	address = new char[strval_address->Length()];
+	strcpy(address, *v8::String::AsciiValue(strval_address));
+	xcb_change_hosts(XCBJS::Config::connection, mode, family, address_len, address);
+	delete [] address;
+}
+
 void xcbReqListHosts(v8::Handle<v8::Object> obj) {
 	v8::HandleScope scope;
 	xcb_list_hosts(XCBJS::Config::connection);
@@ -687,15 +1168,56 @@ void xcbReqKillClient(v8::Handle<v8::Object> obj) {
 	xcb_kill_client(XCBJS::Config::connection, resource);
 }
 
+void xcbReqRotateProperties(v8::Handle<v8::Object> obj) {
+	v8::HandleScope scope;
+	xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
+	uint16_t atoms_len = (uint16_t) obj->Get(v8::String::New("atoms_len"))->IntegerValue();
+	int16_t delta = (int16_t) obj->Get(v8::String::New("delta"))->IntegerValue();
+	xcb_atom_t *atoms;
+	v8::Local<v8::Array> maskarr_atoms = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("atoms")));
+	atoms = new xcb_atom_t[maskarr_atoms->Length()];
+	for(unsigned int i = 0; i < maskarr_atoms->Length(); ++i) {
+		atoms[i] = (xcb_atom_t) maskarr_atoms->Get(i)->IntegerValue();
+	}
+	xcb_rotate_properties(XCBJS::Config::connection, window, atoms_len, delta, atoms);
+	delete [] atoms;
+}
+
 void xcbReqForceScreenSaver(v8::Handle<v8::Object> obj) {
 	v8::HandleScope scope;
 	uint8_t mode = (uint8_t) obj->Get(v8::String::New("mode"))->IntegerValue();
 	xcb_force_screen_saver(XCBJS::Config::connection, mode);
 }
 
+void xcbReqSetPointerMapping(v8::Handle<v8::Object> obj) {
+	v8::HandleScope scope;
+	uint8_t map_len = (uint8_t) obj->Get(v8::String::New("map_len"))->IntegerValue();
+	uint8_t *map;
+	v8::Local<v8::Array> maskarr_map = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("map")));
+	map = new uint8_t[maskarr_map->Length()];
+	for(unsigned int i = 0; i < maskarr_map->Length(); ++i) {
+		map[i] = (uint8_t) maskarr_map->Get(i)->IntegerValue();
+	}
+	xcb_set_pointer_mapping(XCBJS::Config::connection, map_len, map);
+	delete [] map;
+}
+
 void xcbReqGetPointerMapping(v8::Handle<v8::Object> obj) {
 	v8::HandleScope scope;
 	xcb_get_pointer_mapping(XCBJS::Config::connection);
+}
+
+void xcbReqSetModifierMapping(v8::Handle<v8::Object> obj) {
+	v8::HandleScope scope;
+	uint8_t keycodes_per_modifier = (uint8_t) obj->Get(v8::String::New("keycodes_per_modifier"))->IntegerValue();
+	xcb_keycode_t *keycodes;
+	v8::Local<v8::Array> maskarr_keycodes = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("keycodes")));
+	keycodes = new xcb_keycode_t[maskarr_keycodes->Length()];
+	for(unsigned int i = 0; i < maskarr_keycodes->Length(); ++i) {
+		keycodes[i] = (xcb_keycode_t) maskarr_keycodes->Get(i)->IntegerValue();
+	}
+	xcb_set_modifier_mapping(XCBJS::Config::connection, keycodes_per_modifier, keycodes);
+	delete [] keycodes;
 }
 
 void xcbReqGetModifierMapping(v8::Handle<v8::Object> obj) {
