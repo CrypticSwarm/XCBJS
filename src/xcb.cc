@@ -41,6 +41,7 @@ public:
     NODE_SET_METHOD(target, "manageWindows", XCBJS::manageWindows);
     NODE_SET_METHOD(target, "getRoot", XCBJS::getRoot);
     NODE_SET_METHOD(target, "getScreen", XCBJS::getScreen);
+    NODE_SET_METHOD(target, "help", XCBJS::sDocs);
     Event::Init(target);
   }
 
@@ -134,6 +135,11 @@ public:
   static Handle<Value> getRoot(const Arguments& args) {
     HandleScope scope;
     return scope.Close(Integer::New(screen->root));
+  }
+
+  static Handle<Value> sDocs(const Arguments& args) {
+    HandleScope scope;
+    return scope.Close(structDocs(Handle<String>::Cast(args[0])));
   }
 
 private:

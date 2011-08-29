@@ -46,12 +46,40 @@ Object.keys(structs).forEach(function(structName) {
     if (!type) return
     str += "\tst->" + prepPropName(propName) + " = (" + getXCBType(struct[propName]) 
         +  ") obj->Get(v8::String::New(\"" + propName + "\"))->"
-        + type + "Value();\n"
+        + (type == 'Date' ? 'Integer' : type) + "Value();\n"
   })
   str += "}\n\n"
 })
 str += "// END STRUCTS }}}\n\n"
 
+
+function getJSTypeExample(type) {
+  switch(type) {
+    case "Integer": return 7
+    case "String": return "I am a string"
+    case "Bool": return true
+    case "Date": return "2011-01-22"
+  }
+}
+
+str += "//{{{ BEGIN DOCS \n\n"
+str += "v8::Handle<v8::String> structDocs(v8::Handle<v8::String> what) {\n"
+str += "\tv8::HandleScope scope;\n"
+str += "\tv8::String::AsciiValue str(what);\n"
+Object.keys(structs).forEach(function(structName) {
+  var struct = structs[structName].field
+    , exp = {}
+  Object.keys(struct).forEach(function(propName) {
+    exp[propName] = getJSTypeExample(getJSType(struct[propName]))
+  })
+  str += "\tif(strcmp(*str, \"" + getXCBType(structName).replace(/xcb_|_t/g, '').replace(/_[a-z]/g, function(m) { return m[1].toUpperCase() })
+      + "\") == 0) return scope.Close(v8::String::New(\"" + structName + ": " + JSON.stringify(exp).replace(/"/g, "\\\"") + "\"));\n"
+})
+str += "\treturn scope.Close(v8::String::New(\"\"));\n"
+str += "}\n"
+
+
+str += "// END DOCS }}}\n\n"
 
 str += "#endif\n"
 

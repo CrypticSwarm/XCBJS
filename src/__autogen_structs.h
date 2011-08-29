@@ -287,11 +287,15 @@ void fromJS(v8::Handle<v8::Object> obj, xcb_timecoord_t *st) {
 v8::Handle<v8::Object> toJS(xcb_fontprop_t *st) {
 	v8::HandleScope scope;
 	v8::Local<v8::Object> obj = v8::Object::New();
+	obj->Set(v8::String::New("name"), v8::Integer::New(st->name));
+	obj->Set(v8::String::New("value"), v8::Integer::New(st->value));
 	return scope.Close(obj);
 }
 
 void fromJS(v8::Handle<v8::Object> obj, xcb_fontprop_t *st) {
 	v8::HandleScope scope;
+	st->name = (xcb_atom_t) obj->Get(v8::String::New("name"))->IntegerValue();
+	st->value = (uint32_t) obj->Get(v8::String::New("value"))->IntegerValue();
 }
 
 v8::Handle<v8::Object> toJS(xcb_charinfo_t *st) {
@@ -397,5 +401,34 @@ void fromJS(v8::Handle<v8::Object> obj, xcb_host_t *st) {
 }
 
 // END STRUCTS }}}
+
+//{{{ BEGIN DOCS 
+
+v8::Handle<v8::String> structDocs(v8::Handle<v8::String> what) {
+	v8::HandleScope scope;
+	v8::String::AsciiValue str(what);
+	if(strcmp(*str, "char2b") == 0) return scope.Close(v8::String::New("CHAR2B: {\"byte1\":7,\"byte2\":7}"));
+	if(strcmp(*str, "point") == 0) return scope.Close(v8::String::New("POINT: {\"x\":7,\"y\":7}"));
+	if(strcmp(*str, "rectangle") == 0) return scope.Close(v8::String::New("RECTANGLE: {\"x\":7,\"y\":7,\"width\":7,\"height\":7}"));
+	if(strcmp(*str, "arc") == 0) return scope.Close(v8::String::New("ARC: {\"x\":7,\"y\":7,\"width\":7,\"height\":7,\"angle1\":7,\"angle2\":7}"));
+	if(strcmp(*str, "format") == 0) return scope.Close(v8::String::New("FORMAT: {\"depth\":7,\"bits_per_pixel\":7,\"scanline_pad\":7}"));
+	if(strcmp(*str, "visualtype") == 0) return scope.Close(v8::String::New("VISUALTYPE: {\"visual_id\":7,\"class\":7,\"bits_per_rgb_value\":7,\"colormap_entries\":7,\"red_mask\":7,\"green_mask\":7,\"blue_mask\":7}"));
+	if(strcmp(*str, "depth") == 0) return scope.Close(v8::String::New("DEPTH: {\"depth\":7,\"visuals_len\":7}"));
+	if(strcmp(*str, "screen") == 0) return scope.Close(v8::String::New("SCREEN: {\"root\":7,\"default_colormap\":7,\"white_pixel\":7,\"black_pixel\":7,\"current_input_masks\":7,\"width_in_pixels\":7,\"height_in_pixels\":7,\"width_in_millimeters\":7,\"height_in_millimeters\":7,\"min_installed_maps\":7,\"max_installed_maps\":7,\"root_visual\":7,\"backing_stores\":7,\"root_depth\":7,\"allowed_depths_len\":7}"));
+	if(strcmp(*str, "setupRequest") == 0) return scope.Close(v8::String::New("SetupRequest: {\"byte_order\":7,\"protocol_major_version\":7,\"protocol_minor_version\":7,\"authorization_protocol_name_len\":7,\"authorization_protocol_data_len\":7}"));
+	if(strcmp(*str, "setupFailed") == 0) return scope.Close(v8::String::New("SetupFailed: {\"status\":7,\"reason_len\":7,\"protocol_major_version\":7,\"protocol_minor_version\":7,\"length\":7}"));
+	if(strcmp(*str, "setupAuthenticate") == 0) return scope.Close(v8::String::New("SetupAuthenticate: {\"status\":7,\"length\":7}"));
+	if(strcmp(*str, "setup") == 0) return scope.Close(v8::String::New("Setup: {\"status\":7,\"protocol_major_version\":7,\"protocol_minor_version\":7,\"length\":7,\"release_number\":7,\"resource_id_base\":7,\"resource_id_mask\":7,\"motion_buffer_size\":7,\"vendor_len\":7,\"maximum_request_length\":7,\"roots_len\":7,\"pixmap_formats_len\":7,\"image_byte_order\":7,\"bitmap_format_bit_order\":7,\"bitmap_format_scanline_unit\":7,\"bitmap_format_scanline_pad\":7,\"min_keycode\":7,\"max_keycode\":7}"));
+	if(strcmp(*str, "timecoord") == 0) return scope.Close(v8::String::New("TIMECOORD: {\"time\":\"2011-01-22\",\"x\":7,\"y\":7}"));
+	if(strcmp(*str, "fontprop") == 0) return scope.Close(v8::String::New("FONTPROP: {\"name\":7,\"value\":7}"));
+	if(strcmp(*str, "charinfo") == 0) return scope.Close(v8::String::New("CHARINFO: {\"left_side_bearing\":7,\"right_side_bearing\":7,\"character_width\":7,\"ascent\":7,\"descent\":7,\"attributes\":7}"));
+	if(strcmp(*str, "str") == 0) return scope.Close(v8::String::New("STR: {\"name_len\":7}"));
+	if(strcmp(*str, "segment") == 0) return scope.Close(v8::String::New("SEGMENT: {\"x1\":7,\"y1\":7,\"x2\":7,\"y2\":7}"));
+	if(strcmp(*str, "coloritem") == 0) return scope.Close(v8::String::New("COLORITEM: {\"pixel\":7,\"red\":7,\"green\":7,\"blue\":7,\"flags\":7}"));
+	if(strcmp(*str, "rgb") == 0) return scope.Close(v8::String::New("RGB: {\"red\":7,\"green\":7,\"blue\":7}"));
+	if(strcmp(*str, "host") == 0) return scope.Close(v8::String::New("HOST: {\"family\":7,\"address_len\":7}"));
+	return scope.Close(v8::String::New(""));
+}
+// END DOCS }}}
 
 #endif
