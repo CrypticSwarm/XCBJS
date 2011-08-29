@@ -40,7 +40,7 @@ Object.keys(requests).forEach(function(requestName, f) {
   var request = requests[requestName].field
     , valparam = requests[requestName].valueparam
     , params = []
-  if (requests[requestName].list) return //Not handled yet
+  if (requests[requestName].list) return console.log('not generating', requestName)//Not handled yet
   str += "void xcbReq" + requestName + "(v8::Handle<v8::Object> obj) {\n"
   str += "\tv8::HandleScope scope;\n"
   if (request) Object.keys(request).forEach(function(propName) {
@@ -49,7 +49,7 @@ Object.keys(requests).forEach(function(requestName, f) {
     params.push(prepPropName(propName))
     str += "\t" + getXCBType(request[propName]) + " " + prepPropName(propName) + " = (" + getXCBType(request[propName])
         +  ") obj->Get(v8::String::New(\"" + propName + "\"))->"
-        + type + "Value();\n"
+        + (type == 'Date' ? 'Integer' : type) + "Value();\n"
   })
   if (valparam ) {
     var masktype = valparam['value-mask-type']
