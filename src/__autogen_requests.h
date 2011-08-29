@@ -418,7 +418,6 @@ void xcbReqQueryTextExtents(v8::Handle<v8::Object> obj) {
 	v8::Local<v8::Array> maskarr_string = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("string")));
 	string = new xcb_char2b_t[maskarr_string->Length()];
 	for(unsigned int i = 0; i < maskarr_string->Length(); ++i) {
-		v8::Local<v8::Object> maskarr_string = v8::Local<v8::Object>::Cast(obj->Get(v8::String::New("string")));
 		fromJS(v8::Local<v8::Object>::Cast(maskarr_string->Get(i)), string + i);
 	}
 	xcb_query_text_extents(XCBJS::Config::connection, font, string_len, string);
@@ -545,7 +544,6 @@ void xcbReqSetClipRectangles(v8::Handle<v8::Object> obj) {
 	v8::Local<v8::Array> maskarr_rectangles = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("rectangles")));
 	rectangles = new xcb_rectangle_t[maskarr_rectangles->Length()];
 	for(unsigned int i = 0; i < maskarr_rectangles->Length(); ++i) {
-		v8::Local<v8::Object> maskarr_rectangles = v8::Local<v8::Object>::Cast(obj->Get(v8::String::New("rectangles")));
 		fromJS(v8::Local<v8::Object>::Cast(maskarr_rectangles->Get(i)), rectangles + i);
 	}
 	xcb_set_clip_rectangles(XCBJS::Config::connection, ordering, gc, clip_x_origin, clip_y_origin, rectangles_len, rectangles);
@@ -608,7 +606,6 @@ void xcbReqPolyPoint(v8::Handle<v8::Object> obj) {
 	v8::Local<v8::Array> maskarr_points = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("points")));
 	points = new xcb_point_t[maskarr_points->Length()];
 	for(unsigned int i = 0; i < maskarr_points->Length(); ++i) {
-		v8::Local<v8::Object> maskarr_points = v8::Local<v8::Object>::Cast(obj->Get(v8::String::New("points")));
 		fromJS(v8::Local<v8::Object>::Cast(maskarr_points->Get(i)), points + i);
 	}
 	xcb_poly_point(XCBJS::Config::connection, coordinate_mode, drawable, gc, points_len, points);
@@ -625,7 +622,6 @@ void xcbReqPolyLine(v8::Handle<v8::Object> obj) {
 	v8::Local<v8::Array> maskarr_points = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("points")));
 	points = new xcb_point_t[maskarr_points->Length()];
 	for(unsigned int i = 0; i < maskarr_points->Length(); ++i) {
-		v8::Local<v8::Object> maskarr_points = v8::Local<v8::Object>::Cast(obj->Get(v8::String::New("points")));
 		fromJS(v8::Local<v8::Object>::Cast(maskarr_points->Get(i)), points + i);
 	}
 	xcb_poly_line(XCBJS::Config::connection, coordinate_mode, drawable, gc, points_len, points);
@@ -641,7 +637,6 @@ void xcbReqPolySegment(v8::Handle<v8::Object> obj) {
 	v8::Local<v8::Array> maskarr_segments = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("segments")));
 	segments = new xcb_segment_t[maskarr_segments->Length()];
 	for(unsigned int i = 0; i < maskarr_segments->Length(); ++i) {
-		v8::Local<v8::Object> maskarr_segments = v8::Local<v8::Object>::Cast(obj->Get(v8::String::New("segments")));
 		fromJS(v8::Local<v8::Object>::Cast(maskarr_segments->Get(i)), segments + i);
 	}
 	xcb_poly_segment(XCBJS::Config::connection, drawable, gc, segments_len, segments);
@@ -657,7 +652,6 @@ void xcbReqPolyRectangle(v8::Handle<v8::Object> obj) {
 	v8::Local<v8::Array> maskarr_rectangles = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("rectangles")));
 	rectangles = new xcb_rectangle_t[maskarr_rectangles->Length()];
 	for(unsigned int i = 0; i < maskarr_rectangles->Length(); ++i) {
-		v8::Local<v8::Object> maskarr_rectangles = v8::Local<v8::Object>::Cast(obj->Get(v8::String::New("rectangles")));
 		fromJS(v8::Local<v8::Object>::Cast(maskarr_rectangles->Get(i)), rectangles + i);
 	}
 	xcb_poly_rectangle(XCBJS::Config::connection, drawable, gc, rectangles_len, rectangles);
@@ -673,7 +667,6 @@ void xcbReqPolyArc(v8::Handle<v8::Object> obj) {
 	v8::Local<v8::Array> maskarr_arcs = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("arcs")));
 	arcs = new xcb_arc_t[maskarr_arcs->Length()];
 	for(unsigned int i = 0; i < maskarr_arcs->Length(); ++i) {
-		v8::Local<v8::Object> maskarr_arcs = v8::Local<v8::Object>::Cast(obj->Get(v8::String::New("arcs")));
 		fromJS(v8::Local<v8::Object>::Cast(maskarr_arcs->Get(i)), arcs + i);
 	}
 	xcb_poly_arc(XCBJS::Config::connection, drawable, gc, arcs_len, arcs);
@@ -691,7 +684,6 @@ void xcbReqFillPoly(v8::Handle<v8::Object> obj) {
 	v8::Local<v8::Array> maskarr_points = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("points")));
 	points = new xcb_point_t[maskarr_points->Length()];
 	for(unsigned int i = 0; i < maskarr_points->Length(); ++i) {
-		v8::Local<v8::Object> maskarr_points = v8::Local<v8::Object>::Cast(obj->Get(v8::String::New("points")));
 		fromJS(v8::Local<v8::Object>::Cast(maskarr_points->Get(i)), points + i);
 	}
 	xcb_fill_poly(XCBJS::Config::connection, drawable, gc, shape, coordinate_mode, points_len, points);
@@ -707,7 +699,6 @@ void xcbReqPolyFillRectangle(v8::Handle<v8::Object> obj) {
 	v8::Local<v8::Array> maskarr_rectangles = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("rectangles")));
 	rectangles = new xcb_rectangle_t[maskarr_rectangles->Length()];
 	for(unsigned int i = 0; i < maskarr_rectangles->Length(); ++i) {
-		v8::Local<v8::Object> maskarr_rectangles = v8::Local<v8::Object>::Cast(obj->Get(v8::String::New("rectangles")));
 		fromJS(v8::Local<v8::Object>::Cast(maskarr_rectangles->Get(i)), rectangles + i);
 	}
 	xcb_poly_fill_rectangle(XCBJS::Config::connection, drawable, gc, rectangles_len, rectangles);
@@ -723,7 +714,6 @@ void xcbReqPolyFillArc(v8::Handle<v8::Object> obj) {
 	v8::Local<v8::Array> maskarr_arcs = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("arcs")));
 	arcs = new xcb_arc_t[maskarr_arcs->Length()];
 	for(unsigned int i = 0; i < maskarr_arcs->Length(); ++i) {
-		v8::Local<v8::Object> maskarr_arcs = v8::Local<v8::Object>::Cast(obj->Get(v8::String::New("arcs")));
 		fromJS(v8::Local<v8::Object>::Cast(maskarr_arcs->Get(i)), arcs + i);
 	}
 	xcb_poly_fill_arc(XCBJS::Config::connection, drawable, gc, arcs_len, arcs);
@@ -824,7 +814,6 @@ void xcbReqImageText16(v8::Handle<v8::Object> obj) {
 	v8::Local<v8::Array> maskarr_string = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("string")));
 	string = new xcb_char2b_t[maskarr_string->Length()];
 	for(unsigned int i = 0; i < maskarr_string->Length(); ++i) {
-		v8::Local<v8::Object> maskarr_string = v8::Local<v8::Object>::Cast(obj->Get(v8::String::New("string")));
 		fromJS(v8::Local<v8::Object>::Cast(maskarr_string->Get(i)), string + i);
 	}
 	xcb_image_text_16(XCBJS::Config::connection, string_len, drawable, gc, x, y, string);
@@ -935,7 +924,6 @@ void xcbReqStoreColors(v8::Handle<v8::Object> obj) {
 	v8::Local<v8::Array> maskarr_items = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New("items")));
 	items = new xcb_coloritem_t[maskarr_items->Length()];
 	for(unsigned int i = 0; i < maskarr_items->Length(); ++i) {
-		v8::Local<v8::Object> maskarr_items = v8::Local<v8::Object>::Cast(obj->Get(v8::String::New("items")));
 		fromJS(v8::Local<v8::Object>::Cast(maskarr_items->Get(i)), items + i);
 	}
 	xcb_store_colors(XCBJS::Config::connection, cmap, items_len, items);

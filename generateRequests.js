@@ -52,7 +52,6 @@ function partialAddList(type, name, params) {
     buf += "\tv8::Local<v8::Array> " + jsname + " = v8::Local<v8::Array>::Cast(obj->Get(v8::String::New(\"" + name + "\")));\n"
     buf += "\t" + name + " = new " + getXCBType(type) + "[" + jsname + "->Length()];\n"
     buf += "\tfor(unsigned int i = 0; i < " + jsname + "->Length(); ++i) {\n"
-    buf += "\t\tv8::Local<v8::Object> " + jsname + " = v8::Local<v8::Object>::Cast(obj->Get(v8::String::New(\"" + name + "\")));\n"
     buf += "\t\tfromJS(v8::Local<v8::Object>::Cast(" + jsname + "->Get(i)), " + name + " + i);\n"
     buf += "\t}\n"
   }
