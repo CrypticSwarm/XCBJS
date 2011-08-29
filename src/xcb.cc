@@ -51,16 +51,8 @@ public:
 
   static Handle<Value> drawRect(const Arguments& args) {
     HandleScope scope;
-    const char *usage = "usage: drawRect(window, gcContext, x, y, width, height)";
-    if (args.Length() != 3) {
-      return ThrowException(Exception::Error(String::New(usage)));
-    }
-    xcb_window_t window = args[0]->Int32Value();
-    xcb_gcontext_t black = args[1]->Int32Value();
-    xcb_rectangle_t rects[1];
-    fromJS(args[2]->ToObject(), rects);
-    xcb_poly_rectangle(Config::connection, window, black, 1, rects);
-    return scope.Close(toJS(rects));
+    xcbReqPolyRectangle(args[0]->ToObject());
+    return Undefined();
   }
 
   static Handle<Value> clearArea(const Arguments& args) {
@@ -111,31 +103,19 @@ public:
 
   static Handle<Value> mapWindow(const Arguments& args) {
     HandleScope scope;
-    xcb_window_t window = args[0]->Int32Value();
-    xcb_map_window(Config::connection, window);
+    xcbReqMapWindow(args[0]->ToObject());
     return Undefined();
   }
 
   static Handle<Value> unmapWindow(const Arguments& args) {
     HandleScope scope;
-    xcb_window_t window = args[0]->Int32Value();
-    xcb_unmap_window(Config::connection, window);
+    xcbReqUnmapWindow(args[0]->ToObject());
     return Undefined();
   }
 
   static Handle<Value> configureWindow(const Arguments& args) {
     HandleScope scope;
-    xcb_window_t window = args[0]->Int32Value();
-    uint16_t mask = (uint16_t)args[1]->Int32Value();
-    Local<Object> obj = args[2]->ToObject();
-    Local<Array> arr = obj->GetPropertyNames();
-    int len = arr->Length();
-    uint32_t *values = new uint32_t[len];
-    for (int i = 0; i < len; ++i) {
-      values[i] = obj->Get(arr->Get(i))->Int32Value();
-    }
-    xcb_configure_window(Config::connection, window, mask, values);
-    delete values;
+    xcbReqConfigureWindow(args[0]->ToObject());
     return Undefined();
   }
 

@@ -24,7 +24,7 @@ function sizeWindows() {
     , winWidth = Math.floor(width / len)
   group.forEach(function(window, i) {
     console.log("\t*resizing window : ", window)
-    xcb.configureWindow(window, 15, [i * winWidth, 0, winWidth, 600])
+    xcb.configureWindow({ window: window, value_mask: 15, value_list: [i * winWidth, 0, winWidth, 600] })
   })
   xcb.flush();
 }
@@ -33,11 +33,11 @@ function changeGroup(num) {
   if (num === curGroup) return
   console.log('switching groups to', num)
   groups[curGroup].forEach(function(window) {
-    xcb.unmapWindow(window)
+    xcb.unmapWindow({ window: window })
   })
   curGroup = num
   groups[curGroup].forEach(function(window) {
-    xcb.mapWindow(window)
+    xcb.mapWindow({ window: window })
   })
   sizeWindows()
 }
@@ -72,7 +72,7 @@ xcb.onDestroy = function(ev) {
 
 xcb.onMapRequest = function(ev) {
   console.log('\tmapping win', ev.window)
-  xcb.mapWindow(ev.window)
+  xcb.mapWindow({ window: ev.window })
   xcb.flush();
 }
 
