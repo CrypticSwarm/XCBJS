@@ -53,9 +53,7 @@
       "visuals_len": "CARD16"
     },
     "list": {
-      "fieldref": "visuals_len",
-      "type": "VISUALTYPE",
-      "name": "visuals"
+      "visuals": "VISUALTYPE"
     }
   },
   "SCREEN": {
@@ -78,9 +76,7 @@
       "allowed_depths_len": "CARD8"
     },
     "list": {
-      "fieldref": "allowed_depths_len",
-      "type": "DEPTH",
-      "name": "allowed_depths"
+      "allowed_depths": "DEPTH"
     }
   },
   "SetupRequest": {
@@ -92,14 +88,8 @@
       "authorization_protocol_data_len": "CARD16"
     },
     "list": {
-      "authorization_protocol_name": {
-        "fieldref": "authorization_protocol_name_len",
-        "type": "char"
-      },
-      "authorization_protocol_data": {
-        "fieldref": "authorization_protocol_data_len",
-        "type": "char"
-      }
+      "authorization_protocol_name": "char",
+      "authorization_protocol_data": "char"
     }
   },
   "SetupFailed": {
@@ -111,9 +101,7 @@
       "length": "CARD16"
     },
     "list": {
-      "fieldref": "reason_len",
-      "type": "char",
-      "name": "reason"
+      "reason": "char"
     }
   },
   "SetupAuthenticate": {
@@ -122,8 +110,7 @@
       "length": "CARD16"
     },
     "list": {
-      "type": "char",
-      "name": "reason"
+      "reason": "char"
     }
   },
   "Setup": {
@@ -148,18 +135,9 @@
       "max_keycode": "KEYCODE"
     },
     "list": {
-      "vendor": {
-        "fieldref": "vendor_len",
-        "type": "char"
-      },
-      "pixmap_formats": {
-        "fieldref": "pixmap_formats_len",
-        "type": "FORMAT"
-      },
-      "roots": {
-        "fieldref": "roots_len",
-        "type": "SCREEN"
-      }
+      "vendor": "char",
+      "pixmap_formats": "FORMAT",
+      "roots": "SCREEN"
     }
   },
   "TIMECOORD": {
@@ -170,7 +148,10 @@
     }
   },
   "FONTPROP": {
-    "field": {}
+    "field": {
+      "name": "ATOM",
+      "value": "CARD32"
+    }
   },
   "CHARINFO": {
     "field": {
@@ -187,9 +168,7 @@
       "name_len": "CARD8"
     },
     "list": {
-      "fieldref": "name_len",
-      "type": "char",
-      "name": "name"
+      "name": "char"
     }
   },
   "SEGMENT": {
@@ -222,9 +201,7 @@
       "address_len": "CARD16"
     },
     "list": {
-      "fieldref": "address_len",
-      "type": "BYTE",
-      "name": "address"
+      "address": "BYTE"
     }
   }
 }

@@ -74,9 +74,7 @@
   },
   "KeymapNotify": {
     "list": {
-      "value": "31",
-      "type": "CARD8",
-      "name": "keys"
+      "keys": "CARD8"
     },
     "number": "11",
     "no-sequence-number": "true"

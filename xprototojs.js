@@ -15,7 +15,7 @@ function mergeAttr(obj) {
       mergeAttr(obj[key])
     }
     if (Array.isArray(obj[key]) && 'name' in obj[key][0]) obj[key] = prepName(obj[key])
-    if (key === 'field') obj[key] = prepField(obj[key])
+    if (key === 'field' || key === 'list') obj[key] = prepField(obj[key])
     if (key === 'item') obj.values = prepItem(obj[key]), delete obj[key]
   })
   if (obj['@']) extend(obj, obj['@'])
@@ -53,9 +53,9 @@ function prepItem(item) {
   return ret
 }
 
-function prepField(field) {
+function prepField(field, t) {
   var ret = {}
-  if ('name' in field) {
+  if ('name' in field && typeof field.name != 'object') {
     ret[field.name] = field.type
     delete field.name
     return ret

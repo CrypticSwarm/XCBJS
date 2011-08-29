@@ -140,9 +140,7 @@
         "children_len": "CARD16"
       },
       "list": {
-        "fieldref": "children_len",
-        "type": "WINDOW",
-        "name": "children"
+        "children": "WINDOW"
       }
     }
   },
@@ -152,9 +150,7 @@
       "name_len": "CARD16"
     },
     "list": {
-      "fieldref": "name_len",
-      "type": "char",
-      "name": "name"
+      "name": "char"
     },
     "reply": {
       "field": {
@@ -171,9 +167,7 @@
         "name_len": "CARD16"
       },
       "list": {
-        "fieldref": "name_len",
-        "type": "char",
-        "name": "name"
+        "name": "char"
       }
     }
   },
@@ -187,8 +181,7 @@
       "data_len": "CARD32"
     },
     "list": {
-      "type": "void",
-      "name": "data"
+      "data": "void"
     }
   },
   "DeleteProperty": {
@@ -214,8 +207,7 @@
         "value_len": "CARD32"
       },
       "list": {
-        "type": "void",
-        "name": "value"
+        "value": "void"
       }
     }
   },
@@ -228,9 +220,7 @@
         "atoms_len": "CARD16"
       },
       "list": {
-        "fieldref": "atoms_len",
-        "type": "ATOM",
-        "name": "atoms"
+        "atoms": "ATOM"
       }
     }
   },
@@ -267,9 +257,7 @@
       "event_mask": "CARD32"
     },
     "list": {
-      "value": "32",
-      "type": "char",
-      "name": "event"
+      "event": "char"
     }
   },
   "GrabPointer": {
@@ -393,9 +381,7 @@
         "events_len": "CARD32"
       },
       "list": {
-        "fieldref": "events_len",
-        "type": "TIMECOORD",
-        "name": "events"
+        "events": "TIMECOORD"
       }
     }
   },
@@ -445,9 +431,7 @@
   "QueryKeymap": {
     "reply": {
       "list": {
-        "value": "32",
-        "type": "CARD8",
-        "name": "keys"
+        "keys": "CARD8"
       }
     }
   },
@@ -457,9 +441,7 @@
       "name_len": "CARD16"
     },
     "list": {
-      "fieldref": "name_len",
-      "type": "char",
-      "name": "name"
+      "name": "char"
     }
   },
   "CloseFont": {
@@ -488,14 +470,8 @@
         "char_infos_len": "CARD32"
       },
       "list": {
-        "properties": {
-          "fieldref": "properties_len",
-          "type": "FONTPROP"
-        },
-        "char_infos": {
-          "fieldref": "char_infos_len",
-          "type": "CHARINFO"
-        }
+        "properties": "FONTPROP",
+        "char_infos": "CHARINFO"
       }
     }
   },
@@ -508,8 +484,7 @@
       "font": "FONTABLE"
     },
     "list": {
-      "type": "CHAR2B",
-      "name": "string"
+      "string": "CHAR2B"
     },
     "reply": {
       "field": {
@@ -530,18 +505,14 @@
       "pattern_len": "CARD16"
     },
     "list": {
-      "fieldref": "pattern_len",
-      "type": "char",
-      "name": "pattern"
+      "pattern": "char"
     },
     "reply": {
       "field": {
         "names_len": "CARD16"
       },
       "list": {
-        "fieldref": "names_len",
-        "type": "STR",
-        "name": "names"
+        "names": "STR"
       }
     }
   },
@@ -551,9 +522,7 @@
       "pattern_len": "CARD16"
     },
     "list": {
-      "fieldref": "pattern_len",
-      "type": "char",
-      "name": "pattern"
+      "pattern": "char"
     },
     "reply": {
       "field": {
@@ -573,14 +542,8 @@
         "replies_hint": "CARD32"
       },
       "list": {
-        "properties": {
-          "fieldref": "properties_len",
-          "type": "FONTPROP"
-        },
-        "name": {
-          "fieldref": "name_len",
-          "type": "char"
-        }
+        "properties": "FONTPROP",
+        "name": "char"
       }
     }
   },
@@ -589,8 +552,7 @@
       "font_qty": "CARD16"
     },
     "list": {
-      "type": "char",
-      "name": "path"
+      "path": "char"
     }
   },
   "GetFontPath": {
@@ -599,9 +561,7 @@
         "path_len": "CARD16"
       },
       "list": {
-        "fieldref": "path_len",
-        "type": "STR",
-        "name": "path"
+        "path": "STR"
       }
     }
   },
@@ -654,9 +614,7 @@
       "dashes_len": "CARD16"
     },
     "list": {
-      "fieldref": "dashes_len",
-      "type": "CARD8",
-      "name": "dashes"
+      "dashes": "CARD8"
     }
   },
   "SetClipRectangles": {
@@ -667,8 +625,7 @@
       "clip_y_origin": "INT16"
     },
     "list": {
-      "type": "RECTANGLE",
-      "name": "rectangles"
+      "rectangles": "RECTANGLE"
     }
   },
   "FreeGC": {
@@ -720,8 +677,7 @@
       "gc": "GCONTEXT"
     },
     "list": {
-      "type": "POINT",
-      "name": "points"
+      "points": "POINT"
     }
   },
   "PolyLine": {
@@ -731,8 +687,7 @@
       "gc": "GCONTEXT"
     },
     "list": {
-      "type": "POINT",
-      "name": "points"
+      "points": "POINT"
     },
     "combine-adjacent": "true"
   },
@@ -742,8 +697,7 @@
       "gc": "GCONTEXT"
     },
     "list": {
-      "type": "SEGMENT",
-      "name": "segments"
+      "segments": "SEGMENT"
     },
     "combine-adjacent": "true"
   },
@@ -753,8 +707,7 @@
       "gc": "GCONTEXT"
     },
     "list": {
-      "type": "RECTANGLE",
-      "name": "rectangles"
+      "rectangles": "RECTANGLE"
     },
     "combine-adjacent": "true"
   },
@@ -764,8 +717,7 @@
       "gc": "GCONTEXT"
     },
     "list": {
-      "type": "ARC",
-      "name": "arcs"
+      "arcs": "ARC"
     }
   },
   "FillPoly": {
@@ -776,8 +728,7 @@
       "coordinate_mode": "CARD8"
     },
     "list": {
-      "type": "POINT",
-      "name": "points"
+      "points": "POINT"
     }
   },
   "PolyFillRectangle": {
@@ -786,8 +737,7 @@
       "gc": "GCONTEXT"
     },
     "list": {
-      "type": "RECTANGLE",
-      "name": "rectangles"
+      "rectangles": "RECTANGLE"
     },
     "combine-adjacent": "true"
   },
@@ -797,8 +747,7 @@
       "gc": "GCONTEXT"
     },
     "list": {
-      "type": "ARC",
-      "name": "arcs"
+      "arcs": "ARC"
     },
     "combine-adjacent": "true"
   },
@@ -815,8 +764,7 @@
       "depth": "CARD8"
     },
     "list": {
-      "type": "BYTE",
-      "name": "data"
+      "data": "BYTE"
     }
   },
   "GetImage": {
@@ -835,8 +783,7 @@
         "visual": "VISUALID"
       },
       "list": {
-        "type": "BYTE",
-        "name": "data"
+        "data": "BYTE"
       }
     }
   },
@@ -848,8 +795,7 @@
       "y": "INT16"
     },
     "list": {
-      "type": "BYTE",
-      "name": "items"
+      "items": "BYTE"
     }
   },
   "PolyText16": {
@@ -860,8 +806,7 @@
       "y": "INT16"
     },
     "list": {
-      "type": "BYTE",
-      "name": "items"
+      "items": "BYTE"
     }
   },
   "ImageText8": {
@@ -873,9 +818,7 @@
       "y": "INT16"
     },
     "list": {
-      "fieldref": "string_len",
-      "type": "char",
-      "name": "string"
+      "string": "char"
     }
   },
   "ImageText16": {
@@ -887,9 +830,7 @@
       "y": "INT16"
     },
     "list": {
-      "fieldref": "string_len",
-      "type": "CHAR2B",
-      "name": "string"
+      "string": "CHAR2B"
     }
   },
   "CreateColormap": {
@@ -930,9 +871,7 @@
         "cmaps_len": "CARD16"
       },
       "list": {
-        "fieldref": "cmaps_len",
-        "type": "COLORMAP",
-        "name": "cmaps"
+        "cmaps": "COLORMAP"
       }
     }
   },
@@ -958,9 +897,7 @@
       "name_len": "CARD16"
     },
     "list": {
-      "fieldref": "name_len",
-      "type": "char",
-      "name": "name"
+      "name": "char"
     },
     "reply": {
       "field": {
@@ -987,14 +924,8 @@
         "masks_len": "CARD16"
       },
       "list": {
-        "pixels": {
-          "fieldref": "pixels_len",
-          "type": "CARD32"
-        },
-        "masks": {
-          "fieldref": "masks_len",
-          "type": "CARD32"
-        }
+        "pixels": "CARD32",
+        "masks": "CARD32"
       }
     }
   },
@@ -1015,9 +946,7 @@
         "blue_mask": "CARD32"
       },
       "list": {
-        "fieldref": "pixels_len",
-        "type": "CARD32",
-        "name": "pixels"
+        "pixels": "CARD32"
       }
     }
   },
@@ -1027,8 +956,7 @@
       "plane_mask": "CARD32"
     },
     "list": {
-      "type": "CARD32",
-      "name": "pixels"
+      "pixels": "CARD32"
     }
   },
   "StoreColors": {
@@ -1036,8 +964,7 @@
       "cmap": "COLORMAP"
     },
     "list": {
-      "type": "COLORITEM",
-      "name": "items"
+      "items": "COLORITEM"
     },
     "combine-adjacent": "true"
   },
@@ -1049,9 +976,7 @@
       "name_len": "CARD16"
     },
     "list": {
-      "fieldref": "name_len",
-      "type": "char",
-      "name": "name"
+      "name": "char"
     }
   },
   "QueryColors": {
@@ -1059,17 +984,14 @@
       "cmap": "COLORMAP"
     },
     "list": {
-      "type": "CARD32",
-      "name": "pixels"
+      "pixels": "CARD32"
     },
     "reply": {
       "field": {
         "colors_len": "CARD16"
       },
       "list": {
-        "fieldref": "colors_len",
-        "type": "RGB",
-        "name": "colors"
+        "colors": "RGB"
       }
     }
   },
@@ -1079,9 +1001,7 @@
       "name_len": "CARD16"
     },
     "list": {
-      "fieldref": "name_len",
-      "type": "char",
-      "name": "name"
+      "name": "char"
     },
     "reply": {
       "field": {
@@ -1159,9 +1079,7 @@
       "name_len": "CARD16"
     },
     "list": {
-      "fieldref": "name_len",
-      "type": "char",
-      "name": "name"
+      "name": "char"
     },
     "reply": {
       "field": {
@@ -1178,9 +1096,7 @@
         "names_len": "CARD8"
       },
       "list": {
-        "fieldref": "names_len",
-        "type": "STR",
-        "name": "names"
+        "names": "STR"
       }
     }
   },
@@ -1191,8 +1107,7 @@
       "keysyms_per_keycode": "CARD8"
     },
     "list": {
-      "type": "KEYSYM",
-      "name": "keysyms"
+      "keysyms": "KEYSYM"
     }
   },
   "GetKeyboardMapping": {
@@ -1205,9 +1120,7 @@
         "keysyms_per_keycode": "BYTE"
       },
       "list": {
-        "fieldref": "length",
-        "type": "KEYSYM",
-        "name": "keysyms"
+        "keysyms": "KEYSYM"
       }
     }
   },
@@ -1229,9 +1142,7 @@
         "bell_duration": "CARD16"
       },
       "list": {
-        "value": "32",
-        "type": "CARD8",
-        "name": "auto_repeats"
+        "auto_repeats": "CARD8"
       }
     }
   },
@@ -1283,9 +1194,7 @@
       "address_len": "CARD16"
     },
     "list": {
-      "fieldref": "address_len",
-      "type": "char",
-      "name": "address"
+      "address": "char"
     }
   },
   "ListHosts": {
@@ -1295,9 +1204,7 @@
         "hosts_len": "CARD16"
       },
       "list": {
-        "fieldref": "hosts_len",
-        "type": "HOST",
-        "name": "hosts"
+        "hosts": "HOST"
       }
     }
   },
@@ -1323,9 +1230,7 @@
       "delta": "INT16"
     },
     "list": {
-      "fieldref": "atoms_len",
-      "type": "ATOM",
-      "name": "atoms"
+      "atoms": "ATOM"
     }
   },
   "ForceScreenSaver": {
@@ -1338,9 +1243,7 @@
       "map_len": "CARD8"
     },
     "list": {
-      "fieldref": "map_len",
-      "type": "CARD8",
-      "name": "map"
+      "map": "CARD8"
     },
     "reply": {
       "field": {
@@ -1354,9 +1257,7 @@
         "map_len": "CARD8"
       },
       "list": {
-        "fieldref": "map_len",
-        "type": "CARD8",
-        "name": "map"
+        "map": "CARD8"
       }
     }
   },
@@ -1365,8 +1266,7 @@
       "keycodes_per_modifier": "CARD8"
     },
     "list": {
-      "type": "KEYCODE",
-      "name": "keycodes"
+      "keycodes": "KEYCODE"
     },
     "reply": {
       "field": {
@@ -1380,8 +1280,7 @@
         "keycodes_per_modifier": "CARD8"
       },
       "list": {
-        "type": "KEYCODE",
-        "name": "keycodes"
+        "keycodes": "KEYCODE"
       }
     }
   },
