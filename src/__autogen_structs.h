@@ -404,32 +404,37 @@ void fromJS(v8::Handle<v8::Object> obj, xcb_host_t *st) {
 
 //{ { { BEGIN DOCS 
 
-v8::Handle<v8::String> structDocs(v8::Handle<v8::String> what) {
-  v8::HandleScope scope;
-  v8::String::AsciiValue str(what);
-  if(strcmp(*str, "char2b") ==0 ) return scope.Close(v8::String::New("CHAR2B: { byte1: 7\n, byte2: 7 }"));
-  if(strcmp(*str, "point") ==0 ) return scope.Close(v8::String::New("POINT: { x: 7\n, y: 7 }"));
-  if(strcmp(*str, "rectangle") ==0 ) return scope.Close(v8::String::New("RECTANGLE: { x: 7\n, y: 7\n, width: 7\n, height: 7 }"));
-  if(strcmp(*str, "arc") ==0 ) return scope.Close(v8::String::New("ARC: { x: 7\n, y: 7\n, width: 7\n, height: 7\n, angle1: 7\n, angle2: 7 }"));
-  if(strcmp(*str, "format") ==0 ) return scope.Close(v8::String::New("FORMAT: { depth: 7\n, bits_per_pixel: 7\n, scanline_pad: 7 }"));
-  if(strcmp(*str, "visualtype") ==0 ) return scope.Close(v8::String::New("VISUALTYPE: { visual_id: 7\n, class: 7\n, bits_per_rgb_value: 7\n, colormap_entries: 7\n, red_mask: 7\n, green_mask: 7\n, blue_mask: 7 }"));
-  if(strcmp(*str, "depth") ==0 ) return scope.Close(v8::String::New("DEPTH: { depth: 7\n, visuals_len: 7 }"));
-  if(strcmp(*str, "screen") ==0 ) return scope.Close(v8::String::New("SCREEN: { root: 7\n, default_colormap: 7\n, white_pixel: 7\n, black_pixel: 7\n, current_input_masks: 7\n, width_in_pixels: 7\n, height_in_pixels: 7\n, width_in_millimeters: 7\n, height_in_millimeters: 7\n, min_installed_maps: 7\n, max_installed_maps: 7\n, root_visual: 7\n, backing_stores: 7\n, save_unders: undefined\n, root_depth: 7\n, allowed_depths_len: 7 }"));
-  if(strcmp(*str, "setupRequest") ==0 ) return scope.Close(v8::String::New("SetupRequest: { byte_order: 7\n, protocol_major_version: 7\n, protocol_minor_version: 7\n, authorization_protocol_name_len: 7\n, authorization_protocol_data_len: 7 }"));
-  if(strcmp(*str, "setupFailed") ==0 ) return scope.Close(v8::String::New("SetupFailed: { status: 7\n, reason_len: 7\n, protocol_major_version: 7\n, protocol_minor_version: 7\n, length: 7 }"));
-  if(strcmp(*str, "setupAuthenticate") ==0 ) return scope.Close(v8::String::New("SetupAuthenticate: { status: 7\n, length: 7 }"));
-  if(strcmp(*str, "setup") ==0 ) return scope.Close(v8::String::New("Setup: { status: 7\n, protocol_major_version: 7\n, protocol_minor_version: 7\n, length: 7\n, release_number: 7\n, resource_id_base: 7\n, resource_id_mask: 7\n, motion_buffer_size: 7\n, vendor_len: 7\n, maximum_request_length: 7\n, roots_len: 7\n, pixmap_formats_len: 7\n, image_byte_order: 7\n, bitmap_format_bit_order: 7\n, bitmap_format_scanline_unit: 7\n, bitmap_format_scanline_pad: 7\n, min_keycode: 7\n, max_keycode: 7 }"));
-  if(strcmp(*str, "timecoord") ==0 ) return scope.Close(v8::String::New("TIMECOORD: { time: 7\n, x: 7\n, y: 7 }"));
-  if(strcmp(*str, "fontprop") ==0 ) return scope.Close(v8::String::New("FONTPROP: { name: 7\n, value: 7 }"));
-  if(strcmp(*str, "charinfo") ==0 ) return scope.Close(v8::String::New("CHARINFO: { left_side_bearing: 7\n, right_side_bearing: 7\n, character_width: 7\n, ascent: 7\n, descent: 7\n, attributes: 7 }"));
-  if(strcmp(*str, "str") ==0 ) return scope.Close(v8::String::New("STR: { name_len: 7 }"));
-  if(strcmp(*str, "segment") ==0 ) return scope.Close(v8::String::New("SEGMENT: { x1: 7\n, y1: 7\n, x2: 7\n, y2: 7 }"));
-  if(strcmp(*str, "coloritem") ==0 ) return scope.Close(v8::String::New("COLORITEM: { pixel: 7\n, red: 7\n, green: 7\n, blue: 7\n, flags: 7 }"));
-  if(strcmp(*str, "rgb") ==0 ) return scope.Close(v8::String::New("RGB: { red: 7\n, green: 7\n, blue: 7 }"));
-  if(strcmp(*str, "host") ==0 ) return scope.Close(v8::String::New("HOST: { family: 7\n, address_len: 7 }"));
-  return scope.Close(v8::String::New(""));
+static v8::Persistent<v8::Object> lookup;
+
+void InitXCB2JSStructs(v8::Persistent<v8::Object> tar) {
+  t = tar;
+  lookup = v8::Persistent<v8::Object>::New(v8::Object::New());
+  lookup->Set(v8::String::New("char2b"), v8::String::New("CHAR2B: { byte1: Integer\n, byte2: Integer }")); 
+  lookup->Set(v8::String::New("point"), v8::String::New("POINT: { x: Integer\n, y: Integer }")); 
+  lookup->Set(v8::String::New("rectangle"), v8::String::New("RECTANGLE: { x: Integer\n, y: Integer\n, width: Integer\n, height: Integer }")); 
+  lookup->Set(v8::String::New("arc"), v8::String::New("ARC: { x: Integer\n, y: Integer\n, width: Integer\n, height: Integer\n, angle1: Integer\n, angle2: Integer }")); 
+  lookup->Set(v8::String::New("format"), v8::String::New("FORMAT: { depth: Integer\n, bits_per_pixel: Integer\n, scanline_pad: Integer }")); 
+  lookup->Set(v8::String::New("visualtype"), v8::String::New("VISUALTYPE: { visual_id: Integer\n, class: Integer\n, bits_per_rgb_value: Integer\n, colormap_entries: Integer\n, red_mask: Integer\n, green_mask: Integer\n, blue_mask: Integer }")); 
+  lookup->Set(v8::String::New("depth"), v8::String::New("DEPTH: { depth: Integer\n, visuals_len: Integer }")); 
+  lookup->Set(v8::String::New("screen"), v8::String::New("SCREEN: { root: Integer\n, default_colormap: Integer\n, white_pixel: Integer\n, black_pixel: Integer\n, current_input_masks: Integer\n, width_in_pixels: Integer\n, height_in_pixels: Integer\n, width_in_millimeters: Integer\n, height_in_millimeters: Integer\n, min_installed_maps: Integer\n, max_installed_maps: Integer\n, root_visual: Integer\n, backing_stores: Integer\n, save_unders: Boolean\n, root_depth: Integer\n, allowed_depths_len: Integer }")); 
+  lookup->Set(v8::String::New("setupRequest"), v8::String::New("SetupRequest: { byte_order: Integer\n, protocol_major_version: Integer\n, protocol_minor_version: Integer\n, authorization_protocol_name_len: Integer\n, authorization_protocol_data_len: Integer }")); 
+  lookup->Set(v8::String::New("setupFailed"), v8::String::New("SetupFailed: { status: Integer\n, reason_len: Integer\n, protocol_major_version: Integer\n, protocol_minor_version: Integer\n, length: Integer }")); 
+  lookup->Set(v8::String::New("setupAuthenticate"), v8::String::New("SetupAuthenticate: { status: Integer\n, length: Integer }")); 
+  lookup->Set(v8::String::New("setup"), v8::String::New("Setup: { status: Integer\n, protocol_major_version: Integer\n, protocol_minor_version: Integer\n, length: Integer\n, release_number: Integer\n, resource_id_base: Integer\n, resource_id_mask: Integer\n, motion_buffer_size: Integer\n, vendor_len: Integer\n, maximum_request_length: Integer\n, roots_len: Integer\n, pixmap_formats_len: Integer\n, image_byte_order: Integer\n, bitmap_format_bit_order: Integer\n, bitmap_format_scanline_unit: Integer\n, bitmap_format_scanline_pad: Integer\n, min_keycode: Integer\n, max_keycode: Integer }")); 
+  lookup->Set(v8::String::New("timecoord"), v8::String::New("TIMECOORD: { time: Integer\n, x: Integer\n, y: Integer }")); 
+  lookup->Set(v8::String::New("fontprop"), v8::String::New("FONTPROP: { name: Integer\n, value: Integer }")); 
+  lookup->Set(v8::String::New("charinfo"), v8::String::New("CHARINFO: { left_side_bearing: Integer\n, right_side_bearing: Integer\n, character_width: Integer\n, ascent: Integer\n, descent: Integer\n, attributes: Integer }")); 
+  lookup->Set(v8::String::New("str"), v8::String::New("STR: { name_len: Integer }")); 
+  lookup->Set(v8::String::New("segment"), v8::String::New("SEGMENT: { x1: Integer\n, y1: Integer\n, x2: Integer\n, y2: Integer }")); 
+  lookup->Set(v8::String::New("coloritem"), v8::String::New("COLORITEM: { pixel: Integer\n, red: Integer\n, green: Integer\n, blue: Integer\n, flags: Integer }")); 
+  lookup->Set(v8::String::New("rgb"), v8::String::New("RGB: { red: Integer\n, green: Integer\n, blue: Integer }")); 
+  lookup->Set(v8::String::New("host"), v8::String::New("HOST: { family: Integer\n, address_len: Integer }")); 
 }
 
+v8::Handle<v8::String> structDocs(v8::Handle<v8::String> what) {
+  v8::HandleScope scope;
+  return scope.Close(v8::Handle<v8::String>::Cast(lookup->Get(what)));
+}
 
 // END DOCS } } }
 

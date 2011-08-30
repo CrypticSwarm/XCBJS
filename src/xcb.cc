@@ -17,7 +17,7 @@ using namespace node;
 using namespace XCBJS;
 
 static xcb_screen_t *screen;
-Persistent<Object> t;
+static Persistent<Object> t;
 
 class XCBJS {
 
@@ -41,8 +41,9 @@ public:
     NODE_SET_METHOD(target, "manageWindows", XCBJS::manageWindows);
     NODE_SET_METHOD(target, "getRoot", XCBJS::getRoot);
     NODE_SET_METHOD(target, "getScreen", XCBJS::getScreen);
-    NODE_SET_METHOD(target, "help", XCBJS::sDocs);
+    NODE_SET_METHOD(target, "help", XCBJS::help);
     Event::Init(target);
+    InitXCB2JSStructs(t);
   }
 
   static Handle<Value> getScreen(const Arguments& args) {
@@ -137,11 +138,14 @@ public:
     return scope.Close(Integer::New(screen->root));
   }
 
-  static Handle<Value> sDocs(const Arguments& args) {
+  static Handle<Value> help(const Arguments& args) {
     HandleScope scope;
-    return scope.Close(structDocs(Handle<String>::Cast(args[0])));
+    Handle<String> help = Handle<String>::Cast(args[0]);
+    Handle<String> str = eventDocs(help);
+    if (str->Equals(Undefined())) str = structDocs(help);
+    return scope.Close(str);
   }
-
+  
 private:
 };
 

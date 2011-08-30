@@ -1,11 +1,54 @@
 #ifndef __AUTOGENCTOJSXCBEVENTS__
 #define __AUTOGENCTOJSXCBEVENTS__
-#include <v8.h>
 
 static v8::Persistent<v8::Object> t;
+namespace XCBJS {
+
+#include <v8.h>
+
+static v8::Persistent<v8::Object> lookup;
 
 void InitXCB2JSEvents(v8::Persistent<v8::Object> tar) {
   t = tar;
+  lookup = v8::Persistent<v8::Object>::New(v8::Object::New());
+  lookup->Set(v8::String::New("keyPress"), v8::String::New("KeyPress: { detail: Integer\n, time: Integer\n, root: Integer\n, event: Integer\n, child: Integer\n, root_x: Integer\n, root_y: Integer\n, event_x: Integer\n, event_y: Integer\n, state: Integer\n, same_screen: Boolean }")); 
+  lookup->Set(v8::String::New("buttonPress"), v8::String::New("ButtonPress: { detail: Integer\n, time: Integer\n, root: Integer\n, event: Integer\n, child: Integer\n, root_x: Integer\n, root_y: Integer\n, event_x: Integer\n, event_y: Integer\n, state: Integer\n, same_screen: Boolean }")); 
+  lookup->Set(v8::String::New("motionNotify"), v8::String::New("MotionNotify: { detail: Integer\n, time: Integer\n, root: Integer\n, event: Integer\n, child: Integer\n, root_x: Integer\n, root_y: Integer\n, event_x: Integer\n, event_y: Integer\n, state: Integer\n, same_screen: Boolean }")); 
+  lookup->Set(v8::String::New("enterNotify"), v8::String::New("EnterNotify: { detail: Integer\n, time: Integer\n, root: Integer\n, event: Integer\n, child: Integer\n, root_x: Integer\n, root_y: Integer\n, event_x: Integer\n, event_y: Integer\n, state: Integer\n, mode: Integer\n, same_screen_focus: Integer }")); 
+  lookup->Set(v8::String::New("focusIn"), v8::String::New("FocusIn: { detail: Integer\n, event: Integer\n, mode: Integer }")); 
+  lookup->Set(v8::String::New("keymapNotify"), v8::String::New("KeymapNotify: { }")); 
+  lookup->Set(v8::String::New("expose"), v8::String::New("Expose: { window: Integer\n, x: Integer\n, y: Integer\n, width: Integer\n, height: Integer\n, count: Integer }")); 
+  lookup->Set(v8::String::New("graphicsExposure"), v8::String::New("GraphicsExposure: { drawable: Integer\n, x: Integer\n, y: Integer\n, width: Integer\n, height: Integer\n, minor_opcode: Integer\n, count: Integer\n, major_opcode: Integer }")); 
+  lookup->Set(v8::String::New("noExposure"), v8::String::New("NoExposure: { drawable: Integer\n, minor_opcode: Integer\n, major_opcode: Integer }")); 
+  lookup->Set(v8::String::New("visibilityNotify"), v8::String::New("VisibilityNotify: { window: Integer\n, state: Integer }")); 
+  lookup->Set(v8::String::New("createNotify"), v8::String::New("CreateNotify: { parent: Integer\n, window: Integer\n, x: Integer\n, y: Integer\n, width: Integer\n, height: Integer\n, border_width: Integer\n, override_redirect: Boolean }")); 
+  lookup->Set(v8::String::New("destroyNotify"), v8::String::New("DestroyNotify: { event: Integer\n, window: Integer }")); 
+  lookup->Set(v8::String::New("unmapNotify"), v8::String::New("UnmapNotify: { event: Integer\n, window: Integer\n, from_configure: Boolean }")); 
+  lookup->Set(v8::String::New("mapNotify"), v8::String::New("MapNotify: { event: Integer\n, window: Integer\n, override_redirect: Boolean }")); 
+  lookup->Set(v8::String::New("mapRequest"), v8::String::New("MapRequest: { parent: Integer\n, window: Integer }")); 
+  lookup->Set(v8::String::New("reparentNotify"), v8::String::New("ReparentNotify: { event: Integer\n, window: Integer\n, parent: Integer\n, x: Integer\n, y: Integer\n, override_redirect: Boolean }")); 
+  lookup->Set(v8::String::New("configureNotify"), v8::String::New("ConfigureNotify: { event: Integer\n, window: Integer\n, above_sibling: Integer\n, x: Integer\n, y: Integer\n, width: Integer\n, height: Integer\n, border_width: Integer\n, override_redirect: Boolean }")); 
+  lookup->Set(v8::String::New("configureRequest"), v8::String::New("ConfigureRequest: { stack_mode: Integer\n, parent: Integer\n, window: Integer\n, sibling: Integer\n, x: Integer\n, y: Integer\n, width: Integer\n, height: Integer\n, border_width: Integer\n, value_mask: Integer }")); 
+  lookup->Set(v8::String::New("gravityNotify"), v8::String::New("GravityNotify: { event: Integer\n, window: Integer\n, x: Integer\n, y: Integer }")); 
+  lookup->Set(v8::String::New("resizeRequest"), v8::String::New("ResizeRequest: { window: Integer\n, width: Integer\n, height: Integer }")); 
+  lookup->Set(v8::String::New("circulateNotify"), v8::String::New("CirculateNotify: { event: Integer\n, window: Integer\n, place: Integer }")); 
+  lookup->Set(v8::String::New("propertyNotify"), v8::String::New("PropertyNotify: { window: Integer\n, atom: Integer\n, time: Integer\n, state: Integer }")); 
+  lookup->Set(v8::String::New("selectionClear"), v8::String::New("SelectionClear: { time: Integer\n, owner: Integer\n, selection: Integer }")); 
+  lookup->Set(v8::String::New("selectionRequest"), v8::String::New("SelectionRequest: { time: Integer\n, owner: Integer\n, requestor: Integer\n, selection: Integer\n, target: Integer\n, property: Integer }")); 
+  lookup->Set(v8::String::New("selectionNotify"), v8::String::New("SelectionNotify: { time: Integer\n, requestor: Integer\n, selection: Integer\n, target: Integer\n, property: Integer }")); 
+  lookup->Set(v8::String::New("colormapNotify"), v8::String::New("ColormapNotify: { window: Integer\n, colormap: Integer\n, new: Boolean\n, state: Integer }")); 
+  lookup->Set(v8::String::New("clientMessage"), v8::String::New("ClientMessage: { format: Integer\n, window: Integer\n, type: Integer\n, data: undefined }")); 
+  lookup->Set(v8::String::New("mappingNotify"), v8::String::New("MappingNotify: { request: Integer\n, first_keycode: Integer\n, count: Integer }")); 
+  lookup->Set(v8::String::New("keyRelease"), v8::String::New("KeyRelease: { detail: Integer\n, time: Integer\n, root: Integer\n, event: Integer\n, child: Integer\n, root_x: Integer\n, root_y: Integer\n, event_x: Integer\n, event_y: Integer\n, state: Integer\n, same_screen: Boolean }")); 
+  lookup->Set(v8::String::New("buttonRelease"), v8::String::New("ButtonRelease: { detail: Integer\n, time: Integer\n, root: Integer\n, event: Integer\n, child: Integer\n, root_x: Integer\n, root_y: Integer\n, event_x: Integer\n, event_y: Integer\n, state: Integer\n, same_screen: Boolean }")); 
+  lookup->Set(v8::String::New("leaveNotify"), v8::String::New("LeaveNotify: { detail: Integer\n, time: Integer\n, root: Integer\n, event: Integer\n, child: Integer\n, root_x: Integer\n, root_y: Integer\n, event_x: Integer\n, event_y: Integer\n, state: Integer\n, mode: Integer\n, same_screen_focus: Integer }")); 
+  lookup->Set(v8::String::New("focusOut"), v8::String::New("FocusOut: { detail: Integer\n, event: Integer\n, mode: Integer }")); 
+  lookup->Set(v8::String::New("circulateRequest"), v8::String::New("CirculateRequest: { event: Integer\n, window: Integer\n, place: Integer }")); 
+}
+
+v8::Handle<v8::String> eventDocs(v8::Handle<v8::String> what) {
+  v8::HandleScope scope;
+  return scope.Close(v8::Handle<v8::String>::Cast(lookup->Get(what)));
 }
 
 //{ { { BEGIN SYMBOL CREATION 
@@ -439,4 +482,5 @@ inline int distributeEvent(xcb_generic_event_t *ev) {
   return 0;
 }
 
+}
 #endif

@@ -30,15 +30,20 @@ void fromJS(v8::Handle<v8::Object> obj, ${XCBType(structName)} *st) {
 
 //{ { { BEGIN DOCS 
 
-v8::Handle<v8::String> structDocs(v8::Handle<v8::String> what) {
-  v8::HandleScope scope;
-  v8::String::AsciiValue str(what);
-{{each(structName, attr) structs}}
-  if(strcmp(*str, "${DocName(structName)}") ==0 ) return scope.Close(v8::String::New("${structName}: ${getDocHelp(structName)}"));
+static v8::Persistent<v8::Object> lookup;
+
+void InitXCB2JSStructs(v8::Persistent<v8::Object> tar) {
+  t = tar;
+  lookup = v8::Persistent<v8::Object>::New(v8::Object::New());
+{{each(structName, struct) structs}}
+  lookup->Set(v8::String::New("${DocName(structName)}"), v8::String::New("${structName}: ${getDocHelp(structName, structs)}")); 
 {{/each}}
-  return scope.Close(v8::String::New(""));
 }
 
+v8::Handle<v8::String> structDocs(v8::Handle<v8::String> what) {
+  v8::HandleScope scope;
+  return scope.Close(v8::Handle<v8::String>::Cast(lookup->Get(what)));
+}
 
 // END DOCS } } }
 

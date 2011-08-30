@@ -72,18 +72,15 @@ function DocName(short) {
   return getXCBType(short).replace(/xcb_|_t/g, '').replace(/_[a-z]/g, function(m) { return m[1].toUpperCase() })
 }
 
-function getDocHelp(short) {
-  return '{ ' + Object.keys(structs[short].field).map(function(field) {
-    return field + ": " + getJSTypeExample(JSType(structs[short].field[field]))
+function getDocHelp(short, section) {
+  if (!section[short].field && section[short].ref) short = section[short].ref
+  if (!section[short].field) return '{ }'
+  return '{ ' + Object.keys(section[short].field).map(function(field) {
+    return field + ": " + getJSTypeExample(JSType(section[short].field[field]))
   }).join('\\n, ') + ' }'
 }
 
 function getJSTypeExample(type) {
-  switch(type) {
-    case "Integer": return 7
-    case "String": return "\\\"I am a string\\\""
-    case "Bool": return true
-    case "Date": return "\\\"2011-01-22\\\""
-  }
+  return type
 }
 

@@ -1,11 +1,24 @@
 #ifndef __AUTOGENCTOJSXCBEVENTS__
 #define __AUTOGENCTOJSXCBEVENTS__
-#include <v8.h>
 
 static v8::Persistent<v8::Object> t;
+namespace XCBJS {
+
+#include <v8.h>
+
+static v8::Persistent<v8::Object> lookup;
 
 void InitXCB2JSEvents(v8::Persistent<v8::Object> tar) {
   t = tar;
+  lookup = v8::Persistent<v8::Object>::New(v8::Object::New());
+{{each(eventName, event) events}}
+  lookup->Set(v8::String::New("${DocName(eventName)}"), v8::String::New("${eventName}: ${getDocHelp(eventName, events)}")); 
+{{/each}}
+}
+
+v8::Handle<v8::String> eventDocs(v8::Handle<v8::String> what) {
+  v8::HandleScope scope;
+  return scope.Close(v8::Handle<v8::String>::Cast(lookup->Get(what)));
 }
 
 //{ { { BEGIN SYMBOL CREATION 
@@ -62,4 +75,5 @@ inline int distributeEvent(xcb_generic_event_t *ev) {
   return 0;
 }
 
+}
 #endif
