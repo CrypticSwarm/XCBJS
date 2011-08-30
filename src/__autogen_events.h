@@ -407,7 +407,6 @@ inline int distributeEvent(xcb_generic_event_t *ev) {
     case XCB_MOTION_NOTIFY: return handle_event((xcb_motion_notify_event_t *) ev, onMotionNotifySym, prepareMotionNotifyEvent);
     case XCB_ENTER_NOTIFY: return handle_event((xcb_enter_notify_event_t *) ev, onEnterNotifySym, prepareEnterNotifyEvent);
     case XCB_FOCUS_IN: return handle_event((xcb_focus_in_event_t *) ev, onFocusInSym, prepareFocusInEvent);
-    case XCB_KEYMAP_NOTIFY: return handle_event((xcb_keymap_notify_event_t *) ev, onKeymapNotifySym, prepareKeymapNotifyEvent);
     case XCB_EXPOSE: return handle_event((xcb_expose_event_t *) ev, onExposeSym, prepareExposeEvent);
     case XCB_GRAPHICS_EXPOSURE: return handle_event((xcb_graphics_exposure_event_t *) ev, onGraphicsExposureSym, prepareGraphicsExposureEvent);
     case XCB_NO_EXPOSURE: return handle_event((xcb_no_exposure_event_t *) ev, onNoExposureSym, prepareNoExposureEvent);

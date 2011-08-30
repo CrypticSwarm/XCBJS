@@ -53,7 +53,9 @@ int handle_event(T ev, v8::Handle<v8::String> sym, v8::Handle<v8::Object> (*cb)(
 inline int distributeEvent(xcb_generic_event_t *ev) {
   switch(ev->response_type & ~0x80) {
 {{each(eventName, event) events}}
+{{if event.field || event.ref}}
     case ${xcbEnumName(eventName)}: return handle_event((${xcbEventType(eventName)} *) ev, ${getSymName(eventName)}, ${getPrepName(eventName)});
+{{/if}}
 {{/each}}
     default: delete ev;
   }
