@@ -8,9 +8,9 @@
 v8::Handle<v8::Object> toJS(${XCBType(structName)} *st) {
   v8::HandleScope scope;
   v8::Local<v8::Object> obj = v8::Object::New();
-{{each(propName, type) attr.field}}
-  {{if JSType(type, structName)}}
-  obj->Set(v8::String::New("${propName}"), v8::${JSType(type)}::New(st->${prepPropName(propName)}));
+{{each(i, field) attr.field}}
+  {{if field.fieldType == 'field' && JSType(field.type, structName)}}
+  obj->Set(v8::String::New("${field.name}"), v8::${JSType(field.type)}::New(st->${prepPropName(field.name)}));
   {{/if}}
 {{/each}}
   return scope.Close(obj);
@@ -18,9 +18,9 @@ v8::Handle<v8::Object> toJS(${XCBType(structName)} *st) {
 
 void fromJS(v8::Handle<v8::Object> obj, ${XCBType(structName)} *st) {
   v8::HandleScope scope;
-{{each(propName, type) attr.field}}
-  {{if JSType(type, structName)}}
-  st->${prepPropName(propName)} = (${XCBType(type)}) obj->Get(v8::String::New("${propName}"))->${JSType(type)}Value();
+{{each(i, field) attr.field}}
+  {{if field.fieldType == 'field' && JSType(field.type, structName)}}
+  st->${prepPropName(field.name)} = (${XCBType(field.type)}) obj->Get(v8::String::New("${field.name}"))->${JSType(field.type)}Value();
   {{/if}}
 {{/each}}
 }

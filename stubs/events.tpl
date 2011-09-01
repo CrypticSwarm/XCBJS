@@ -31,15 +31,15 @@ static v8::Persistent<v8::String> ${getSymName(eventName)} = v8::Persistent<v8::
 //{ { { BEGIN EVENT PREP 
 
 {{each(eventName, event) events}}
-{{if event.field}}
+{{if event.field }}
 
 template <typename T>
 v8::Handle<v8::Object> ${getPrepName(eventName)}(const T& ev) {
   v8::HandleScope scope;
   v8::Local<v8::Object> obj = v8::Object::New();
-  {{each(propName, type) event.field}}
-    {{if JSType(type)}}
-  obj->Set(v8::String::New("${propName}"), v8::${JSType(type)}::New(ev->${prepPropName(propName)}));
+  {{each(num, field) event.field}}
+    {{if field.fieldType == 'field' && JSType(field.type)}}
+  obj->Set(v8::String::New("${field.name}"), v8::${JSType(field.type)}::New(ev->${prepPropName(field.name)}));
     {{/if}}
   {{/each}}
   return scope.Close(obj);
@@ -66,9 +66,7 @@ int handle_event(T ev, v8::Handle<v8::String> sym, v8::Handle<v8::Object> (*cb)(
 inline int distributeEvent(xcb_generic_event_t *ev) {
   switch(ev->response_type & ~0x80) {
 {{each(eventName, event) events}}
-{{if event.field || event.ref}}
     case ${xcbEnumName(eventName)}: return handle_event((${xcbEventType(eventName)} *) ev, ${getSymName(eventName)}, ${getPrepName(eventName)});
-{{/if}}
 {{/each}}
     default: delete ev;
   }
