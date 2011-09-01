@@ -1,10 +1,9 @@
 var fs = require('fs')
   , jqtpl = require("jqtpl")
-  , typeLookup = JSON.parse(fs.readFileSync('xTypes.json'))
+  , typeLookup = JSON.parse(fs.readFileSync('protocols/xTypes.json'))
+  , xProto = JSON.parse(fs.readFileSync('protocols/xProtocol.json'))
   , jsTypes = typeLookup.xtojs
   , cTypes = typeLookup.xtoc
-  , events = JSON.parse(fs.readFileSync('xEvents.json'))
-  , structs = JSON.parse(fs.readFileSync('xStructs.json'))
   , data =
     { prepPropName: prepPropName
     , xcbEventType: xcbEventType
@@ -13,15 +12,22 @@ var fs = require('fs')
     , shortEventName: shortEventName
     , getPrepName: getPrepName
     , getSymName: getSymName
-    , events: events
     , XCBType: getXCBType
     , getJSTypeExample: getJSTypeExample
     , getDocHelp: getDocHelp
     , DocName: DocName
-    , structs: structs
+    , enumValue: enumValue
+    , events: xProto.event
+    , structs: xProto.struct
+    , requests: xProto.request
+    , enums: xProto.enum
     }
 
-;['events', 'structs'].forEach(function(name) {
+Object.keys(xProto.eventcopy).forEach(function(x) {
+  data.events[x] = xProto.eventcopy[x]
+})
+
+;['events', 'structs', 'enum'].forEach(function(name) {
   var tplFile = fs.readFileSync('stubs/' + name + '.tpl').toString().replace(/\n\s*{{/g, '{{').replace(/}}\s*$/g, '}}')
   fs.writeFileSync('src/__autogen_' + name + '.h', jqtpl.tmpl(tplFile, data))
 })
@@ -31,7 +37,7 @@ function getSymName(short) {
 }
 
 function getPrepName(short) {
-  if (events[short].ref) short = events[short].ref
+  if (!data.events[short].field && data.events[short].ref) short = data.events[short].ref
   return "prepare" + short + "Event"
 }
 
@@ -75,8 +81,10 @@ function DocName(short) {
 function getDocHelp(short, section) {
   if (!section[short].field && section[short].ref) short = section[short].ref
   if (!section[short].field) return '{ }'
-  return '{ ' + Object.keys(section[short].field).map(function(field) {
-    return field + ": " + getJSTypeExample(JSType(section[short].field[field]))
+  return '{ ' + section[short].field.filter(function(field) {
+    return field.fieldType == 'field'
+  }).map(function(field) {
+    return field.name + ": " + getJSTypeExample(JSType(field.type))
   }).join('\\n, ') + ' }'
 }
 
@@ -84,3 +92,6 @@ function getJSTypeExample(type) {
   return type
 }
 
+function enumValue(enumItem){
+  return enumItem.value ? enumItem.value : 1 << parseInt(enumItem.bit)
+}

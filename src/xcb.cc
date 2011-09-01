@@ -8,6 +8,7 @@
 #include "events.cc"
 #include "structs.cc"
 #include "__autogen_requests.h"
+#include "__autogen_enum.h"
 
 namespace XCBJS {
 
@@ -44,6 +45,7 @@ public:
     NODE_SET_METHOD(target, "help", XCBJS::help);
     Event::Init(target);
     InitXCB2JSStructs(t);
+    Enum::Init(t);
   }
 
   static Handle<Value> getScreen(const Arguments& args) {
