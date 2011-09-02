@@ -15,6 +15,12 @@ v8::Handle<v8::Value> CreateWindow(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: CreateWindow(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t depth = (uint8_t) obj->Get(v8::String::New("depth"))->IntegerValue();
   xcb_window_t wid = (xcb_window_t) obj->Get(v8::String::New("wid"))->IntegerValue();
@@ -44,6 +50,12 @@ v8::Handle<v8::Value> ChangeWindowAttributes(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: ChangeWindowAttributes(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
   uint32_t value_mask = (uint32_t) obj->Get(v8::String::New("value_mask"))->IntegerValue();
@@ -64,6 +76,12 @@ v8::Handle<v8::Value> GetWindowAttributes(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: GetWindowAttributes(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
   xcb_get_window_attributes(XCBJS::Config::connection, window);
@@ -75,6 +93,12 @@ v8::Handle<v8::Value> DestroyWindow(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: DestroyWindow(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
@@ -88,6 +112,12 @@ v8::Handle<v8::Value> DestroySubwindows(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: DestroySubwindows(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
   xcb_destroy_subwindows(XCBJS::Config::connection, window);
@@ -99,6 +129,12 @@ v8::Handle<v8::Value> ChangeSaveSet(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: ChangeSaveSet(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t mode = (uint8_t) obj->Get(v8::String::New("mode"))->IntegerValue();
@@ -112,6 +148,12 @@ v8::Handle<v8::Value> ReparentWindow(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: ReparentWindow(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
@@ -128,6 +170,12 @@ v8::Handle<v8::Value> MapWindow(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: MapWindow(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
   xcb_map_window(XCBJS::Config::connection, window);
@@ -139,6 +187,12 @@ v8::Handle<v8::Value> MapSubwindows(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: MapSubwindows(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
@@ -152,6 +206,12 @@ v8::Handle<v8::Value> UnmapWindow(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: UnmapWindow(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
   xcb_unmap_window(XCBJS::Config::connection, window);
@@ -164,6 +224,12 @@ v8::Handle<v8::Value> UnmapSubwindows(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: UnmapSubwindows(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
   xcb_unmap_subwindows(XCBJS::Config::connection, window);
@@ -175,6 +241,12 @@ v8::Handle<v8::Value> ConfigureWindow(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: ConfigureWindow(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
@@ -196,6 +268,12 @@ v8::Handle<v8::Value> CirculateWindow(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: CirculateWindow(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t direction = (uint8_t) obj->Get(v8::String::New("direction"))->IntegerValue();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
@@ -209,6 +287,12 @@ v8::Handle<v8::Value> GetGeometry(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: GetGeometry(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
   xcb_get_geometry(XCBJS::Config::connection, drawable);
@@ -221,6 +305,12 @@ v8::Handle<v8::Value> QueryTree(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: QueryTree(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
   xcb_query_tree(XCBJS::Config::connection, window);
@@ -232,6 +322,12 @@ v8::Handle<v8::Value> InternAtom(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: InternAtom(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t only_if_exists = (uint8_t) obj->Get(v8::String::New("only_if_exists"))->BooleanValue();
@@ -251,6 +347,12 @@ v8::Handle<v8::Value> GetAtomName(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: GetAtomName(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_atom_t atom = (xcb_atom_t) obj->Get(v8::String::New("atom"))->IntegerValue();
   xcb_get_atom_name(XCBJS::Config::connection, atom);
@@ -262,6 +364,12 @@ v8::Handle<v8::Value> ChangeProperty(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: ChangeProperty(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t mode = (uint8_t) obj->Get(v8::String::New("mode"))->IntegerValue();
@@ -285,6 +393,12 @@ v8::Handle<v8::Value> DeleteProperty(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: DeleteProperty(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
   xcb_atom_t property = (xcb_atom_t) obj->Get(v8::String::New("property"))->IntegerValue();
@@ -297,6 +411,12 @@ v8::Handle<v8::Value> GetProperty(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: GetProperty(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t _delete = (uint8_t) obj->Get(v8::String::New("delete"))->BooleanValue();
@@ -315,6 +435,12 @@ v8::Handle<v8::Value> ListProperties(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: ListProperties(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
   xcb_list_properties(XCBJS::Config::connection, window);
@@ -326,6 +452,12 @@ v8::Handle<v8::Value> SetSelectionOwner(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: SetSelectionOwner(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t owner = (xcb_window_t) obj->Get(v8::String::New("owner"))->IntegerValue();
@@ -341,6 +473,12 @@ v8::Handle<v8::Value> GetSelectionOwner(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: GetSelectionOwner(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_atom_t selection = (xcb_atom_t) obj->Get(v8::String::New("selection"))->IntegerValue();
   xcb_get_selection_owner(XCBJS::Config::connection, selection);
@@ -352,6 +490,12 @@ v8::Handle<v8::Value> ConvertSelection(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: ConvertSelection(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t requestor = (xcb_window_t) obj->Get(v8::String::New("requestor"))->IntegerValue();
@@ -368,6 +512,12 @@ v8::Handle<v8::Value> SendEvent(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: SendEvent(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t propagate = (uint8_t) obj->Get(v8::String::New("propagate"))->BooleanValue();
@@ -388,6 +538,12 @@ v8::Handle<v8::Value> GrabPointer(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: GrabPointer(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t owner_events = (uint8_t) obj->Get(v8::String::New("owner_events"))->BooleanValue();
   xcb_window_t grab_window = (xcb_window_t) obj->Get(v8::String::New("grab_window"))->IntegerValue();
@@ -407,6 +563,12 @@ v8::Handle<v8::Value> UngrabPointer(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: UngrabPointer(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_timestamp_t time = (xcb_timestamp_t) obj->Get(v8::String::New("time"))->IntegerValue();
   xcb_ungrab_pointer(XCBJS::Config::connection, time);
@@ -418,6 +580,12 @@ v8::Handle<v8::Value> GrabButton(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: GrabButton(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t owner_events = (uint8_t) obj->Get(v8::String::New("owner_events"))->BooleanValue();
@@ -439,6 +607,12 @@ v8::Handle<v8::Value> UngrabButton(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: UngrabButton(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t button = (uint8_t) obj->Get(v8::String::New("button"))->IntegerValue();
   xcb_window_t grab_window = (xcb_window_t) obj->Get(v8::String::New("grab_window"))->IntegerValue();
@@ -453,6 +627,12 @@ v8::Handle<v8::Value> ChangeActivePointerGrab(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: ChangeActivePointerGrab(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_cursor_t cursor = (xcb_cursor_t) obj->Get(v8::String::New("cursor"))->IntegerValue();
   xcb_timestamp_t time = (xcb_timestamp_t) obj->Get(v8::String::New("time"))->IntegerValue();
@@ -466,6 +646,12 @@ v8::Handle<v8::Value> GrabKeyboard(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: GrabKeyboard(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t owner_events = (uint8_t) obj->Get(v8::String::New("owner_events"))->BooleanValue();
@@ -483,6 +669,12 @@ v8::Handle<v8::Value> UngrabKeyboard(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: UngrabKeyboard(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_timestamp_t time = (xcb_timestamp_t) obj->Get(v8::String::New("time"))->IntegerValue();
   xcb_ungrab_keyboard(XCBJS::Config::connection, time);
@@ -494,6 +686,12 @@ v8::Handle<v8::Value> GrabKey(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: GrabKey(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t owner_events = (uint8_t) obj->Get(v8::String::New("owner_events"))->BooleanValue();
@@ -512,6 +710,12 @@ v8::Handle<v8::Value> UngrabKey(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: UngrabKey(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_keycode_t key = (xcb_keycode_t) obj->Get(v8::String::New("key"))->IntegerValue();
   xcb_window_t grab_window = (xcb_window_t) obj->Get(v8::String::New("grab_window"))->IntegerValue();
@@ -526,6 +730,12 @@ v8::Handle<v8::Value> AllowEvents(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: AllowEvents(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t mode = (uint8_t) obj->Get(v8::String::New("mode"))->IntegerValue();
   xcb_timestamp_t time = (xcb_timestamp_t) obj->Get(v8::String::New("time"))->IntegerValue();
@@ -539,7 +749,9 @@ v8::Handle<v8::Value> GrabServer(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: GrabServer(cb)";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
-  v8::Handle<v8::Object> obj = args[0]->ToObject();
+  if (!args[0]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Callback.")));
+  }
   xcb_grab_server(XCBJS::Config::connection);
   return Undefined();
 }
@@ -550,7 +762,9 @@ v8::Handle<v8::Value> UngrabServer(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: UngrabServer(cb)";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
-  v8::Handle<v8::Object> obj = args[0]->ToObject();
+  if (!args[0]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Callback.")));
+  }
   xcb_ungrab_server(XCBJS::Config::connection);
   return Undefined();
 }
@@ -560,6 +774,12 @@ v8::Handle<v8::Value> QueryPointer(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: QueryPointer(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
@@ -572,6 +792,12 @@ v8::Handle<v8::Value> GetMotionEvents(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: GetMotionEvents(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
@@ -587,6 +813,12 @@ v8::Handle<v8::Value> TranslateCoordinates(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: TranslateCoordinates(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t src_window = (xcb_window_t) obj->Get(v8::String::New("src_window"))->IntegerValue();
   xcb_window_t dst_window = (xcb_window_t) obj->Get(v8::String::New("dst_window"))->IntegerValue();
@@ -601,6 +833,12 @@ v8::Handle<v8::Value> WarpPointer(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: WarpPointer(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t src_window = (xcb_window_t) obj->Get(v8::String::New("src_window"))->IntegerValue();
@@ -621,6 +859,12 @@ v8::Handle<v8::Value> SetInputFocus(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: SetInputFocus(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t revert_to = (uint8_t) obj->Get(v8::String::New("revert_to"))->IntegerValue();
   xcb_window_t focus = (xcb_window_t) obj->Get(v8::String::New("focus"))->IntegerValue();
@@ -635,7 +879,9 @@ v8::Handle<v8::Value> GetInputFocus(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: GetInputFocus(cb)";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
-  v8::Handle<v8::Object> obj = args[0]->ToObject();
+  if (!args[0]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Callback.")));
+  }
   xcb_get_input_focus(XCBJS::Config::connection);
   return Undefined();
 }
@@ -646,7 +892,9 @@ v8::Handle<v8::Value> QueryKeymap(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: QueryKeymap(cb)";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
-  v8::Handle<v8::Object> obj = args[0]->ToObject();
+  if (!args[0]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Callback.")));
+  }
   xcb_query_keymap(XCBJS::Config::connection);
   return Undefined();
 }
@@ -656,6 +904,12 @@ v8::Handle<v8::Value> OpenFont(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: OpenFont(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_font_t fid = (xcb_font_t) obj->Get(v8::String::New("fid"))->IntegerValue();
@@ -675,6 +929,12 @@ v8::Handle<v8::Value> CloseFont(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: CloseFont(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_font_t font = (xcb_font_t) obj->Get(v8::String::New("font"))->IntegerValue();
   xcb_close_font(XCBJS::Config::connection, font);
@@ -687,6 +947,12 @@ v8::Handle<v8::Value> QueryFont(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: QueryFont(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_fontable_t font = (xcb_fontable_t) obj->Get(v8::String::New("font"))->IntegerValue();
   xcb_query_font(XCBJS::Config::connection, font);
@@ -698,6 +964,12 @@ v8::Handle<v8::Value> QueryTextExtents(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: QueryTextExtents(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_fontable_t font = (xcb_fontable_t) obj->Get(v8::String::New("font"))->IntegerValue();
@@ -719,6 +991,12 @@ v8::Handle<v8::Value> ListFonts(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: ListFonts(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint16_t max_names = (uint16_t) obj->Get(v8::String::New("max_names"))->IntegerValue();
   uint16_t pattern_len = (uint16_t) obj->Get(v8::String::New("pattern_len"))->IntegerValue();
@@ -736,6 +1014,12 @@ v8::Handle<v8::Value> ListFontsWithInfo(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: ListFontsWithInfo(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint16_t max_names = (uint16_t) obj->Get(v8::String::New("max_names"))->IntegerValue();
@@ -755,6 +1039,12 @@ v8::Handle<v8::Value> SetFontPath(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: SetFontPath(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint16_t font_qty = (uint16_t) obj->Get(v8::String::New("font_qty"))->IntegerValue();
   uint32_t path_len = (uint32_t) obj->Get(v8::String::New("path_len"))->IntegerValue();
@@ -773,7 +1063,9 @@ v8::Handle<v8::Value> GetFontPath(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: GetFontPath(cb)";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
-  v8::Handle<v8::Object> obj = args[0]->ToObject();
+  if (!args[0]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Callback.")));
+  }
   xcb_get_font_path(XCBJS::Config::connection);
   return Undefined();
 }
@@ -783,6 +1075,12 @@ v8::Handle<v8::Value> CreatePixmap(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: CreatePixmap(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t depth = (uint8_t) obj->Get(v8::String::New("depth"))->IntegerValue();
@@ -800,6 +1098,12 @@ v8::Handle<v8::Value> FreePixmap(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: FreePixmap(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_pixmap_t pixmap = (xcb_pixmap_t) obj->Get(v8::String::New("pixmap"))->IntegerValue();
   xcb_free_pixmap(XCBJS::Config::connection, pixmap);
@@ -811,6 +1115,12 @@ v8::Handle<v8::Value> CreateGC(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: CreateGC(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_gcontext_t cid = (xcb_gcontext_t) obj->Get(v8::String::New("cid"))->IntegerValue();
@@ -833,6 +1143,12 @@ v8::Handle<v8::Value> ChangeGC(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: ChangeGC(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
   uint32_t value_mask = (uint32_t) obj->Get(v8::String::New("value_mask"))->IntegerValue();
@@ -853,6 +1169,12 @@ v8::Handle<v8::Value> CopyGC(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: CopyGC(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_gcontext_t src_gc = (xcb_gcontext_t) obj->Get(v8::String::New("src_gc"))->IntegerValue();
   xcb_gcontext_t dst_gc = (xcb_gcontext_t) obj->Get(v8::String::New("dst_gc"))->IntegerValue();
@@ -866,6 +1188,12 @@ v8::Handle<v8::Value> SetDashes(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: SetDashes(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
@@ -887,6 +1215,12 @@ v8::Handle<v8::Value> SetClipRectangles(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: SetClipRectangles(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t ordering = (uint8_t) obj->Get(v8::String::New("ordering"))->IntegerValue();
@@ -911,6 +1245,12 @@ v8::Handle<v8::Value> FreeGC(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: FreeGC(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
   xcb_free_gc(XCBJS::Config::connection, gc);
@@ -922,6 +1262,12 @@ v8::Handle<v8::Value> ClearArea(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: ClearArea(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t exposures = (uint8_t) obj->Get(v8::String::New("exposures"))->BooleanValue();
@@ -939,6 +1285,12 @@ v8::Handle<v8::Value> CopyArea(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: CopyArea(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_drawable_t src_drawable = (xcb_drawable_t) obj->Get(v8::String::New("src_drawable"))->IntegerValue();
@@ -960,6 +1312,12 @@ v8::Handle<v8::Value> CopyPlane(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: CopyPlane(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_drawable_t src_drawable = (xcb_drawable_t) obj->Get(v8::String::New("src_drawable"))->IntegerValue();
   xcb_drawable_t dst_drawable = (xcb_drawable_t) obj->Get(v8::String::New("dst_drawable"))->IntegerValue();
@@ -980,6 +1338,12 @@ v8::Handle<v8::Value> PolyPoint(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: PolyPoint(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t coordinate_mode = (uint8_t) obj->Get(v8::String::New("coordinate_mode"))->IntegerValue();
@@ -1003,6 +1367,12 @@ v8::Handle<v8::Value> PolyLine(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: PolyLine(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t coordinate_mode = (uint8_t) obj->Get(v8::String::New("coordinate_mode"))->IntegerValue();
   xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
@@ -1025,6 +1395,12 @@ v8::Handle<v8::Value> PolySegment(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: PolySegment(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
   xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
@@ -1045,6 +1421,12 @@ v8::Handle<v8::Value> PolyRectangle(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: PolyRectangle(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
@@ -1067,6 +1449,12 @@ v8::Handle<v8::Value> PolyArc(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: PolyArc(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
   xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
@@ -1087,6 +1475,12 @@ v8::Handle<v8::Value> FillPoly(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: FillPoly(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
@@ -1111,6 +1505,12 @@ v8::Handle<v8::Value> PolyFillRectangle(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: PolyFillRectangle(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
   xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
@@ -1132,6 +1532,12 @@ v8::Handle<v8::Value> PolyFillArc(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: PolyFillArc(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
   xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
@@ -1152,6 +1558,12 @@ v8::Handle<v8::Value> PutImage(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: PutImage(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t format = (uint8_t) obj->Get(v8::String::New("format"))->IntegerValue();
@@ -1181,6 +1593,12 @@ v8::Handle<v8::Value> GetImage(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: GetImage(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t format = (uint8_t) obj->Get(v8::String::New("format"))->IntegerValue();
   xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
@@ -1198,6 +1616,12 @@ v8::Handle<v8::Value> PolyText8(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: PolyText8(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
@@ -1222,6 +1646,12 @@ v8::Handle<v8::Value> PolyText16(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: PolyText16(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
   xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
@@ -1245,6 +1675,12 @@ v8::Handle<v8::Value> ImageText8(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: ImageText8(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t string_len = (uint8_t) obj->Get(v8::String::New("string_len"))->IntegerValue();
   xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
@@ -1265,6 +1701,12 @@ v8::Handle<v8::Value> ImageText16(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: ImageText16(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t string_len = (uint8_t) obj->Get(v8::String::New("string_len"))->IntegerValue();
@@ -1289,6 +1731,12 @@ v8::Handle<v8::Value> CreateColormap(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: CreateColormap(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t alloc = (uint8_t) obj->Get(v8::String::New("alloc"))->IntegerValue();
   xcb_colormap_t mid = (xcb_colormap_t) obj->Get(v8::String::New("mid"))->IntegerValue();
@@ -1304,6 +1752,12 @@ v8::Handle<v8::Value> FreeColormap(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: FreeColormap(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
   xcb_free_colormap(XCBJS::Config::connection, cmap);
@@ -1315,6 +1769,12 @@ v8::Handle<v8::Value> CopyColormapAndFree(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: CopyColormapAndFree(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_colormap_t mid = (xcb_colormap_t) obj->Get(v8::String::New("mid"))->IntegerValue();
@@ -1329,6 +1789,12 @@ v8::Handle<v8::Value> InstallColormap(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: InstallColormap(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
   xcb_install_colormap(XCBJS::Config::connection, cmap);
@@ -1340,6 +1806,12 @@ v8::Handle<v8::Value> UninstallColormap(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: UninstallColormap(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
@@ -1353,6 +1825,12 @@ v8::Handle<v8::Value> ListInstalledColormaps(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: ListInstalledColormaps(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
   xcb_list_installed_colormaps(XCBJS::Config::connection, window);
@@ -1364,6 +1842,12 @@ v8::Handle<v8::Value> AllocColor(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: AllocColor(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
@@ -1379,6 +1863,12 @@ v8::Handle<v8::Value> AllocNamedColor(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: AllocNamedColor(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
@@ -1398,6 +1888,12 @@ v8::Handle<v8::Value> AllocColorCells(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: AllocColorCells(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t contiguous = (uint8_t) obj->Get(v8::String::New("contiguous"))->BooleanValue();
   xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
@@ -1412,6 +1908,12 @@ v8::Handle<v8::Value> AllocColorPlanes(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: AllocColorPlanes(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t contiguous = (uint8_t) obj->Get(v8::String::New("contiguous"))->BooleanValue();
@@ -1429,6 +1931,12 @@ v8::Handle<v8::Value> FreeColors(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: FreeColors(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
@@ -1451,6 +1959,12 @@ v8::Handle<v8::Value> StoreColors(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: StoreColors(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
   uint32_t items_len = (uint32_t) obj->Get(v8::String::New("items_len"))->IntegerValue();
@@ -1470,6 +1984,12 @@ v8::Handle<v8::Value> StoreNamedColor(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: StoreNamedColor(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t flags = (uint8_t) obj->Get(v8::String::New("flags"))->IntegerValue();
@@ -1491,6 +2011,12 @@ v8::Handle<v8::Value> QueryColors(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: QueryColors(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
   uint32_t pixels_len = (uint32_t) obj->Get(v8::String::New("pixels_len"))->IntegerValue();
@@ -1511,6 +2037,12 @@ v8::Handle<v8::Value> LookupColor(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: LookupColor(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
   uint16_t name_len = (uint16_t) obj->Get(v8::String::New("name_len"))->IntegerValue();
@@ -1528,6 +2060,12 @@ v8::Handle<v8::Value> CreateCursor(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: CreateCursor(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_cursor_t cid = (xcb_cursor_t) obj->Get(v8::String::New("cid"))->IntegerValue();
@@ -1551,6 +2089,12 @@ v8::Handle<v8::Value> CreateGlyphCursor(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: CreateGlyphCursor(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_cursor_t cid = (xcb_cursor_t) obj->Get(v8::String::New("cid"))->IntegerValue();
   xcb_font_t source_font = (xcb_font_t) obj->Get(v8::String::New("source_font"))->IntegerValue();
@@ -1573,6 +2117,12 @@ v8::Handle<v8::Value> FreeCursor(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: FreeCursor(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_cursor_t cursor = (xcb_cursor_t) obj->Get(v8::String::New("cursor"))->IntegerValue();
   xcb_free_cursor(XCBJS::Config::connection, cursor);
@@ -1584,6 +2134,12 @@ v8::Handle<v8::Value> RecolorCursor(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: RecolorCursor(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_cursor_t cursor = (xcb_cursor_t) obj->Get(v8::String::New("cursor"))->IntegerValue();
@@ -1603,6 +2159,12 @@ v8::Handle<v8::Value> QueryBestSize(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: QueryBestSize(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t _class = (uint8_t) obj->Get(v8::String::New("class"))->IntegerValue();
   xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
@@ -1617,6 +2179,12 @@ v8::Handle<v8::Value> QueryExtension(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: QueryExtension(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint16_t name_len = (uint16_t) obj->Get(v8::String::New("name_len"))->IntegerValue();
@@ -1635,7 +2203,9 @@ v8::Handle<v8::Value> ListExtensions(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: ListExtensions(cb)";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
-  v8::Handle<v8::Object> obj = args[0]->ToObject();
+  if (!args[0]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Callback.")));
+  }
   xcb_list_extensions(XCBJS::Config::connection);
   return Undefined();
 }
@@ -1645,6 +2215,12 @@ v8::Handle<v8::Value> ChangeKeyboardMapping(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: ChangeKeyboardMapping(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t keycode_count = (uint8_t) obj->Get(v8::String::New("keycode_count"))->IntegerValue();
@@ -1667,6 +2243,12 @@ v8::Handle<v8::Value> GetKeyboardMapping(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: GetKeyboardMapping(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_keycode_t first_keycode = (xcb_keycode_t) obj->Get(v8::String::New("first_keycode"))->IntegerValue();
   uint8_t count = (uint8_t) obj->Get(v8::String::New("count"))->IntegerValue();
@@ -1679,6 +2261,12 @@ v8::Handle<v8::Value> ChangeKeyboardControl(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: ChangeKeyboardControl(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint32_t value_mask = (uint32_t) obj->Get(v8::String::New("value_mask"))->IntegerValue();
@@ -1699,7 +2287,9 @@ v8::Handle<v8::Value> GetKeyboardControl(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: GetKeyboardControl(cb)";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
-  v8::Handle<v8::Object> obj = args[0]->ToObject();
+  if (!args[0]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Callback.")));
+  }
   xcb_get_keyboard_control(XCBJS::Config::connection);
   return Undefined();
 }
@@ -1709,6 +2299,12 @@ v8::Handle<v8::Value> Bell(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: Bell(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   int8_t percent = (int8_t) obj->Get(v8::String::New("percent"))->IntegerValue();
@@ -1721,6 +2317,12 @@ v8::Handle<v8::Value> ChangePointerControl(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: ChangePointerControl(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   int16_t acceleration_numerator = (int16_t) obj->Get(v8::String::New("acceleration_numerator"))->IntegerValue();
@@ -1738,7 +2340,9 @@ v8::Handle<v8::Value> GetPointerControl(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: GetPointerControl(cb)";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
-  v8::Handle<v8::Object> obj = args[0]->ToObject();
+  if (!args[0]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Callback.")));
+  }
   xcb_get_pointer_control(XCBJS::Config::connection);
   return Undefined();
 }
@@ -1748,6 +2352,12 @@ v8::Handle<v8::Value> SetScreenSaver(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: SetScreenSaver(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   int16_t timeout = (int16_t) obj->Get(v8::String::New("timeout"))->IntegerValue();
@@ -1764,7 +2374,9 @@ v8::Handle<v8::Value> GetScreenSaver(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: GetScreenSaver(cb)";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
-  v8::Handle<v8::Object> obj = args[0]->ToObject();
+  if (!args[0]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Callback.")));
+  }
   xcb_get_screen_saver(XCBJS::Config::connection);
   return Undefined();
 }
@@ -1774,6 +2386,12 @@ v8::Handle<v8::Value> ChangeHosts(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: ChangeHosts(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t mode = (uint8_t) obj->Get(v8::String::New("mode"))->IntegerValue();
@@ -1794,7 +2412,9 @@ v8::Handle<v8::Value> ListHosts(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: ListHosts(cb)";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
-  v8::Handle<v8::Object> obj = args[0]->ToObject();
+  if (!args[0]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Callback.")));
+  }
   xcb_list_hosts(XCBJS::Config::connection);
   return Undefined();
 }
@@ -1804,6 +2424,12 @@ v8::Handle<v8::Value> SetAccessControl(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: SetAccessControl(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t mode = (uint8_t) obj->Get(v8::String::New("mode"))->IntegerValue();
@@ -1817,6 +2443,12 @@ v8::Handle<v8::Value> SetCloseDownMode(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: SetCloseDownMode(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t mode = (uint8_t) obj->Get(v8::String::New("mode"))->IntegerValue();
   xcb_set_close_down_mode(XCBJS::Config::connection, mode);
@@ -1829,6 +2461,12 @@ v8::Handle<v8::Value> KillClient(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: KillClient(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint32_t resource = (uint32_t) obj->Get(v8::String::New("resource"))->IntegerValue();
   xcb_kill_client(XCBJS::Config::connection, resource);
@@ -1840,6 +2478,12 @@ v8::Handle<v8::Value> RotateProperties(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: RotateProperties(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
@@ -1862,6 +2506,12 @@ v8::Handle<v8::Value> ForceScreenSaver(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: ForceScreenSaver(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t mode = (uint8_t) obj->Get(v8::String::New("mode"))->IntegerValue();
   xcb_force_screen_saver(XCBJS::Config::connection, mode);
@@ -1873,6 +2523,12 @@ v8::Handle<v8::Value> SetPointerMapping(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: SetPointerMapping(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t map_len = (uint8_t) obj->Get(v8::String::New("map_len"))->IntegerValue();
@@ -1893,7 +2549,9 @@ v8::Handle<v8::Value> GetPointerMapping(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: GetPointerMapping(cb)";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
-  v8::Handle<v8::Object> obj = args[0]->ToObject();
+  if (!args[0]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Callback.")));
+  }
   xcb_get_pointer_mapping(XCBJS::Config::connection);
   return Undefined();
 }
@@ -1903,6 +2561,12 @@ v8::Handle<v8::Value> SetModifierMapping(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: SetModifierMapping(obj[, cb])";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
+  }
+  if (!args[0]->IsObject()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
+  }
+  if (args.Length() >= 2 && !args[1]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t keycodes_per_modifier = (uint8_t) obj->Get(v8::String::New("keycodes_per_modifier"))->IntegerValue();
@@ -1923,7 +2587,9 @@ v8::Handle<v8::Value> GetModifierMapping(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: GetModifierMapping(cb)";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
-  v8::Handle<v8::Object> obj = args[0]->ToObject();
+  if (!args[0]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Callback.")));
+  }
   xcb_get_modifier_mapping(XCBJS::Config::connection);
   return Undefined();
 }
@@ -1934,7 +2600,9 @@ v8::Handle<v8::Value> NoOperation(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: NoOperation(cb)";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
-  v8::Handle<v8::Object> obj = args[0]->ToObject();
+  if (!args[0]->IsFunction()) {
+    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Callback.")));
+  }
   xcb_no_operation(XCBJS::Config::connection);
   return Undefined();
 }
