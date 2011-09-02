@@ -46,6 +46,7 @@ public:
     Event::Init(target);
     InitXCB2JSStructs(t);
     Enum::Init(t);
+    Request::Init(t);
   }
 
   static Handle<Value> getScreen(const Arguments& args) {
@@ -55,7 +56,7 @@ public:
 
   static Handle<Value> drawRect(const Arguments& args) {
     HandleScope scope;
-    xcbReqPolyRectangle(args[0]->ToObject());
+    Request::PolyRectangle(args);
     return Undefined();
   }
 
@@ -90,7 +91,7 @@ public:
 
   static Handle<Value> createWindow(const Arguments& args) {
     HandleScope scope;
-    xcbReqCreateWindow(args[0]->ToObject());
+    Request::CreateWindow(args);
     return Undefined();
   }
 
@@ -107,19 +108,19 @@ public:
 
   static Handle<Value> mapWindow(const Arguments& args) {
     HandleScope scope;
-    xcbReqMapWindow(args[0]->ToObject());
+    Request::MapWindow(args);
     return Undefined();
   }
 
   static Handle<Value> unmapWindow(const Arguments& args) {
     HandleScope scope;
-    xcbReqUnmapWindow(args[0]->ToObject());
+    Request::UnmapWindow(args);
     return Undefined();
   }
 
   static Handle<Value> configureWindow(const Arguments& args) {
     HandleScope scope;
-    xcbReqConfigureWindow(args[0]->ToObject());
+    Request::ConfigureWindow(args);
     return Undefined();
   }
 
@@ -143,7 +144,8 @@ public:
   static Handle<Value> help(const Arguments& args) {
     HandleScope scope;
     Handle<String> help = Handle<String>::Cast(args[0]);
-    Handle<String> str = eventDocs(help);
+    Handle<String> str = Request::Docs(help);
+    if (str->Equals(Undefined())) str = eventDocs(help);
     if (str->Equals(Undefined())) str = structDocs(help);
     return scope.Close(str);
   }

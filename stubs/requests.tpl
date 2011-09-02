@@ -4,11 +4,20 @@
 
 #include <config.h>
 
+namespace XCBJS {
+  namespace Request {
+
 //{ { { BEGIN REQUESTS 
 
 {{each(requestName, request) requests}}
-void xcbReq${requestName}(v8::Handle<v8::Object> obj) {
+
+v8::Handle<v8::Value> ${requestName}(const v8::Arguments& args) {
   v8::HandleScope scope;
+  const char *usage = "Must have at least one argument\\nUsage: ${requestName}(obj[, cb])";
+  if (args.Length() < 1) {
+    return ThrowException(Exception::Error(String::New(usage)));
+  }
+  v8::Handle<v8::Object> obj = args[0]->ToObject();
   {{each(num, field) request.field}}
     {{if field.fieldType == 'field' && JSType(field.type)}}
   ${XCBType(field.type)} ${prepPropName(field.name)} = (${XCBType(field.type)}) obj->Get(v8::String::New("${field.name}"))->${JSType(field.type)}Value();
@@ -41,10 +50,29 @@ void xcbReq${requestName}(v8::Handle<v8::Object> obj) {
   delete [] ${listName(field)};
     {{/if}}
   {{/each}}
+  return Undefined();
 }
 {{/each}}
 
 // END REQUESTS } } }
+
+static v8::Persistent<v8::Object> lookup = v8::Persistent<v8::Object>::New(v8::Object::New());
+
+v8::Handle<v8::String> Docs(v8::Handle<v8::String> what) {
+  v8::HandleScope scope;
+  return scope.Close(v8::Handle<v8::String>::Cast(lookup->Get(what)));
+}
+
+
+void Init(v8::Persistent<v8::Object> reqs) {
+{{each(requestName, request) requests}}
+  NODE_SET_METHOD(reqs, "${requestName}", ${requestName});
+  lookup->Set(v8::String::New("${requestName}"), v8::String::New("REQUEST -> ${requestName}(${getDocHelp(requestName, requests)}[, cb])")); 
+{{/each}}
+}
+
+  }
+}
 
 #endif
 
