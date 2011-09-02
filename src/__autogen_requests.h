@@ -11,9 +11,9 @@ namespace XCBJS {
 
 v8::Handle<v8::Value> CreateWindow(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: CreateWindow(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: CreateWindow(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t depth = (uint8_t) obj->Get(v8::String::New("depth"))->IntegerValue();
@@ -40,9 +40,9 @@ v8::Handle<v8::Value> CreateWindow(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> ChangeWindowAttributes(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: ChangeWindowAttributes(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: ChangeWindowAttributes(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
@@ -60,9 +60,9 @@ v8::Handle<v8::Value> ChangeWindowAttributes(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> GetWindowAttributes(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: GetWindowAttributes(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: GetWindowAttributes(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
@@ -72,9 +72,9 @@ v8::Handle<v8::Value> GetWindowAttributes(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> DestroyWindow(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: DestroyWindow(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: DestroyWindow(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
@@ -84,9 +84,9 @@ v8::Handle<v8::Value> DestroyWindow(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> DestroySubwindows(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: DestroySubwindows(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: DestroySubwindows(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
@@ -96,9 +96,9 @@ v8::Handle<v8::Value> DestroySubwindows(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> ChangeSaveSet(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: ChangeSaveSet(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: ChangeSaveSet(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t mode = (uint8_t) obj->Get(v8::String::New("mode"))->IntegerValue();
@@ -109,9 +109,9 @@ v8::Handle<v8::Value> ChangeSaveSet(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> ReparentWindow(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: ReparentWindow(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: ReparentWindow(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
@@ -124,9 +124,9 @@ v8::Handle<v8::Value> ReparentWindow(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> MapWindow(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: MapWindow(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: MapWindow(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
@@ -136,9 +136,9 @@ v8::Handle<v8::Value> MapWindow(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> MapSubwindows(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: MapSubwindows(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: MapSubwindows(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
@@ -148,9 +148,9 @@ v8::Handle<v8::Value> MapSubwindows(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> UnmapWindow(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: UnmapWindow(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: UnmapWindow(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
@@ -160,9 +160,9 @@ v8::Handle<v8::Value> UnmapWindow(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> UnmapSubwindows(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: UnmapSubwindows(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: UnmapSubwindows(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
@@ -172,9 +172,9 @@ v8::Handle<v8::Value> UnmapSubwindows(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> ConfigureWindow(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: ConfigureWindow(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: ConfigureWindow(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
@@ -192,9 +192,9 @@ v8::Handle<v8::Value> ConfigureWindow(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> CirculateWindow(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: CirculateWindow(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: CirculateWindow(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t direction = (uint8_t) obj->Get(v8::String::New("direction"))->IntegerValue();
@@ -205,9 +205,9 @@ v8::Handle<v8::Value> CirculateWindow(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> GetGeometry(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: GetGeometry(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: GetGeometry(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
@@ -217,9 +217,9 @@ v8::Handle<v8::Value> GetGeometry(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> QueryTree(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: QueryTree(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: QueryTree(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
@@ -229,9 +229,9 @@ v8::Handle<v8::Value> QueryTree(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> InternAtom(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: InternAtom(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: InternAtom(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t only_if_exists = (uint8_t) obj->Get(v8::String::New("only_if_exists"))->BooleanValue();
@@ -247,9 +247,9 @@ v8::Handle<v8::Value> InternAtom(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> GetAtomName(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: GetAtomName(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: GetAtomName(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_atom_t atom = (xcb_atom_t) obj->Get(v8::String::New("atom"))->IntegerValue();
@@ -259,9 +259,9 @@ v8::Handle<v8::Value> GetAtomName(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> ChangeProperty(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: ChangeProperty(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: ChangeProperty(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t mode = (uint8_t) obj->Get(v8::String::New("mode"))->IntegerValue();
@@ -281,9 +281,9 @@ v8::Handle<v8::Value> ChangeProperty(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> DeleteProperty(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: DeleteProperty(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: DeleteProperty(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
@@ -294,9 +294,9 @@ v8::Handle<v8::Value> DeleteProperty(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> GetProperty(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: GetProperty(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: GetProperty(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t _delete = (uint8_t) obj->Get(v8::String::New("delete"))->BooleanValue();
@@ -311,9 +311,9 @@ v8::Handle<v8::Value> GetProperty(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> ListProperties(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: ListProperties(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: ListProperties(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
@@ -323,9 +323,9 @@ v8::Handle<v8::Value> ListProperties(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> SetSelectionOwner(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: SetSelectionOwner(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: SetSelectionOwner(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t owner = (xcb_window_t) obj->Get(v8::String::New("owner"))->IntegerValue();
@@ -337,9 +337,9 @@ v8::Handle<v8::Value> SetSelectionOwner(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> GetSelectionOwner(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: GetSelectionOwner(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: GetSelectionOwner(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_atom_t selection = (xcb_atom_t) obj->Get(v8::String::New("selection"))->IntegerValue();
@@ -349,9 +349,9 @@ v8::Handle<v8::Value> GetSelectionOwner(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> ConvertSelection(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: ConvertSelection(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: ConvertSelection(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t requestor = (xcb_window_t) obj->Get(v8::String::New("requestor"))->IntegerValue();
@@ -365,9 +365,9 @@ v8::Handle<v8::Value> ConvertSelection(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> SendEvent(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: SendEvent(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: SendEvent(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t propagate = (uint8_t) obj->Get(v8::String::New("propagate"))->BooleanValue();
@@ -384,9 +384,9 @@ v8::Handle<v8::Value> SendEvent(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> GrabPointer(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: GrabPointer(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: GrabPointer(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t owner_events = (uint8_t) obj->Get(v8::String::New("owner_events"))->BooleanValue();
@@ -403,9 +403,9 @@ v8::Handle<v8::Value> GrabPointer(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> UngrabPointer(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: UngrabPointer(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: UngrabPointer(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_timestamp_t time = (xcb_timestamp_t) obj->Get(v8::String::New("time"))->IntegerValue();
@@ -415,9 +415,9 @@ v8::Handle<v8::Value> UngrabPointer(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> GrabButton(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: GrabButton(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: GrabButton(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t owner_events = (uint8_t) obj->Get(v8::String::New("owner_events"))->BooleanValue();
@@ -435,9 +435,9 @@ v8::Handle<v8::Value> GrabButton(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> UngrabButton(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: UngrabButton(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: UngrabButton(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t button = (uint8_t) obj->Get(v8::String::New("button"))->IntegerValue();
@@ -449,9 +449,9 @@ v8::Handle<v8::Value> UngrabButton(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> ChangeActivePointerGrab(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: ChangeActivePointerGrab(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: ChangeActivePointerGrab(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_cursor_t cursor = (xcb_cursor_t) obj->Get(v8::String::New("cursor"))->IntegerValue();
@@ -463,9 +463,9 @@ v8::Handle<v8::Value> ChangeActivePointerGrab(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> GrabKeyboard(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: GrabKeyboard(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: GrabKeyboard(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t owner_events = (uint8_t) obj->Get(v8::String::New("owner_events"))->BooleanValue();
@@ -479,9 +479,9 @@ v8::Handle<v8::Value> GrabKeyboard(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> UngrabKeyboard(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: UngrabKeyboard(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: UngrabKeyboard(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_timestamp_t time = (xcb_timestamp_t) obj->Get(v8::String::New("time"))->IntegerValue();
@@ -491,9 +491,9 @@ v8::Handle<v8::Value> UngrabKeyboard(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> GrabKey(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: GrabKey(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: GrabKey(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t owner_events = (uint8_t) obj->Get(v8::String::New("owner_events"))->BooleanValue();
@@ -508,9 +508,9 @@ v8::Handle<v8::Value> GrabKey(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> UngrabKey(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: UngrabKey(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: UngrabKey(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_keycode_t key = (xcb_keycode_t) obj->Get(v8::String::New("key"))->IntegerValue();
@@ -522,9 +522,9 @@ v8::Handle<v8::Value> UngrabKey(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> AllowEvents(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: AllowEvents(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: AllowEvents(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t mode = (uint8_t) obj->Get(v8::String::New("mode"))->IntegerValue();
@@ -535,9 +535,9 @@ v8::Handle<v8::Value> AllowEvents(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> GrabServer(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: GrabServer(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: GrabServer(cb)";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_grab_server(XCBJS::Config::connection);
@@ -546,9 +546,9 @@ v8::Handle<v8::Value> GrabServer(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> UngrabServer(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: UngrabServer(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: UngrabServer(cb)";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_ungrab_server(XCBJS::Config::connection);
@@ -557,9 +557,9 @@ v8::Handle<v8::Value> UngrabServer(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> QueryPointer(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: QueryPointer(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: QueryPointer(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
@@ -569,9 +569,9 @@ v8::Handle<v8::Value> QueryPointer(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> GetMotionEvents(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: GetMotionEvents(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: GetMotionEvents(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
@@ -583,9 +583,9 @@ v8::Handle<v8::Value> GetMotionEvents(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> TranslateCoordinates(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: TranslateCoordinates(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: TranslateCoordinates(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t src_window = (xcb_window_t) obj->Get(v8::String::New("src_window"))->IntegerValue();
@@ -598,9 +598,9 @@ v8::Handle<v8::Value> TranslateCoordinates(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> WarpPointer(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: WarpPointer(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: WarpPointer(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t src_window = (xcb_window_t) obj->Get(v8::String::New("src_window"))->IntegerValue();
@@ -617,9 +617,9 @@ v8::Handle<v8::Value> WarpPointer(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> SetInputFocus(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: SetInputFocus(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: SetInputFocus(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t revert_to = (uint8_t) obj->Get(v8::String::New("revert_to"))->IntegerValue();
@@ -631,9 +631,9 @@ v8::Handle<v8::Value> SetInputFocus(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> GetInputFocus(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: GetInputFocus(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: GetInputFocus(cb)";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_get_input_focus(XCBJS::Config::connection);
@@ -642,9 +642,9 @@ v8::Handle<v8::Value> GetInputFocus(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> QueryKeymap(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: QueryKeymap(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: QueryKeymap(cb)";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_query_keymap(XCBJS::Config::connection);
@@ -653,9 +653,9 @@ v8::Handle<v8::Value> QueryKeymap(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> OpenFont(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: OpenFont(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: OpenFont(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_font_t fid = (xcb_font_t) obj->Get(v8::String::New("fid"))->IntegerValue();
@@ -671,9 +671,9 @@ v8::Handle<v8::Value> OpenFont(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> CloseFont(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: CloseFont(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: CloseFont(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_font_t font = (xcb_font_t) obj->Get(v8::String::New("font"))->IntegerValue();
@@ -683,9 +683,9 @@ v8::Handle<v8::Value> CloseFont(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> QueryFont(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: QueryFont(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: QueryFont(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_fontable_t font = (xcb_fontable_t) obj->Get(v8::String::New("font"))->IntegerValue();
@@ -695,9 +695,9 @@ v8::Handle<v8::Value> QueryFont(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> QueryTextExtents(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: QueryTextExtents(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: QueryTextExtents(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_fontable_t font = (xcb_fontable_t) obj->Get(v8::String::New("font"))->IntegerValue();
@@ -715,9 +715,9 @@ v8::Handle<v8::Value> QueryTextExtents(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> ListFonts(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: ListFonts(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: ListFonts(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint16_t max_names = (uint16_t) obj->Get(v8::String::New("max_names"))->IntegerValue();
@@ -733,9 +733,9 @@ v8::Handle<v8::Value> ListFonts(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> ListFontsWithInfo(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: ListFontsWithInfo(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: ListFontsWithInfo(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint16_t max_names = (uint16_t) obj->Get(v8::String::New("max_names"))->IntegerValue();
@@ -751,9 +751,9 @@ v8::Handle<v8::Value> ListFontsWithInfo(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> SetFontPath(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: SetFontPath(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: SetFontPath(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint16_t font_qty = (uint16_t) obj->Get(v8::String::New("font_qty"))->IntegerValue();
@@ -769,9 +769,9 @@ v8::Handle<v8::Value> SetFontPath(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> GetFontPath(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: GetFontPath(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: GetFontPath(cb)";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_get_font_path(XCBJS::Config::connection);
@@ -780,9 +780,9 @@ v8::Handle<v8::Value> GetFontPath(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> CreatePixmap(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: CreatePixmap(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: CreatePixmap(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t depth = (uint8_t) obj->Get(v8::String::New("depth"))->IntegerValue();
@@ -796,9 +796,9 @@ v8::Handle<v8::Value> CreatePixmap(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> FreePixmap(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: FreePixmap(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: FreePixmap(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_pixmap_t pixmap = (xcb_pixmap_t) obj->Get(v8::String::New("pixmap"))->IntegerValue();
@@ -808,9 +808,9 @@ v8::Handle<v8::Value> FreePixmap(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> CreateGC(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: CreateGC(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: CreateGC(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_gcontext_t cid = (xcb_gcontext_t) obj->Get(v8::String::New("cid"))->IntegerValue();
@@ -829,9 +829,9 @@ v8::Handle<v8::Value> CreateGC(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> ChangeGC(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: ChangeGC(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: ChangeGC(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
@@ -849,9 +849,9 @@ v8::Handle<v8::Value> ChangeGC(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> CopyGC(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: CopyGC(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: CopyGC(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_gcontext_t src_gc = (xcb_gcontext_t) obj->Get(v8::String::New("src_gc"))->IntegerValue();
@@ -863,9 +863,9 @@ v8::Handle<v8::Value> CopyGC(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> SetDashes(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: SetDashes(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: SetDashes(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
@@ -884,9 +884,9 @@ v8::Handle<v8::Value> SetDashes(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> SetClipRectangles(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: SetClipRectangles(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: SetClipRectangles(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t ordering = (uint8_t) obj->Get(v8::String::New("ordering"))->IntegerValue();
@@ -907,9 +907,9 @@ v8::Handle<v8::Value> SetClipRectangles(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> FreeGC(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: FreeGC(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: FreeGC(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
@@ -919,9 +919,9 @@ v8::Handle<v8::Value> FreeGC(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> ClearArea(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: ClearArea(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: ClearArea(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t exposures = (uint8_t) obj->Get(v8::String::New("exposures"))->BooleanValue();
@@ -936,9 +936,9 @@ v8::Handle<v8::Value> ClearArea(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> CopyArea(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: CopyArea(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: CopyArea(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_drawable_t src_drawable = (xcb_drawable_t) obj->Get(v8::String::New("src_drawable"))->IntegerValue();
@@ -956,9 +956,9 @@ v8::Handle<v8::Value> CopyArea(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> CopyPlane(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: CopyPlane(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: CopyPlane(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_drawable_t src_drawable = (xcb_drawable_t) obj->Get(v8::String::New("src_drawable"))->IntegerValue();
@@ -977,9 +977,9 @@ v8::Handle<v8::Value> CopyPlane(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> PolyPoint(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: PolyPoint(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: PolyPoint(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t coordinate_mode = (uint8_t) obj->Get(v8::String::New("coordinate_mode"))->IntegerValue();
@@ -999,9 +999,9 @@ v8::Handle<v8::Value> PolyPoint(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> PolyLine(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: PolyLine(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: PolyLine(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t coordinate_mode = (uint8_t) obj->Get(v8::String::New("coordinate_mode"))->IntegerValue();
@@ -1021,9 +1021,9 @@ v8::Handle<v8::Value> PolyLine(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> PolySegment(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: PolySegment(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: PolySegment(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
@@ -1042,9 +1042,9 @@ v8::Handle<v8::Value> PolySegment(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> PolyRectangle(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: PolyRectangle(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: PolyRectangle(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
@@ -1063,9 +1063,9 @@ v8::Handle<v8::Value> PolyRectangle(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> PolyArc(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: PolyArc(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: PolyArc(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
@@ -1084,9 +1084,9 @@ v8::Handle<v8::Value> PolyArc(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> FillPoly(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: FillPoly(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: FillPoly(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
@@ -1107,9 +1107,9 @@ v8::Handle<v8::Value> FillPoly(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> PolyFillRectangle(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: PolyFillRectangle(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: PolyFillRectangle(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
@@ -1128,9 +1128,9 @@ v8::Handle<v8::Value> PolyFillRectangle(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> PolyFillArc(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: PolyFillArc(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: PolyFillArc(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
@@ -1149,9 +1149,9 @@ v8::Handle<v8::Value> PolyFillArc(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> PutImage(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: PutImage(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: PutImage(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t format = (uint8_t) obj->Get(v8::String::New("format"))->IntegerValue();
@@ -1177,9 +1177,9 @@ v8::Handle<v8::Value> PutImage(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> GetImage(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: GetImage(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: GetImage(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t format = (uint8_t) obj->Get(v8::String::New("format"))->IntegerValue();
@@ -1195,9 +1195,9 @@ v8::Handle<v8::Value> GetImage(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> PolyText8(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: PolyText8(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: PolyText8(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
@@ -1218,9 +1218,9 @@ v8::Handle<v8::Value> PolyText8(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> PolyText16(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: PolyText16(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: PolyText16(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
@@ -1241,9 +1241,9 @@ v8::Handle<v8::Value> PolyText16(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> ImageText8(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: ImageText8(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: ImageText8(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t string_len = (uint8_t) obj->Get(v8::String::New("string_len"))->IntegerValue();
@@ -1262,9 +1262,9 @@ v8::Handle<v8::Value> ImageText8(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> ImageText16(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: ImageText16(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: ImageText16(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t string_len = (uint8_t) obj->Get(v8::String::New("string_len"))->IntegerValue();
@@ -1285,9 +1285,9 @@ v8::Handle<v8::Value> ImageText16(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> CreateColormap(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: CreateColormap(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: CreateColormap(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t alloc = (uint8_t) obj->Get(v8::String::New("alloc"))->IntegerValue();
@@ -1300,9 +1300,9 @@ v8::Handle<v8::Value> CreateColormap(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> FreeColormap(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: FreeColormap(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: FreeColormap(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
@@ -1312,9 +1312,9 @@ v8::Handle<v8::Value> FreeColormap(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> CopyColormapAndFree(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: CopyColormapAndFree(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: CopyColormapAndFree(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_colormap_t mid = (xcb_colormap_t) obj->Get(v8::String::New("mid"))->IntegerValue();
@@ -1325,9 +1325,9 @@ v8::Handle<v8::Value> CopyColormapAndFree(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> InstallColormap(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: InstallColormap(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: InstallColormap(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
@@ -1337,9 +1337,9 @@ v8::Handle<v8::Value> InstallColormap(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> UninstallColormap(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: UninstallColormap(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: UninstallColormap(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
@@ -1349,9 +1349,9 @@ v8::Handle<v8::Value> UninstallColormap(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> ListInstalledColormaps(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: ListInstalledColormaps(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: ListInstalledColormaps(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
@@ -1361,9 +1361,9 @@ v8::Handle<v8::Value> ListInstalledColormaps(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> AllocColor(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: AllocColor(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: AllocColor(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
@@ -1376,9 +1376,9 @@ v8::Handle<v8::Value> AllocColor(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> AllocNamedColor(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: AllocNamedColor(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: AllocNamedColor(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
@@ -1394,9 +1394,9 @@ v8::Handle<v8::Value> AllocNamedColor(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> AllocColorCells(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: AllocColorCells(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: AllocColorCells(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t contiguous = (uint8_t) obj->Get(v8::String::New("contiguous"))->BooleanValue();
@@ -1409,9 +1409,9 @@ v8::Handle<v8::Value> AllocColorCells(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> AllocColorPlanes(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: AllocColorPlanes(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: AllocColorPlanes(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t contiguous = (uint8_t) obj->Get(v8::String::New("contiguous"))->BooleanValue();
@@ -1426,9 +1426,9 @@ v8::Handle<v8::Value> AllocColorPlanes(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> FreeColors(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: FreeColors(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: FreeColors(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
@@ -1447,9 +1447,9 @@ v8::Handle<v8::Value> FreeColors(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> StoreColors(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: StoreColors(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: StoreColors(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
@@ -1467,9 +1467,9 @@ v8::Handle<v8::Value> StoreColors(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> StoreNamedColor(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: StoreNamedColor(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: StoreNamedColor(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t flags = (uint8_t) obj->Get(v8::String::New("flags"))->IntegerValue();
@@ -1487,9 +1487,9 @@ v8::Handle<v8::Value> StoreNamedColor(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> QueryColors(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: QueryColors(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: QueryColors(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
@@ -1507,9 +1507,9 @@ v8::Handle<v8::Value> QueryColors(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> LookupColor(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: LookupColor(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: LookupColor(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
@@ -1525,9 +1525,9 @@ v8::Handle<v8::Value> LookupColor(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> CreateCursor(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: CreateCursor(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: CreateCursor(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_cursor_t cid = (xcb_cursor_t) obj->Get(v8::String::New("cid"))->IntegerValue();
@@ -1547,9 +1547,9 @@ v8::Handle<v8::Value> CreateCursor(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> CreateGlyphCursor(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: CreateGlyphCursor(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: CreateGlyphCursor(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_cursor_t cid = (xcb_cursor_t) obj->Get(v8::String::New("cid"))->IntegerValue();
@@ -1569,9 +1569,9 @@ v8::Handle<v8::Value> CreateGlyphCursor(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> FreeCursor(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: FreeCursor(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: FreeCursor(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_cursor_t cursor = (xcb_cursor_t) obj->Get(v8::String::New("cursor"))->IntegerValue();
@@ -1581,9 +1581,9 @@ v8::Handle<v8::Value> FreeCursor(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> RecolorCursor(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: RecolorCursor(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: RecolorCursor(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_cursor_t cursor = (xcb_cursor_t) obj->Get(v8::String::New("cursor"))->IntegerValue();
@@ -1599,9 +1599,9 @@ v8::Handle<v8::Value> RecolorCursor(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> QueryBestSize(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: QueryBestSize(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: QueryBestSize(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t _class = (uint8_t) obj->Get(v8::String::New("class"))->IntegerValue();
@@ -1614,9 +1614,9 @@ v8::Handle<v8::Value> QueryBestSize(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> QueryExtension(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: QueryExtension(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: QueryExtension(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint16_t name_len = (uint16_t) obj->Get(v8::String::New("name_len"))->IntegerValue();
@@ -1631,9 +1631,9 @@ v8::Handle<v8::Value> QueryExtension(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> ListExtensions(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: ListExtensions(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: ListExtensions(cb)";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_list_extensions(XCBJS::Config::connection);
@@ -1642,9 +1642,9 @@ v8::Handle<v8::Value> ListExtensions(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> ChangeKeyboardMapping(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: ChangeKeyboardMapping(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: ChangeKeyboardMapping(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t keycode_count = (uint8_t) obj->Get(v8::String::New("keycode_count"))->IntegerValue();
@@ -1663,9 +1663,9 @@ v8::Handle<v8::Value> ChangeKeyboardMapping(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> GetKeyboardMapping(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: GetKeyboardMapping(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: GetKeyboardMapping(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_keycode_t first_keycode = (xcb_keycode_t) obj->Get(v8::String::New("first_keycode"))->IntegerValue();
@@ -1676,9 +1676,9 @@ v8::Handle<v8::Value> GetKeyboardMapping(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> ChangeKeyboardControl(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: ChangeKeyboardControl(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: ChangeKeyboardControl(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint32_t value_mask = (uint32_t) obj->Get(v8::String::New("value_mask"))->IntegerValue();
@@ -1695,9 +1695,9 @@ v8::Handle<v8::Value> ChangeKeyboardControl(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> GetKeyboardControl(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: GetKeyboardControl(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: GetKeyboardControl(cb)";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_get_keyboard_control(XCBJS::Config::connection);
@@ -1706,9 +1706,9 @@ v8::Handle<v8::Value> GetKeyboardControl(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> Bell(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: Bell(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: Bell(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   int8_t percent = (int8_t) obj->Get(v8::String::New("percent"))->IntegerValue();
@@ -1718,9 +1718,9 @@ v8::Handle<v8::Value> Bell(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> ChangePointerControl(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: ChangePointerControl(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: ChangePointerControl(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   int16_t acceleration_numerator = (int16_t) obj->Get(v8::String::New("acceleration_numerator"))->IntegerValue();
@@ -1734,9 +1734,9 @@ v8::Handle<v8::Value> ChangePointerControl(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> GetPointerControl(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: GetPointerControl(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: GetPointerControl(cb)";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_get_pointer_control(XCBJS::Config::connection);
@@ -1745,9 +1745,9 @@ v8::Handle<v8::Value> GetPointerControl(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> SetScreenSaver(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: SetScreenSaver(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: SetScreenSaver(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   int16_t timeout = (int16_t) obj->Get(v8::String::New("timeout"))->IntegerValue();
@@ -1760,9 +1760,9 @@ v8::Handle<v8::Value> SetScreenSaver(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> GetScreenSaver(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: GetScreenSaver(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: GetScreenSaver(cb)";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_get_screen_saver(XCBJS::Config::connection);
@@ -1771,9 +1771,9 @@ v8::Handle<v8::Value> GetScreenSaver(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> ChangeHosts(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: ChangeHosts(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: ChangeHosts(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t mode = (uint8_t) obj->Get(v8::String::New("mode"))->IntegerValue();
@@ -1790,9 +1790,9 @@ v8::Handle<v8::Value> ChangeHosts(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> ListHosts(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: ListHosts(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: ListHosts(cb)";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_list_hosts(XCBJS::Config::connection);
@@ -1801,9 +1801,9 @@ v8::Handle<v8::Value> ListHosts(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> SetAccessControl(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: SetAccessControl(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: SetAccessControl(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t mode = (uint8_t) obj->Get(v8::String::New("mode"))->IntegerValue();
@@ -1813,9 +1813,9 @@ v8::Handle<v8::Value> SetAccessControl(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> SetCloseDownMode(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: SetCloseDownMode(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: SetCloseDownMode(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t mode = (uint8_t) obj->Get(v8::String::New("mode"))->IntegerValue();
@@ -1825,9 +1825,9 @@ v8::Handle<v8::Value> SetCloseDownMode(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> KillClient(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: KillClient(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: KillClient(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint32_t resource = (uint32_t) obj->Get(v8::String::New("resource"))->IntegerValue();
@@ -1837,9 +1837,9 @@ v8::Handle<v8::Value> KillClient(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> RotateProperties(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: RotateProperties(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: RotateProperties(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
@@ -1858,9 +1858,9 @@ v8::Handle<v8::Value> RotateProperties(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> ForceScreenSaver(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: ForceScreenSaver(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: ForceScreenSaver(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t mode = (uint8_t) obj->Get(v8::String::New("mode"))->IntegerValue();
@@ -1870,9 +1870,9 @@ v8::Handle<v8::Value> ForceScreenSaver(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> SetPointerMapping(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: SetPointerMapping(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: SetPointerMapping(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t map_len = (uint8_t) obj->Get(v8::String::New("map_len"))->IntegerValue();
@@ -1889,9 +1889,9 @@ v8::Handle<v8::Value> SetPointerMapping(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> GetPointerMapping(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: GetPointerMapping(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: GetPointerMapping(cb)";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_get_pointer_mapping(XCBJS::Config::connection);
@@ -1900,9 +1900,9 @@ v8::Handle<v8::Value> GetPointerMapping(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> SetModifierMapping(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: SetModifierMapping(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: SetModifierMapping(obj[, cb])";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t keycodes_per_modifier = (uint8_t) obj->Get(v8::String::New("keycodes_per_modifier"))->IntegerValue();
@@ -1919,9 +1919,9 @@ v8::Handle<v8::Value> SetModifierMapping(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> GetModifierMapping(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: GetModifierMapping(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: GetModifierMapping(cb)";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_get_modifier_mapping(XCBJS::Config::connection);
@@ -1930,9 +1930,9 @@ v8::Handle<v8::Value> GetModifierMapping(const v8::Arguments& args) {
 
 v8::Handle<v8::Value> NoOperation(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: NoOperation(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: NoOperation(cb)";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_no_operation(XCBJS::Config::connection);
@@ -2021,9 +2021,9 @@ void Init(v8::Persistent<v8::Object> reqs) {
   NODE_SET_METHOD(reqs, "AllowEvents", AllowEvents);
   lookup->Set(v8::String::New("AllowEvents"), v8::String::New("REQUEST -> AllowEvents({ mode: Integer\n, time: Integer }[, cb])")); 
   NODE_SET_METHOD(reqs, "GrabServer", GrabServer);
-  lookup->Set(v8::String::New("GrabServer"), v8::String::New("REQUEST -> GrabServer({ }[, cb])")); 
+  lookup->Set(v8::String::New("GrabServer"), v8::String::New("REQUEST -> GrabServer(cb)")); 
   NODE_SET_METHOD(reqs, "UngrabServer", UngrabServer);
-  lookup->Set(v8::String::New("UngrabServer"), v8::String::New("REQUEST -> UngrabServer({ }[, cb])")); 
+  lookup->Set(v8::String::New("UngrabServer"), v8::String::New("REQUEST -> UngrabServer(cb)")); 
   NODE_SET_METHOD(reqs, "QueryPointer", QueryPointer);
   lookup->Set(v8::String::New("QueryPointer"), v8::String::New("REQUEST -> QueryPointer({ window: Integer }[, cb])")); 
   NODE_SET_METHOD(reqs, "GetMotionEvents", GetMotionEvents);
@@ -2035,9 +2035,9 @@ void Init(v8::Persistent<v8::Object> reqs) {
   NODE_SET_METHOD(reqs, "SetInputFocus", SetInputFocus);
   lookup->Set(v8::String::New("SetInputFocus"), v8::String::New("REQUEST -> SetInputFocus({ revert_to: Integer\n, focus: Integer\n, time: Integer }[, cb])")); 
   NODE_SET_METHOD(reqs, "GetInputFocus", GetInputFocus);
-  lookup->Set(v8::String::New("GetInputFocus"), v8::String::New("REQUEST -> GetInputFocus({ }[, cb])")); 
+  lookup->Set(v8::String::New("GetInputFocus"), v8::String::New("REQUEST -> GetInputFocus(cb)")); 
   NODE_SET_METHOD(reqs, "QueryKeymap", QueryKeymap);
-  lookup->Set(v8::String::New("QueryKeymap"), v8::String::New("REQUEST -> QueryKeymap({ }[, cb])")); 
+  lookup->Set(v8::String::New("QueryKeymap"), v8::String::New("REQUEST -> QueryKeymap(cb)")); 
   NODE_SET_METHOD(reqs, "OpenFont", OpenFont);
   lookup->Set(v8::String::New("OpenFont"), v8::String::New("REQUEST -> OpenFont({ fid: Integer\n, name_len: Integer }[, cb])")); 
   NODE_SET_METHOD(reqs, "CloseFont", CloseFont);
@@ -2053,7 +2053,7 @@ void Init(v8::Persistent<v8::Object> reqs) {
   NODE_SET_METHOD(reqs, "SetFontPath", SetFontPath);
   lookup->Set(v8::String::New("SetFontPath"), v8::String::New("REQUEST -> SetFontPath({ font_qty: Integer }[, cb])")); 
   NODE_SET_METHOD(reqs, "GetFontPath", GetFontPath);
-  lookup->Set(v8::String::New("GetFontPath"), v8::String::New("REQUEST -> GetFontPath({ }[, cb])")); 
+  lookup->Set(v8::String::New("GetFontPath"), v8::String::New("REQUEST -> GetFontPath(cb)")); 
   NODE_SET_METHOD(reqs, "CreatePixmap", CreatePixmap);
   lookup->Set(v8::String::New("CreatePixmap"), v8::String::New("REQUEST -> CreatePixmap({ depth: Integer\n, pid: Integer\n, drawable: Integer\n, width: Integer\n, height: Integer }[, cb])")); 
   NODE_SET_METHOD(reqs, "FreePixmap", FreePixmap);
@@ -2147,7 +2147,7 @@ void Init(v8::Persistent<v8::Object> reqs) {
   NODE_SET_METHOD(reqs, "QueryExtension", QueryExtension);
   lookup->Set(v8::String::New("QueryExtension"), v8::String::New("REQUEST -> QueryExtension({ name_len: Integer }[, cb])")); 
   NODE_SET_METHOD(reqs, "ListExtensions", ListExtensions);
-  lookup->Set(v8::String::New("ListExtensions"), v8::String::New("REQUEST -> ListExtensions({ }[, cb])")); 
+  lookup->Set(v8::String::New("ListExtensions"), v8::String::New("REQUEST -> ListExtensions(cb)")); 
   NODE_SET_METHOD(reqs, "ChangeKeyboardMapping", ChangeKeyboardMapping);
   lookup->Set(v8::String::New("ChangeKeyboardMapping"), v8::String::New("REQUEST -> ChangeKeyboardMapping({ keycode_count: Integer\n, first_keycode: Integer\n, keysyms_per_keycode: Integer }[, cb])")); 
   NODE_SET_METHOD(reqs, "GetKeyboardMapping", GetKeyboardMapping);
@@ -2155,21 +2155,21 @@ void Init(v8::Persistent<v8::Object> reqs) {
   NODE_SET_METHOD(reqs, "ChangeKeyboardControl", ChangeKeyboardControl);
   lookup->Set(v8::String::New("ChangeKeyboardControl"), v8::String::New("REQUEST -> ChangeKeyboardControl({  }[, cb])")); 
   NODE_SET_METHOD(reqs, "GetKeyboardControl", GetKeyboardControl);
-  lookup->Set(v8::String::New("GetKeyboardControl"), v8::String::New("REQUEST -> GetKeyboardControl({ }[, cb])")); 
+  lookup->Set(v8::String::New("GetKeyboardControl"), v8::String::New("REQUEST -> GetKeyboardControl(cb)")); 
   NODE_SET_METHOD(reqs, "Bell", Bell);
   lookup->Set(v8::String::New("Bell"), v8::String::New("REQUEST -> Bell({ percent: Integer }[, cb])")); 
   NODE_SET_METHOD(reqs, "ChangePointerControl", ChangePointerControl);
   lookup->Set(v8::String::New("ChangePointerControl"), v8::String::New("REQUEST -> ChangePointerControl({ acceleration_numerator: Integer\n, acceleration_denominator: Integer\n, threshold: Integer\n, do_acceleration: Boolean\n, do_threshold: Boolean }[, cb])")); 
   NODE_SET_METHOD(reqs, "GetPointerControl", GetPointerControl);
-  lookup->Set(v8::String::New("GetPointerControl"), v8::String::New("REQUEST -> GetPointerControl({ }[, cb])")); 
+  lookup->Set(v8::String::New("GetPointerControl"), v8::String::New("REQUEST -> GetPointerControl(cb)")); 
   NODE_SET_METHOD(reqs, "SetScreenSaver", SetScreenSaver);
   lookup->Set(v8::String::New("SetScreenSaver"), v8::String::New("REQUEST -> SetScreenSaver({ timeout: Integer\n, interval: Integer\n, prefer_blanking: Integer\n, allow_exposures: Integer }[, cb])")); 
   NODE_SET_METHOD(reqs, "GetScreenSaver", GetScreenSaver);
-  lookup->Set(v8::String::New("GetScreenSaver"), v8::String::New("REQUEST -> GetScreenSaver({ }[, cb])")); 
+  lookup->Set(v8::String::New("GetScreenSaver"), v8::String::New("REQUEST -> GetScreenSaver(cb)")); 
   NODE_SET_METHOD(reqs, "ChangeHosts", ChangeHosts);
   lookup->Set(v8::String::New("ChangeHosts"), v8::String::New("REQUEST -> ChangeHosts({ mode: Integer\n, family: Integer\n, address_len: Integer }[, cb])")); 
   NODE_SET_METHOD(reqs, "ListHosts", ListHosts);
-  lookup->Set(v8::String::New("ListHosts"), v8::String::New("REQUEST -> ListHosts({ }[, cb])")); 
+  lookup->Set(v8::String::New("ListHosts"), v8::String::New("REQUEST -> ListHosts(cb)")); 
   NODE_SET_METHOD(reqs, "SetAccessControl", SetAccessControl);
   lookup->Set(v8::String::New("SetAccessControl"), v8::String::New("REQUEST -> SetAccessControl({ mode: Integer }[, cb])")); 
   NODE_SET_METHOD(reqs, "SetCloseDownMode", SetCloseDownMode);
@@ -2183,13 +2183,13 @@ void Init(v8::Persistent<v8::Object> reqs) {
   NODE_SET_METHOD(reqs, "SetPointerMapping", SetPointerMapping);
   lookup->Set(v8::String::New("SetPointerMapping"), v8::String::New("REQUEST -> SetPointerMapping({ map_len: Integer }[, cb])")); 
   NODE_SET_METHOD(reqs, "GetPointerMapping", GetPointerMapping);
-  lookup->Set(v8::String::New("GetPointerMapping"), v8::String::New("REQUEST -> GetPointerMapping({ }[, cb])")); 
+  lookup->Set(v8::String::New("GetPointerMapping"), v8::String::New("REQUEST -> GetPointerMapping(cb)")); 
   NODE_SET_METHOD(reqs, "SetModifierMapping", SetModifierMapping);
   lookup->Set(v8::String::New("SetModifierMapping"), v8::String::New("REQUEST -> SetModifierMapping({ keycodes_per_modifier: Integer }[, cb])")); 
   NODE_SET_METHOD(reqs, "GetModifierMapping", GetModifierMapping);
-  lookup->Set(v8::String::New("GetModifierMapping"), v8::String::New("REQUEST -> GetModifierMapping({ }[, cb])")); 
+  lookup->Set(v8::String::New("GetModifierMapping"), v8::String::New("REQUEST -> GetModifierMapping(cb)")); 
   NODE_SET_METHOD(reqs, "NoOperation", NoOperation);
-  lookup->Set(v8::String::New("NoOperation"), v8::String::New("REQUEST -> NoOperation({ }[, cb])")); 
+  lookup->Set(v8::String::New("NoOperation"), v8::String::New("REQUEST -> NoOperation(cb)")); 
 }
 
   }

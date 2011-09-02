@@ -13,9 +13,9 @@ namespace XCBJS {
 
 v8::Handle<v8::Value> ${requestName}(const v8::Arguments& args) {
   v8::HandleScope scope;
-  const char *usage = "Must have at least one argument\\nUsage: ${requestName}(obj[, cb])";
   if (args.Length() < 1) {
-    return ThrowException(Exception::Error(String::New(usage)));
+    const char *usage = "Must have at least one argument\\nUsage: ${requestName}({{if request.field}}obj[, cb]{{else}}cb{{/if}})";
+    return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   {{each(num, field) request.field}}
@@ -67,7 +67,7 @@ v8::Handle<v8::String> Docs(v8::Handle<v8::String> what) {
 void Init(v8::Persistent<v8::Object> reqs) {
 {{each(requestName, request) requests}}
   NODE_SET_METHOD(reqs, "${requestName}", ${requestName});
-  lookup->Set(v8::String::New("${requestName}"), v8::String::New("REQUEST -> ${requestName}(${getDocHelp(requestName, requests)}[, cb])")); 
+  lookup->Set(v8::String::New("${requestName}"), v8::String::New("REQUEST -> ${requestName}({{if request.field}}${getDocHelp(requestName, requests)}[, cb]{{else}}cb{{/if}})")); 
 {{/each}}
 }
 
