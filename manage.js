@@ -47,6 +47,9 @@ xcb.onCreate = function(ev) {
   console.log("Window being created, indexing", ev.window)
   console.log('\tParent -> ', ev.parent)
   wins.push(ev.window);
+  xcb.GetWindowAttributes({ window: ev.window }, function() {
+    console.log('Response from window ', ev.window, ' configuration!')
+  })
   if (groups[curGroup].length == 2) groups.push([])
     , changeGroup(groups.length - 1)
   groups[curGroup].push(ev.window)

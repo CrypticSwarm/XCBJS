@@ -1,11 +1,19 @@
 #ifndef __AUTOGENCTOJSXCBREQUESTS__
 #define __AUTOGENCTOJSXCBREQUESTS__
 #include <v8.h>
+#include <node.h>
 
 #include <config.h>
 
 namespace XCBJS {
   namespace Request {
+
+template <typename R, typename C>
+struct Reply {
+  C cookie;
+  R *reply;
+  v8::Persistent<v8::Function> callback;
+};
 
 //{ { { BEGIN REQUESTS 
 
@@ -17,9 +25,6 @@ v8::Handle<v8::Value> CreateWindow(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t depth = (uint8_t) obj->Get(v8::String::New("depth"))->IntegerValue();
@@ -53,9 +58,6 @@ v8::Handle<v8::Value> ChangeWindowAttributes(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
   uint32_t value_mask = (uint32_t) obj->Get(v8::String::New("value_mask"))->IntegerValue();
@@ -70,6 +72,22 @@ v8::Handle<v8::Value> ChangeWindowAttributes(const v8::Arguments& args) {
   return Undefined();
 }
 
+int GetGetWindowAttributesReply(eio_req *req) {
+  Reply<xcb_get_window_attributes_reply_t, xcb_get_window_attributes_cookie_t> *reply = static_cast<Reply<xcb_get_window_attributes_reply_t, xcb_get_window_attributes_cookie_t> *>(req->data);
+  reply->reply = xcb_get_window_attributes_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleGetWindowAttributesReply(eio_req *req) {
+  Reply<xcb_get_window_attributes_reply_t, xcb_get_window_attributes_cookie_t> *reply = static_cast<Reply<xcb_get_window_attributes_reply_t, xcb_get_window_attributes_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
+}
+
 v8::Handle<v8::Value> GetWindowAttributes(const v8::Arguments& args) {
   v8::HandleScope scope;
   if (args.Length() < 1) {
@@ -79,12 +97,23 @@ v8::Handle<v8::Value> GetWindowAttributes(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
+  v8::Local<v8::Function> callback;
   if (args.Length() >= 2 && !args[1]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
+  if (args.Length() >= 2) {
+    callback = v8::Local<v8::Function>::Cast(args[1]);
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
-  xcb_get_window_attributes(XCBJS::Config::connection, window);
+  xcb_get_window_attributes_cookie_t cookie = xcb_get_window_attributes(XCBJS::Config::connection, window);
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_get_window_attributes_reply_t, xcb_get_window_attributes_cookie_t> *reply = new Reply<xcb_get_window_attributes_reply_t, xcb_get_window_attributes_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetGetWindowAttributesReply, EIO_PRI_DEFAULT, HandleGetWindowAttributesReply, reply);
+  }
   return Undefined();
 }
 
@@ -96,9 +125,6 @@ v8::Handle<v8::Value> DestroyWindow(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
@@ -115,9 +141,6 @@ v8::Handle<v8::Value> DestroySubwindows(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
   xcb_destroy_subwindows(XCBJS::Config::connection, window);
@@ -132,9 +155,6 @@ v8::Handle<v8::Value> ChangeSaveSet(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t mode = (uint8_t) obj->Get(v8::String::New("mode"))->IntegerValue();
@@ -151,9 +171,6 @@ v8::Handle<v8::Value> ReparentWindow(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
@@ -173,9 +190,6 @@ v8::Handle<v8::Value> MapWindow(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
   xcb_map_window(XCBJS::Config::connection, window);
@@ -190,9 +204,6 @@ v8::Handle<v8::Value> MapSubwindows(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
@@ -209,9 +220,6 @@ v8::Handle<v8::Value> UnmapWindow(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
   xcb_unmap_window(XCBJS::Config::connection, window);
@@ -227,9 +235,6 @@ v8::Handle<v8::Value> UnmapSubwindows(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
   xcb_unmap_subwindows(XCBJS::Config::connection, window);
@@ -244,9 +249,6 @@ v8::Handle<v8::Value> ConfigureWindow(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
@@ -271,14 +273,27 @@ v8::Handle<v8::Value> CirculateWindow(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t direction = (uint8_t) obj->Get(v8::String::New("direction"))->IntegerValue();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
   xcb_circulate_window(XCBJS::Config::connection, direction, window);
   return Undefined();
+}
+
+int GetGetGeometryReply(eio_req *req) {
+  Reply<xcb_get_geometry_reply_t, xcb_get_geometry_cookie_t> *reply = static_cast<Reply<xcb_get_geometry_reply_t, xcb_get_geometry_cookie_t> *>(req->data);
+  reply->reply = xcb_get_geometry_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleGetGeometryReply(eio_req *req) {
+  Reply<xcb_get_geometry_reply_t, xcb_get_geometry_cookie_t> *reply = static_cast<Reply<xcb_get_geometry_reply_t, xcb_get_geometry_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
 }
 
 v8::Handle<v8::Value> GetGeometry(const v8::Arguments& args) {
@@ -290,13 +305,40 @@ v8::Handle<v8::Value> GetGeometry(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
+  v8::Local<v8::Function> callback;
   if (args.Length() >= 2 && !args[1]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
+  if (args.Length() >= 2) {
+    callback = v8::Local<v8::Function>::Cast(args[1]);
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
-  xcb_get_geometry(XCBJS::Config::connection, drawable);
+  xcb_get_geometry_cookie_t cookie = xcb_get_geometry(XCBJS::Config::connection, drawable);
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_get_geometry_reply_t, xcb_get_geometry_cookie_t> *reply = new Reply<xcb_get_geometry_reply_t, xcb_get_geometry_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetGetGeometryReply, EIO_PRI_DEFAULT, HandleGetGeometryReply, reply);
+  }
   return Undefined();
+}
+
+int GetQueryTreeReply(eio_req *req) {
+  Reply<xcb_query_tree_reply_t, xcb_query_tree_cookie_t> *reply = static_cast<Reply<xcb_query_tree_reply_t, xcb_query_tree_cookie_t> *>(req->data);
+  reply->reply = xcb_query_tree_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleQueryTreeReply(eio_req *req) {
+  Reply<xcb_query_tree_reply_t, xcb_query_tree_cookie_t> *reply = static_cast<Reply<xcb_query_tree_reply_t, xcb_query_tree_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
 }
 
 v8::Handle<v8::Value> QueryTree(const v8::Arguments& args) {
@@ -308,13 +350,40 @@ v8::Handle<v8::Value> QueryTree(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
+  v8::Local<v8::Function> callback;
   if (args.Length() >= 2 && !args[1]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
+  if (args.Length() >= 2) {
+    callback = v8::Local<v8::Function>::Cast(args[1]);
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
-  xcb_query_tree(XCBJS::Config::connection, window);
+  xcb_query_tree_cookie_t cookie = xcb_query_tree(XCBJS::Config::connection, window);
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_query_tree_reply_t, xcb_query_tree_cookie_t> *reply = new Reply<xcb_query_tree_reply_t, xcb_query_tree_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetQueryTreeReply, EIO_PRI_DEFAULT, HandleQueryTreeReply, reply);
+  }
   return Undefined();
+}
+
+int GetInternAtomReply(eio_req *req) {
+  Reply<xcb_intern_atom_reply_t, xcb_intern_atom_cookie_t> *reply = static_cast<Reply<xcb_intern_atom_reply_t, xcb_intern_atom_cookie_t> *>(req->data);
+  reply->reply = xcb_intern_atom_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleInternAtomReply(eio_req *req) {
+  Reply<xcb_intern_atom_reply_t, xcb_intern_atom_cookie_t> *reply = static_cast<Reply<xcb_intern_atom_reply_t, xcb_intern_atom_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
 }
 
 v8::Handle<v8::Value> InternAtom(const v8::Arguments& args) {
@@ -326,8 +395,12 @@ v8::Handle<v8::Value> InternAtom(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
+  v8::Local<v8::Function> callback;
   if (args.Length() >= 2 && !args[1]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
+  if (args.Length() >= 2) {
+    callback = v8::Local<v8::Function>::Cast(args[1]);
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t only_if_exists = (uint8_t) obj->Get(v8::String::New("only_if_exists"))->BooleanValue();
@@ -336,9 +409,32 @@ v8::Handle<v8::Value> InternAtom(const v8::Arguments& args) {
   v8::Local<v8::String> name_str = v8::Local<v8::String>::Cast(obj->Get(v8::String::New("name")));
   name = new char[name_str->Length()];
   strcpy(name, *v8::String::AsciiValue(name_str));
-  xcb_intern_atom(XCBJS::Config::connection, only_if_exists, name_len, name);
+  xcb_intern_atom_cookie_t cookie = xcb_intern_atom(XCBJS::Config::connection, only_if_exists, name_len, name);
   delete [] name;
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_intern_atom_reply_t, xcb_intern_atom_cookie_t> *reply = new Reply<xcb_intern_atom_reply_t, xcb_intern_atom_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetInternAtomReply, EIO_PRI_DEFAULT, HandleInternAtomReply, reply);
+  }
   return Undefined();
+}
+
+int GetGetAtomNameReply(eio_req *req) {
+  Reply<xcb_get_atom_name_reply_t, xcb_get_atom_name_cookie_t> *reply = static_cast<Reply<xcb_get_atom_name_reply_t, xcb_get_atom_name_cookie_t> *>(req->data);
+  reply->reply = xcb_get_atom_name_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleGetAtomNameReply(eio_req *req) {
+  Reply<xcb_get_atom_name_reply_t, xcb_get_atom_name_cookie_t> *reply = static_cast<Reply<xcb_get_atom_name_reply_t, xcb_get_atom_name_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
 }
 
 v8::Handle<v8::Value> GetAtomName(const v8::Arguments& args) {
@@ -350,12 +446,23 @@ v8::Handle<v8::Value> GetAtomName(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
+  v8::Local<v8::Function> callback;
   if (args.Length() >= 2 && !args[1]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
+  if (args.Length() >= 2) {
+    callback = v8::Local<v8::Function>::Cast(args[1]);
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_atom_t atom = (xcb_atom_t) obj->Get(v8::String::New("atom"))->IntegerValue();
-  xcb_get_atom_name(XCBJS::Config::connection, atom);
+  xcb_get_atom_name_cookie_t cookie = xcb_get_atom_name(XCBJS::Config::connection, atom);
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_get_atom_name_reply_t, xcb_get_atom_name_cookie_t> *reply = new Reply<xcb_get_atom_name_reply_t, xcb_get_atom_name_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetGetAtomNameReply, EIO_PRI_DEFAULT, HandleGetAtomNameReply, reply);
+  }
   return Undefined();
 }
 
@@ -367,9 +474,6 @@ v8::Handle<v8::Value> ChangeProperty(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t mode = (uint8_t) obj->Get(v8::String::New("mode"))->IntegerValue();
@@ -396,14 +500,27 @@ v8::Handle<v8::Value> DeleteProperty(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
   xcb_atom_t property = (xcb_atom_t) obj->Get(v8::String::New("property"))->IntegerValue();
   xcb_delete_property(XCBJS::Config::connection, window, property);
   return Undefined();
+}
+
+int GetGetPropertyReply(eio_req *req) {
+  Reply<xcb_get_property_reply_t, xcb_get_property_cookie_t> *reply = static_cast<Reply<xcb_get_property_reply_t, xcb_get_property_cookie_t> *>(req->data);
+  reply->reply = xcb_get_property_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleGetPropertyReply(eio_req *req) {
+  Reply<xcb_get_property_reply_t, xcb_get_property_cookie_t> *reply = static_cast<Reply<xcb_get_property_reply_t, xcb_get_property_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
 }
 
 v8::Handle<v8::Value> GetProperty(const v8::Arguments& args) {
@@ -415,8 +532,12 @@ v8::Handle<v8::Value> GetProperty(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
+  v8::Local<v8::Function> callback;
   if (args.Length() >= 2 && !args[1]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
+  if (args.Length() >= 2) {
+    callback = v8::Local<v8::Function>::Cast(args[1]);
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t _delete = (uint8_t) obj->Get(v8::String::New("delete"))->BooleanValue();
@@ -425,8 +546,31 @@ v8::Handle<v8::Value> GetProperty(const v8::Arguments& args) {
   xcb_atom_t type = (xcb_atom_t) obj->Get(v8::String::New("type"))->IntegerValue();
   uint32_t long_offset = (uint32_t) obj->Get(v8::String::New("long_offset"))->IntegerValue();
   uint32_t long_length = (uint32_t) obj->Get(v8::String::New("long_length"))->IntegerValue();
-  xcb_get_property(XCBJS::Config::connection, _delete, window, property, type, long_offset, long_length);
+  xcb_get_property_cookie_t cookie = xcb_get_property(XCBJS::Config::connection, _delete, window, property, type, long_offset, long_length);
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_get_property_reply_t, xcb_get_property_cookie_t> *reply = new Reply<xcb_get_property_reply_t, xcb_get_property_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetGetPropertyReply, EIO_PRI_DEFAULT, HandleGetPropertyReply, reply);
+  }
   return Undefined();
+}
+
+int GetListPropertiesReply(eio_req *req) {
+  Reply<xcb_list_properties_reply_t, xcb_list_properties_cookie_t> *reply = static_cast<Reply<xcb_list_properties_reply_t, xcb_list_properties_cookie_t> *>(req->data);
+  reply->reply = xcb_list_properties_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleListPropertiesReply(eio_req *req) {
+  Reply<xcb_list_properties_reply_t, xcb_list_properties_cookie_t> *reply = static_cast<Reply<xcb_list_properties_reply_t, xcb_list_properties_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
 }
 
 v8::Handle<v8::Value> ListProperties(const v8::Arguments& args) {
@@ -438,12 +582,23 @@ v8::Handle<v8::Value> ListProperties(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
+  v8::Local<v8::Function> callback;
   if (args.Length() >= 2 && !args[1]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
+  if (args.Length() >= 2) {
+    callback = v8::Local<v8::Function>::Cast(args[1]);
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
-  xcb_list_properties(XCBJS::Config::connection, window);
+  xcb_list_properties_cookie_t cookie = xcb_list_properties(XCBJS::Config::connection, window);
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_list_properties_reply_t, xcb_list_properties_cookie_t> *reply = new Reply<xcb_list_properties_reply_t, xcb_list_properties_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetListPropertiesReply, EIO_PRI_DEFAULT, HandleListPropertiesReply, reply);
+  }
   return Undefined();
 }
 
@@ -456,15 +611,28 @@ v8::Handle<v8::Value> SetSelectionOwner(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t owner = (xcb_window_t) obj->Get(v8::String::New("owner"))->IntegerValue();
   xcb_atom_t selection = (xcb_atom_t) obj->Get(v8::String::New("selection"))->IntegerValue();
   xcb_timestamp_t time = (xcb_timestamp_t) obj->Get(v8::String::New("time"))->IntegerValue();
   xcb_set_selection_owner(XCBJS::Config::connection, owner, selection, time);
   return Undefined();
+}
+
+int GetGetSelectionOwnerReply(eio_req *req) {
+  Reply<xcb_get_selection_owner_reply_t, xcb_get_selection_owner_cookie_t> *reply = static_cast<Reply<xcb_get_selection_owner_reply_t, xcb_get_selection_owner_cookie_t> *>(req->data);
+  reply->reply = xcb_get_selection_owner_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleGetSelectionOwnerReply(eio_req *req) {
+  Reply<xcb_get_selection_owner_reply_t, xcb_get_selection_owner_cookie_t> *reply = static_cast<Reply<xcb_get_selection_owner_reply_t, xcb_get_selection_owner_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
 }
 
 v8::Handle<v8::Value> GetSelectionOwner(const v8::Arguments& args) {
@@ -476,12 +644,23 @@ v8::Handle<v8::Value> GetSelectionOwner(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
+  v8::Local<v8::Function> callback;
   if (args.Length() >= 2 && !args[1]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
+  if (args.Length() >= 2) {
+    callback = v8::Local<v8::Function>::Cast(args[1]);
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_atom_t selection = (xcb_atom_t) obj->Get(v8::String::New("selection"))->IntegerValue();
-  xcb_get_selection_owner(XCBJS::Config::connection, selection);
+  xcb_get_selection_owner_cookie_t cookie = xcb_get_selection_owner(XCBJS::Config::connection, selection);
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_get_selection_owner_reply_t, xcb_get_selection_owner_cookie_t> *reply = new Reply<xcb_get_selection_owner_reply_t, xcb_get_selection_owner_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetGetSelectionOwnerReply, EIO_PRI_DEFAULT, HandleGetSelectionOwnerReply, reply);
+  }
   return Undefined();
 }
 
@@ -493,9 +672,6 @@ v8::Handle<v8::Value> ConvertSelection(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t requestor = (xcb_window_t) obj->Get(v8::String::New("requestor"))->IntegerValue();
@@ -516,9 +692,6 @@ v8::Handle<v8::Value> SendEvent(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t propagate = (uint8_t) obj->Get(v8::String::New("propagate"))->BooleanValue();
   xcb_window_t destination = (xcb_window_t) obj->Get(v8::String::New("destination"))->IntegerValue();
@@ -532,6 +705,22 @@ v8::Handle<v8::Value> SendEvent(const v8::Arguments& args) {
   return Undefined();
 }
 
+int GetGrabPointerReply(eio_req *req) {
+  Reply<xcb_grab_pointer_reply_t, xcb_grab_pointer_cookie_t> *reply = static_cast<Reply<xcb_grab_pointer_reply_t, xcb_grab_pointer_cookie_t> *>(req->data);
+  reply->reply = xcb_grab_pointer_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleGrabPointerReply(eio_req *req) {
+  Reply<xcb_grab_pointer_reply_t, xcb_grab_pointer_cookie_t> *reply = static_cast<Reply<xcb_grab_pointer_reply_t, xcb_grab_pointer_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
+}
+
 v8::Handle<v8::Value> GrabPointer(const v8::Arguments& args) {
   v8::HandleScope scope;
   if (args.Length() < 1) {
@@ -541,8 +730,12 @@ v8::Handle<v8::Value> GrabPointer(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
+  v8::Local<v8::Function> callback;
   if (args.Length() >= 2 && !args[1]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
+  if (args.Length() >= 2) {
+    callback = v8::Local<v8::Function>::Cast(args[1]);
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t owner_events = (uint8_t) obj->Get(v8::String::New("owner_events"))->BooleanValue();
@@ -553,7 +746,14 @@ v8::Handle<v8::Value> GrabPointer(const v8::Arguments& args) {
   xcb_window_t confine_to = (xcb_window_t) obj->Get(v8::String::New("confine_to"))->IntegerValue();
   xcb_cursor_t cursor = (xcb_cursor_t) obj->Get(v8::String::New("cursor"))->IntegerValue();
   xcb_timestamp_t time = (xcb_timestamp_t) obj->Get(v8::String::New("time"))->IntegerValue();
-  xcb_grab_pointer(XCBJS::Config::connection, owner_events, grab_window, event_mask, pointer_mode, keyboard_mode, confine_to, cursor, time);
+  xcb_grab_pointer_cookie_t cookie = xcb_grab_pointer(XCBJS::Config::connection, owner_events, grab_window, event_mask, pointer_mode, keyboard_mode, confine_to, cursor, time);
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_grab_pointer_reply_t, xcb_grab_pointer_cookie_t> *reply = new Reply<xcb_grab_pointer_reply_t, xcb_grab_pointer_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetGrabPointerReply, EIO_PRI_DEFAULT, HandleGrabPointerReply, reply);
+  }
   return Undefined();
 }
 
@@ -565,9 +765,6 @@ v8::Handle<v8::Value> UngrabPointer(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_timestamp_t time = (xcb_timestamp_t) obj->Get(v8::String::New("time"))->IntegerValue();
@@ -583,9 +780,6 @@ v8::Handle<v8::Value> GrabButton(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t owner_events = (uint8_t) obj->Get(v8::String::New("owner_events"))->BooleanValue();
@@ -610,9 +804,6 @@ v8::Handle<v8::Value> UngrabButton(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t button = (uint8_t) obj->Get(v8::String::New("button"))->IntegerValue();
   xcb_window_t grab_window = (xcb_window_t) obj->Get(v8::String::New("grab_window"))->IntegerValue();
@@ -630,15 +821,28 @@ v8::Handle<v8::Value> ChangeActivePointerGrab(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_cursor_t cursor = (xcb_cursor_t) obj->Get(v8::String::New("cursor"))->IntegerValue();
   xcb_timestamp_t time = (xcb_timestamp_t) obj->Get(v8::String::New("time"))->IntegerValue();
   uint16_t event_mask = (uint16_t) obj->Get(v8::String::New("event_mask"))->IntegerValue();
   xcb_change_active_pointer_grab(XCBJS::Config::connection, cursor, time, event_mask);
   return Undefined();
+}
+
+int GetGrabKeyboardReply(eio_req *req) {
+  Reply<xcb_grab_keyboard_reply_t, xcb_grab_keyboard_cookie_t> *reply = static_cast<Reply<xcb_grab_keyboard_reply_t, xcb_grab_keyboard_cookie_t> *>(req->data);
+  reply->reply = xcb_grab_keyboard_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleGrabKeyboardReply(eio_req *req) {
+  Reply<xcb_grab_keyboard_reply_t, xcb_grab_keyboard_cookie_t> *reply = static_cast<Reply<xcb_grab_keyboard_reply_t, xcb_grab_keyboard_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
 }
 
 v8::Handle<v8::Value> GrabKeyboard(const v8::Arguments& args) {
@@ -650,8 +854,12 @@ v8::Handle<v8::Value> GrabKeyboard(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
+  v8::Local<v8::Function> callback;
   if (args.Length() >= 2 && !args[1]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
+  if (args.Length() >= 2) {
+    callback = v8::Local<v8::Function>::Cast(args[1]);
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t owner_events = (uint8_t) obj->Get(v8::String::New("owner_events"))->BooleanValue();
@@ -659,7 +867,14 @@ v8::Handle<v8::Value> GrabKeyboard(const v8::Arguments& args) {
   xcb_timestamp_t time = (xcb_timestamp_t) obj->Get(v8::String::New("time"))->IntegerValue();
   uint8_t pointer_mode = (uint8_t) obj->Get(v8::String::New("pointer_mode"))->IntegerValue();
   uint8_t keyboard_mode = (uint8_t) obj->Get(v8::String::New("keyboard_mode"))->IntegerValue();
-  xcb_grab_keyboard(XCBJS::Config::connection, owner_events, grab_window, time, pointer_mode, keyboard_mode);
+  xcb_grab_keyboard_cookie_t cookie = xcb_grab_keyboard(XCBJS::Config::connection, owner_events, grab_window, time, pointer_mode, keyboard_mode);
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_grab_keyboard_reply_t, xcb_grab_keyboard_cookie_t> *reply = new Reply<xcb_grab_keyboard_reply_t, xcb_grab_keyboard_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetGrabKeyboardReply, EIO_PRI_DEFAULT, HandleGrabKeyboardReply, reply);
+  }
   return Undefined();
 }
 
@@ -671,9 +886,6 @@ v8::Handle<v8::Value> UngrabKeyboard(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_timestamp_t time = (xcb_timestamp_t) obj->Get(v8::String::New("time"))->IntegerValue();
@@ -689,9 +901,6 @@ v8::Handle<v8::Value> GrabKey(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t owner_events = (uint8_t) obj->Get(v8::String::New("owner_events"))->BooleanValue();
@@ -713,9 +922,6 @@ v8::Handle<v8::Value> UngrabKey(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_keycode_t key = (xcb_keycode_t) obj->Get(v8::String::New("key"))->IntegerValue();
   xcb_window_t grab_window = (xcb_window_t) obj->Get(v8::String::New("grab_window"))->IntegerValue();
@@ -733,9 +939,6 @@ v8::Handle<v8::Value> AllowEvents(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t mode = (uint8_t) obj->Get(v8::String::New("mode"))->IntegerValue();
   xcb_timestamp_t time = (xcb_timestamp_t) obj->Get(v8::String::New("time"))->IntegerValue();
@@ -749,9 +952,6 @@ v8::Handle<v8::Value> GrabServer(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: GrabServer(cb)";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
-  if (!args[0]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Callback.")));
-  }
   xcb_grab_server(XCBJS::Config::connection);
   return Undefined();
 }
@@ -762,11 +962,24 @@ v8::Handle<v8::Value> UngrabServer(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: UngrabServer(cb)";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
-  if (!args[0]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Callback.")));
-  }
   xcb_ungrab_server(XCBJS::Config::connection);
   return Undefined();
+}
+
+int GetQueryPointerReply(eio_req *req) {
+  Reply<xcb_query_pointer_reply_t, xcb_query_pointer_cookie_t> *reply = static_cast<Reply<xcb_query_pointer_reply_t, xcb_query_pointer_cookie_t> *>(req->data);
+  reply->reply = xcb_query_pointer_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleQueryPointerReply(eio_req *req) {
+  Reply<xcb_query_pointer_reply_t, xcb_query_pointer_cookie_t> *reply = static_cast<Reply<xcb_query_pointer_reply_t, xcb_query_pointer_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
 }
 
 v8::Handle<v8::Value> QueryPointer(const v8::Arguments& args) {
@@ -778,13 +991,40 @@ v8::Handle<v8::Value> QueryPointer(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
+  v8::Local<v8::Function> callback;
   if (args.Length() >= 2 && !args[1]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
+  if (args.Length() >= 2) {
+    callback = v8::Local<v8::Function>::Cast(args[1]);
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
-  xcb_query_pointer(XCBJS::Config::connection, window);
+  xcb_query_pointer_cookie_t cookie = xcb_query_pointer(XCBJS::Config::connection, window);
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_query_pointer_reply_t, xcb_query_pointer_cookie_t> *reply = new Reply<xcb_query_pointer_reply_t, xcb_query_pointer_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetQueryPointerReply, EIO_PRI_DEFAULT, HandleQueryPointerReply, reply);
+  }
   return Undefined();
+}
+
+int GetGetMotionEventsReply(eio_req *req) {
+  Reply<xcb_get_motion_events_reply_t, xcb_get_motion_events_cookie_t> *reply = static_cast<Reply<xcb_get_motion_events_reply_t, xcb_get_motion_events_cookie_t> *>(req->data);
+  reply->reply = xcb_get_motion_events_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleGetMotionEventsReply(eio_req *req) {
+  Reply<xcb_get_motion_events_reply_t, xcb_get_motion_events_cookie_t> *reply = static_cast<Reply<xcb_get_motion_events_reply_t, xcb_get_motion_events_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
 }
 
 v8::Handle<v8::Value> GetMotionEvents(const v8::Arguments& args) {
@@ -796,15 +1036,42 @@ v8::Handle<v8::Value> GetMotionEvents(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
+  v8::Local<v8::Function> callback;
   if (args.Length() >= 2 && !args[1]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
+  if (args.Length() >= 2) {
+    callback = v8::Local<v8::Function>::Cast(args[1]);
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
   xcb_timestamp_t start = (xcb_timestamp_t) obj->Get(v8::String::New("start"))->IntegerValue();
   xcb_timestamp_t stop = (xcb_timestamp_t) obj->Get(v8::String::New("stop"))->IntegerValue();
-  xcb_get_motion_events(XCBJS::Config::connection, window, start, stop);
+  xcb_get_motion_events_cookie_t cookie = xcb_get_motion_events(XCBJS::Config::connection, window, start, stop);
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_get_motion_events_reply_t, xcb_get_motion_events_cookie_t> *reply = new Reply<xcb_get_motion_events_reply_t, xcb_get_motion_events_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetGetMotionEventsReply, EIO_PRI_DEFAULT, HandleGetMotionEventsReply, reply);
+  }
   return Undefined();
+}
+
+int GetTranslateCoordinatesReply(eio_req *req) {
+  Reply<xcb_translate_coordinates_reply_t, xcb_translate_coordinates_cookie_t> *reply = static_cast<Reply<xcb_translate_coordinates_reply_t, xcb_translate_coordinates_cookie_t> *>(req->data);
+  reply->reply = xcb_translate_coordinates_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleTranslateCoordinatesReply(eio_req *req) {
+  Reply<xcb_translate_coordinates_reply_t, xcb_translate_coordinates_cookie_t> *reply = static_cast<Reply<xcb_translate_coordinates_reply_t, xcb_translate_coordinates_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
 }
 
 v8::Handle<v8::Value> TranslateCoordinates(const v8::Arguments& args) {
@@ -816,15 +1083,26 @@ v8::Handle<v8::Value> TranslateCoordinates(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
+  v8::Local<v8::Function> callback;
   if (args.Length() >= 2 && !args[1]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
+  if (args.Length() >= 2) {
+    callback = v8::Local<v8::Function>::Cast(args[1]);
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t src_window = (xcb_window_t) obj->Get(v8::String::New("src_window"))->IntegerValue();
   xcb_window_t dst_window = (xcb_window_t) obj->Get(v8::String::New("dst_window"))->IntegerValue();
   int16_t src_x = (int16_t) obj->Get(v8::String::New("src_x"))->IntegerValue();
   int16_t src_y = (int16_t) obj->Get(v8::String::New("src_y"))->IntegerValue();
-  xcb_translate_coordinates(XCBJS::Config::connection, src_window, dst_window, src_x, src_y);
+  xcb_translate_coordinates_cookie_t cookie = xcb_translate_coordinates(XCBJS::Config::connection, src_window, dst_window, src_x, src_y);
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_translate_coordinates_reply_t, xcb_translate_coordinates_cookie_t> *reply = new Reply<xcb_translate_coordinates_reply_t, xcb_translate_coordinates_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetTranslateCoordinatesReply, EIO_PRI_DEFAULT, HandleTranslateCoordinatesReply, reply);
+  }
   return Undefined();
 }
 
@@ -836,9 +1114,6 @@ v8::Handle<v8::Value> WarpPointer(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t src_window = (xcb_window_t) obj->Get(v8::String::New("src_window"))->IntegerValue();
@@ -862,9 +1137,6 @@ v8::Handle<v8::Value> SetInputFocus(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t revert_to = (uint8_t) obj->Get(v8::String::New("revert_to"))->IntegerValue();
   xcb_window_t focus = (xcb_window_t) obj->Get(v8::String::New("focus"))->IntegerValue();
@@ -873,17 +1145,58 @@ v8::Handle<v8::Value> SetInputFocus(const v8::Arguments& args) {
   return Undefined();
 }
 
+int GetGetInputFocusReply(eio_req *req) {
+  Reply<xcb_get_input_focus_reply_t, xcb_get_input_focus_cookie_t> *reply = static_cast<Reply<xcb_get_input_focus_reply_t, xcb_get_input_focus_cookie_t> *>(req->data);
+  reply->reply = xcb_get_input_focus_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleGetInputFocusReply(eio_req *req) {
+  Reply<xcb_get_input_focus_reply_t, xcb_get_input_focus_cookie_t> *reply = static_cast<Reply<xcb_get_input_focus_reply_t, xcb_get_input_focus_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
+}
+
 v8::Handle<v8::Value> GetInputFocus(const v8::Arguments& args) {
   v8::HandleScope scope;
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: GetInputFocus(cb)";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  v8::Local<v8::Function> callback;
   if (!args[0]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Callback.")));
   }
-  xcb_get_input_focus(XCBJS::Config::connection);
+  callback = v8::Local<v8::Function>::Cast(args[0]);
+  xcb_get_input_focus_cookie_t cookie = xcb_get_input_focus(XCBJS::Config::connection);
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_get_input_focus_reply_t, xcb_get_input_focus_cookie_t> *reply = new Reply<xcb_get_input_focus_reply_t, xcb_get_input_focus_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetGetInputFocusReply, EIO_PRI_DEFAULT, HandleGetInputFocusReply, reply);
+  }
   return Undefined();
+}
+
+int GetQueryKeymapReply(eio_req *req) {
+  Reply<xcb_query_keymap_reply_t, xcb_query_keymap_cookie_t> *reply = static_cast<Reply<xcb_query_keymap_reply_t, xcb_query_keymap_cookie_t> *>(req->data);
+  reply->reply = xcb_query_keymap_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleQueryKeymapReply(eio_req *req) {
+  Reply<xcb_query_keymap_reply_t, xcb_query_keymap_cookie_t> *reply = static_cast<Reply<xcb_query_keymap_reply_t, xcb_query_keymap_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
 }
 
 v8::Handle<v8::Value> QueryKeymap(const v8::Arguments& args) {
@@ -892,10 +1205,19 @@ v8::Handle<v8::Value> QueryKeymap(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: QueryKeymap(cb)";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  v8::Local<v8::Function> callback;
   if (!args[0]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Callback.")));
   }
-  xcb_query_keymap(XCBJS::Config::connection);
+  callback = v8::Local<v8::Function>::Cast(args[0]);
+  xcb_query_keymap_cookie_t cookie = xcb_query_keymap(XCBJS::Config::connection);
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_query_keymap_reply_t, xcb_query_keymap_cookie_t> *reply = new Reply<xcb_query_keymap_reply_t, xcb_query_keymap_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetQueryKeymapReply, EIO_PRI_DEFAULT, HandleQueryKeymapReply, reply);
+  }
   return Undefined();
 }
 
@@ -907,9 +1229,6 @@ v8::Handle<v8::Value> OpenFont(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_font_t fid = (xcb_font_t) obj->Get(v8::String::New("fid"))->IntegerValue();
@@ -932,13 +1251,26 @@ v8::Handle<v8::Value> CloseFont(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_font_t font = (xcb_font_t) obj->Get(v8::String::New("font"))->IntegerValue();
   xcb_close_font(XCBJS::Config::connection, font);
   return Undefined();
+}
+
+int GetQueryFontReply(eio_req *req) {
+  Reply<xcb_query_font_reply_t, xcb_query_font_cookie_t> *reply = static_cast<Reply<xcb_query_font_reply_t, xcb_query_font_cookie_t> *>(req->data);
+  reply->reply = xcb_query_font_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleQueryFontReply(eio_req *req) {
+  Reply<xcb_query_font_reply_t, xcb_query_font_cookie_t> *reply = static_cast<Reply<xcb_query_font_reply_t, xcb_query_font_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
 }
 
 v8::Handle<v8::Value> QueryFont(const v8::Arguments& args) {
@@ -950,13 +1282,40 @@ v8::Handle<v8::Value> QueryFont(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
+  v8::Local<v8::Function> callback;
   if (args.Length() >= 2 && !args[1]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
+  if (args.Length() >= 2) {
+    callback = v8::Local<v8::Function>::Cast(args[1]);
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_fontable_t font = (xcb_fontable_t) obj->Get(v8::String::New("font"))->IntegerValue();
-  xcb_query_font(XCBJS::Config::connection, font);
+  xcb_query_font_cookie_t cookie = xcb_query_font(XCBJS::Config::connection, font);
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_query_font_reply_t, xcb_query_font_cookie_t> *reply = new Reply<xcb_query_font_reply_t, xcb_query_font_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetQueryFontReply, EIO_PRI_DEFAULT, HandleQueryFontReply, reply);
+  }
   return Undefined();
+}
+
+int GetQueryTextExtentsReply(eio_req *req) {
+  Reply<xcb_query_text_extents_reply_t, xcb_query_text_extents_cookie_t> *reply = static_cast<Reply<xcb_query_text_extents_reply_t, xcb_query_text_extents_cookie_t> *>(req->data);
+  reply->reply = xcb_query_text_extents_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleQueryTextExtentsReply(eio_req *req) {
+  Reply<xcb_query_text_extents_reply_t, xcb_query_text_extents_cookie_t> *reply = static_cast<Reply<xcb_query_text_extents_reply_t, xcb_query_text_extents_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
 }
 
 v8::Handle<v8::Value> QueryTextExtents(const v8::Arguments& args) {
@@ -968,8 +1327,12 @@ v8::Handle<v8::Value> QueryTextExtents(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
+  v8::Local<v8::Function> callback;
   if (args.Length() >= 2 && !args[1]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
+  if (args.Length() >= 2) {
+    callback = v8::Local<v8::Function>::Cast(args[1]);
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_fontable_t font = (xcb_fontable_t) obj->Get(v8::String::New("font"))->IntegerValue();
@@ -980,9 +1343,32 @@ v8::Handle<v8::Value> QueryTextExtents(const v8::Arguments& args) {
   for(unsigned int i = 0; i < string_list->Length(); ++i) {
     fromJS(v8::Local<v8::Object>::Cast(string_list->Get(i)), string + i);
   }
-  xcb_query_text_extents(XCBJS::Config::connection, font, string_len, string);
+  xcb_query_text_extents_cookie_t cookie = xcb_query_text_extents(XCBJS::Config::connection, font, string_len, string);
   delete [] string;
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_query_text_extents_reply_t, xcb_query_text_extents_cookie_t> *reply = new Reply<xcb_query_text_extents_reply_t, xcb_query_text_extents_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetQueryTextExtentsReply, EIO_PRI_DEFAULT, HandleQueryTextExtentsReply, reply);
+  }
   return Undefined();
+}
+
+int GetListFontsReply(eio_req *req) {
+  Reply<xcb_list_fonts_reply_t, xcb_list_fonts_cookie_t> *reply = static_cast<Reply<xcb_list_fonts_reply_t, xcb_list_fonts_cookie_t> *>(req->data);
+  reply->reply = xcb_list_fonts_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleListFontsReply(eio_req *req) {
+  Reply<xcb_list_fonts_reply_t, xcb_list_fonts_cookie_t> *reply = static_cast<Reply<xcb_list_fonts_reply_t, xcb_list_fonts_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
 }
 
 v8::Handle<v8::Value> ListFonts(const v8::Arguments& args) {
@@ -994,8 +1380,12 @@ v8::Handle<v8::Value> ListFonts(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
+  v8::Local<v8::Function> callback;
   if (args.Length() >= 2 && !args[1]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
+  if (args.Length() >= 2) {
+    callback = v8::Local<v8::Function>::Cast(args[1]);
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint16_t max_names = (uint16_t) obj->Get(v8::String::New("max_names"))->IntegerValue();
@@ -1004,9 +1394,32 @@ v8::Handle<v8::Value> ListFonts(const v8::Arguments& args) {
   v8::Local<v8::String> pattern_str = v8::Local<v8::String>::Cast(obj->Get(v8::String::New("pattern")));
   pattern = new char[pattern_str->Length()];
   strcpy(pattern, *v8::String::AsciiValue(pattern_str));
-  xcb_list_fonts(XCBJS::Config::connection, max_names, pattern_len, pattern);
+  xcb_list_fonts_cookie_t cookie = xcb_list_fonts(XCBJS::Config::connection, max_names, pattern_len, pattern);
   delete [] pattern;
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_list_fonts_reply_t, xcb_list_fonts_cookie_t> *reply = new Reply<xcb_list_fonts_reply_t, xcb_list_fonts_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetListFontsReply, EIO_PRI_DEFAULT, HandleListFontsReply, reply);
+  }
   return Undefined();
+}
+
+int GetListFontsWithInfoReply(eio_req *req) {
+  Reply<xcb_list_fonts_with_info_reply_t, xcb_list_fonts_with_info_cookie_t> *reply = static_cast<Reply<xcb_list_fonts_with_info_reply_t, xcb_list_fonts_with_info_cookie_t> *>(req->data);
+  reply->reply = xcb_list_fonts_with_info_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleListFontsWithInfoReply(eio_req *req) {
+  Reply<xcb_list_fonts_with_info_reply_t, xcb_list_fonts_with_info_cookie_t> *reply = static_cast<Reply<xcb_list_fonts_with_info_reply_t, xcb_list_fonts_with_info_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
 }
 
 v8::Handle<v8::Value> ListFontsWithInfo(const v8::Arguments& args) {
@@ -1018,8 +1431,12 @@ v8::Handle<v8::Value> ListFontsWithInfo(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
+  v8::Local<v8::Function> callback;
   if (args.Length() >= 2 && !args[1]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
+  if (args.Length() >= 2) {
+    callback = v8::Local<v8::Function>::Cast(args[1]);
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint16_t max_names = (uint16_t) obj->Get(v8::String::New("max_names"))->IntegerValue();
@@ -1028,8 +1445,15 @@ v8::Handle<v8::Value> ListFontsWithInfo(const v8::Arguments& args) {
   v8::Local<v8::String> pattern_str = v8::Local<v8::String>::Cast(obj->Get(v8::String::New("pattern")));
   pattern = new char[pattern_str->Length()];
   strcpy(pattern, *v8::String::AsciiValue(pattern_str));
-  xcb_list_fonts_with_info(XCBJS::Config::connection, max_names, pattern_len, pattern);
+  xcb_list_fonts_with_info_cookie_t cookie = xcb_list_fonts_with_info(XCBJS::Config::connection, max_names, pattern_len, pattern);
   delete [] pattern;
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_list_fonts_with_info_reply_t, xcb_list_fonts_with_info_cookie_t> *reply = new Reply<xcb_list_fonts_with_info_reply_t, xcb_list_fonts_with_info_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetListFontsWithInfoReply, EIO_PRI_DEFAULT, HandleListFontsWithInfoReply, reply);
+  }
   return Undefined();
 }
 
@@ -1041,9 +1465,6 @@ v8::Handle<v8::Value> SetFontPath(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint16_t font_qty = (uint16_t) obj->Get(v8::String::New("font_qty"))->IntegerValue();
@@ -1057,16 +1478,41 @@ v8::Handle<v8::Value> SetFontPath(const v8::Arguments& args) {
   return Undefined();
 }
 
+int GetGetFontPathReply(eio_req *req) {
+  Reply<xcb_get_font_path_reply_t, xcb_get_font_path_cookie_t> *reply = static_cast<Reply<xcb_get_font_path_reply_t, xcb_get_font_path_cookie_t> *>(req->data);
+  reply->reply = xcb_get_font_path_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleGetFontPathReply(eio_req *req) {
+  Reply<xcb_get_font_path_reply_t, xcb_get_font_path_cookie_t> *reply = static_cast<Reply<xcb_get_font_path_reply_t, xcb_get_font_path_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
+}
+
 v8::Handle<v8::Value> GetFontPath(const v8::Arguments& args) {
   v8::HandleScope scope;
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: GetFontPath(cb)";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  v8::Local<v8::Function> callback;
   if (!args[0]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Callback.")));
   }
-  xcb_get_font_path(XCBJS::Config::connection);
+  callback = v8::Local<v8::Function>::Cast(args[0]);
+  xcb_get_font_path_cookie_t cookie = xcb_get_font_path(XCBJS::Config::connection);
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_get_font_path_reply_t, xcb_get_font_path_cookie_t> *reply = new Reply<xcb_get_font_path_reply_t, xcb_get_font_path_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetGetFontPathReply, EIO_PRI_DEFAULT, HandleGetFontPathReply, reply);
+  }
   return Undefined();
 }
 
@@ -1078,9 +1524,6 @@ v8::Handle<v8::Value> CreatePixmap(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t depth = (uint8_t) obj->Get(v8::String::New("depth"))->IntegerValue();
@@ -1101,9 +1544,6 @@ v8::Handle<v8::Value> FreePixmap(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_pixmap_t pixmap = (xcb_pixmap_t) obj->Get(v8::String::New("pixmap"))->IntegerValue();
   xcb_free_pixmap(XCBJS::Config::connection, pixmap);
@@ -1118,9 +1558,6 @@ v8::Handle<v8::Value> CreateGC(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_gcontext_t cid = (xcb_gcontext_t) obj->Get(v8::String::New("cid"))->IntegerValue();
@@ -1146,9 +1583,6 @@ v8::Handle<v8::Value> ChangeGC(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
   uint32_t value_mask = (uint32_t) obj->Get(v8::String::New("value_mask"))->IntegerValue();
@@ -1172,9 +1606,6 @@ v8::Handle<v8::Value> CopyGC(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_gcontext_t src_gc = (xcb_gcontext_t) obj->Get(v8::String::New("src_gc"))->IntegerValue();
   xcb_gcontext_t dst_gc = (xcb_gcontext_t) obj->Get(v8::String::New("dst_gc"))->IntegerValue();
@@ -1191,9 +1622,6 @@ v8::Handle<v8::Value> SetDashes(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
@@ -1218,9 +1646,6 @@ v8::Handle<v8::Value> SetClipRectangles(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t ordering = (uint8_t) obj->Get(v8::String::New("ordering"))->IntegerValue();
@@ -1248,9 +1673,6 @@ v8::Handle<v8::Value> FreeGC(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
   xcb_free_gc(XCBJS::Config::connection, gc);
@@ -1265,9 +1687,6 @@ v8::Handle<v8::Value> ClearArea(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t exposures = (uint8_t) obj->Get(v8::String::New("exposures"))->BooleanValue();
@@ -1288,9 +1707,6 @@ v8::Handle<v8::Value> CopyArea(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_drawable_t src_drawable = (xcb_drawable_t) obj->Get(v8::String::New("src_drawable"))->IntegerValue();
@@ -1315,9 +1731,6 @@ v8::Handle<v8::Value> CopyPlane(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_drawable_t src_drawable = (xcb_drawable_t) obj->Get(v8::String::New("src_drawable"))->IntegerValue();
   xcb_drawable_t dst_drawable = (xcb_drawable_t) obj->Get(v8::String::New("dst_drawable"))->IntegerValue();
@@ -1341,9 +1754,6 @@ v8::Handle<v8::Value> PolyPoint(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t coordinate_mode = (uint8_t) obj->Get(v8::String::New("coordinate_mode"))->IntegerValue();
@@ -1370,9 +1780,6 @@ v8::Handle<v8::Value> PolyLine(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t coordinate_mode = (uint8_t) obj->Get(v8::String::New("coordinate_mode"))->IntegerValue();
   xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
@@ -1398,9 +1805,6 @@ v8::Handle<v8::Value> PolySegment(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
   xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
@@ -1424,9 +1828,6 @@ v8::Handle<v8::Value> PolyRectangle(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
@@ -1452,9 +1853,6 @@ v8::Handle<v8::Value> PolyArc(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
   xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
@@ -1478,9 +1876,6 @@ v8::Handle<v8::Value> FillPoly(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
@@ -1508,9 +1903,6 @@ v8::Handle<v8::Value> PolyFillRectangle(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
   xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
@@ -1534,9 +1926,6 @@ v8::Handle<v8::Value> PolyFillArc(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
@@ -1562,9 +1951,6 @@ v8::Handle<v8::Value> PutImage(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t format = (uint8_t) obj->Get(v8::String::New("format"))->IntegerValue();
   xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
@@ -1587,6 +1973,22 @@ v8::Handle<v8::Value> PutImage(const v8::Arguments& args) {
   return Undefined();
 }
 
+int GetGetImageReply(eio_req *req) {
+  Reply<xcb_get_image_reply_t, xcb_get_image_cookie_t> *reply = static_cast<Reply<xcb_get_image_reply_t, xcb_get_image_cookie_t> *>(req->data);
+  reply->reply = xcb_get_image_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleGetImageReply(eio_req *req) {
+  Reply<xcb_get_image_reply_t, xcb_get_image_cookie_t> *reply = static_cast<Reply<xcb_get_image_reply_t, xcb_get_image_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
+}
+
 v8::Handle<v8::Value> GetImage(const v8::Arguments& args) {
   v8::HandleScope scope;
   if (args.Length() < 1) {
@@ -1596,8 +1998,12 @@ v8::Handle<v8::Value> GetImage(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
+  v8::Local<v8::Function> callback;
   if (args.Length() >= 2 && !args[1]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
+  if (args.Length() >= 2) {
+    callback = v8::Local<v8::Function>::Cast(args[1]);
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t format = (uint8_t) obj->Get(v8::String::New("format"))->IntegerValue();
@@ -1607,7 +2013,14 @@ v8::Handle<v8::Value> GetImage(const v8::Arguments& args) {
   uint16_t width = (uint16_t) obj->Get(v8::String::New("width"))->IntegerValue();
   uint16_t height = (uint16_t) obj->Get(v8::String::New("height"))->IntegerValue();
   uint32_t plane_mask = (uint32_t) obj->Get(v8::String::New("plane_mask"))->IntegerValue();
-  xcb_get_image(XCBJS::Config::connection, format, drawable, x, y, width, height, plane_mask);
+  xcb_get_image_cookie_t cookie = xcb_get_image(XCBJS::Config::connection, format, drawable, x, y, width, height, plane_mask);
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_get_image_reply_t, xcb_get_image_cookie_t> *reply = new Reply<xcb_get_image_reply_t, xcb_get_image_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetGetImageReply, EIO_PRI_DEFAULT, HandleGetImageReply, reply);
+  }
   return Undefined();
 }
 
@@ -1619,9 +2032,6 @@ v8::Handle<v8::Value> PolyText8(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
@@ -1649,9 +2059,6 @@ v8::Handle<v8::Value> PolyText16(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
   xcb_gcontext_t gc = (xcb_gcontext_t) obj->Get(v8::String::New("gc"))->IntegerValue();
@@ -1678,9 +2085,6 @@ v8::Handle<v8::Value> ImageText8(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t string_len = (uint8_t) obj->Get(v8::String::New("string_len"))->IntegerValue();
   xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
@@ -1704,9 +2108,6 @@ v8::Handle<v8::Value> ImageText16(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t string_len = (uint8_t) obj->Get(v8::String::New("string_len"))->IntegerValue();
@@ -1734,9 +2135,6 @@ v8::Handle<v8::Value> CreateColormap(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t alloc = (uint8_t) obj->Get(v8::String::New("alloc"))->IntegerValue();
   xcb_colormap_t mid = (xcb_colormap_t) obj->Get(v8::String::New("mid"))->IntegerValue();
@@ -1755,9 +2153,6 @@ v8::Handle<v8::Value> FreeColormap(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
   xcb_free_colormap(XCBJS::Config::connection, cmap);
@@ -1772,9 +2167,6 @@ v8::Handle<v8::Value> CopyColormapAndFree(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_colormap_t mid = (xcb_colormap_t) obj->Get(v8::String::New("mid"))->IntegerValue();
@@ -1792,9 +2184,6 @@ v8::Handle<v8::Value> InstallColormap(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
   xcb_install_colormap(XCBJS::Config::connection, cmap);
@@ -1810,13 +2199,26 @@ v8::Handle<v8::Value> UninstallColormap(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
   xcb_uninstall_colormap(XCBJS::Config::connection, cmap);
   return Undefined();
+}
+
+int GetListInstalledColormapsReply(eio_req *req) {
+  Reply<xcb_list_installed_colormaps_reply_t, xcb_list_installed_colormaps_cookie_t> *reply = static_cast<Reply<xcb_list_installed_colormaps_reply_t, xcb_list_installed_colormaps_cookie_t> *>(req->data);
+  reply->reply = xcb_list_installed_colormaps_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleListInstalledColormapsReply(eio_req *req) {
+  Reply<xcb_list_installed_colormaps_reply_t, xcb_list_installed_colormaps_cookie_t> *reply = static_cast<Reply<xcb_list_installed_colormaps_reply_t, xcb_list_installed_colormaps_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
 }
 
 v8::Handle<v8::Value> ListInstalledColormaps(const v8::Arguments& args) {
@@ -1828,13 +2230,40 @@ v8::Handle<v8::Value> ListInstalledColormaps(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
+  v8::Local<v8::Function> callback;
   if (args.Length() >= 2 && !args[1]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
+  if (args.Length() >= 2) {
+    callback = v8::Local<v8::Function>::Cast(args[1]);
+  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
-  xcb_list_installed_colormaps(XCBJS::Config::connection, window);
+  xcb_list_installed_colormaps_cookie_t cookie = xcb_list_installed_colormaps(XCBJS::Config::connection, window);
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_list_installed_colormaps_reply_t, xcb_list_installed_colormaps_cookie_t> *reply = new Reply<xcb_list_installed_colormaps_reply_t, xcb_list_installed_colormaps_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetListInstalledColormapsReply, EIO_PRI_DEFAULT, HandleListInstalledColormapsReply, reply);
+  }
   return Undefined();
+}
+
+int GetAllocColorReply(eio_req *req) {
+  Reply<xcb_alloc_color_reply_t, xcb_alloc_color_cookie_t> *reply = static_cast<Reply<xcb_alloc_color_reply_t, xcb_alloc_color_cookie_t> *>(req->data);
+  reply->reply = xcb_alloc_color_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleAllocColorReply(eio_req *req) {
+  Reply<xcb_alloc_color_reply_t, xcb_alloc_color_cookie_t> *reply = static_cast<Reply<xcb_alloc_color_reply_t, xcb_alloc_color_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
 }
 
 v8::Handle<v8::Value> AllocColor(const v8::Arguments& args) {
@@ -1846,16 +2275,43 @@ v8::Handle<v8::Value> AllocColor(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
+  v8::Local<v8::Function> callback;
   if (args.Length() >= 2 && !args[1]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
+  if (args.Length() >= 2) {
+    callback = v8::Local<v8::Function>::Cast(args[1]);
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
   uint16_t red = (uint16_t) obj->Get(v8::String::New("red"))->IntegerValue();
   uint16_t green = (uint16_t) obj->Get(v8::String::New("green"))->IntegerValue();
   uint16_t blue = (uint16_t) obj->Get(v8::String::New("blue"))->IntegerValue();
-  xcb_alloc_color(XCBJS::Config::connection, cmap, red, green, blue);
+  xcb_alloc_color_cookie_t cookie = xcb_alloc_color(XCBJS::Config::connection, cmap, red, green, blue);
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_alloc_color_reply_t, xcb_alloc_color_cookie_t> *reply = new Reply<xcb_alloc_color_reply_t, xcb_alloc_color_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetAllocColorReply, EIO_PRI_DEFAULT, HandleAllocColorReply, reply);
+  }
   return Undefined();
+}
+
+int GetAllocNamedColorReply(eio_req *req) {
+  Reply<xcb_alloc_named_color_reply_t, xcb_alloc_named_color_cookie_t> *reply = static_cast<Reply<xcb_alloc_named_color_reply_t, xcb_alloc_named_color_cookie_t> *>(req->data);
+  reply->reply = xcb_alloc_named_color_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleAllocNamedColorReply(eio_req *req) {
+  Reply<xcb_alloc_named_color_reply_t, xcb_alloc_named_color_cookie_t> *reply = static_cast<Reply<xcb_alloc_named_color_reply_t, xcb_alloc_named_color_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
 }
 
 v8::Handle<v8::Value> AllocNamedColor(const v8::Arguments& args) {
@@ -1867,8 +2323,12 @@ v8::Handle<v8::Value> AllocNamedColor(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
+  v8::Local<v8::Function> callback;
   if (args.Length() >= 2 && !args[1]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
+  if (args.Length() >= 2) {
+    callback = v8::Local<v8::Function>::Cast(args[1]);
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
@@ -1877,9 +2337,32 @@ v8::Handle<v8::Value> AllocNamedColor(const v8::Arguments& args) {
   v8::Local<v8::String> name_str = v8::Local<v8::String>::Cast(obj->Get(v8::String::New("name")));
   name = new char[name_str->Length()];
   strcpy(name, *v8::String::AsciiValue(name_str));
-  xcb_alloc_named_color(XCBJS::Config::connection, cmap, name_len, name);
+  xcb_alloc_named_color_cookie_t cookie = xcb_alloc_named_color(XCBJS::Config::connection, cmap, name_len, name);
   delete [] name;
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_alloc_named_color_reply_t, xcb_alloc_named_color_cookie_t> *reply = new Reply<xcb_alloc_named_color_reply_t, xcb_alloc_named_color_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetAllocNamedColorReply, EIO_PRI_DEFAULT, HandleAllocNamedColorReply, reply);
+  }
   return Undefined();
+}
+
+int GetAllocColorCellsReply(eio_req *req) {
+  Reply<xcb_alloc_color_cells_reply_t, xcb_alloc_color_cells_cookie_t> *reply = static_cast<Reply<xcb_alloc_color_cells_reply_t, xcb_alloc_color_cells_cookie_t> *>(req->data);
+  reply->reply = xcb_alloc_color_cells_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleAllocColorCellsReply(eio_req *req) {
+  Reply<xcb_alloc_color_cells_reply_t, xcb_alloc_color_cells_cookie_t> *reply = static_cast<Reply<xcb_alloc_color_cells_reply_t, xcb_alloc_color_cells_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
 }
 
 v8::Handle<v8::Value> AllocColorCells(const v8::Arguments& args) {
@@ -1891,16 +2374,43 @@ v8::Handle<v8::Value> AllocColorCells(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
+  v8::Local<v8::Function> callback;
   if (args.Length() >= 2 && !args[1]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
+  if (args.Length() >= 2) {
+    callback = v8::Local<v8::Function>::Cast(args[1]);
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t contiguous = (uint8_t) obj->Get(v8::String::New("contiguous"))->BooleanValue();
   xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
   uint16_t colors = (uint16_t) obj->Get(v8::String::New("colors"))->IntegerValue();
   uint16_t planes = (uint16_t) obj->Get(v8::String::New("planes"))->IntegerValue();
-  xcb_alloc_color_cells(XCBJS::Config::connection, contiguous, cmap, colors, planes);
+  xcb_alloc_color_cells_cookie_t cookie = xcb_alloc_color_cells(XCBJS::Config::connection, contiguous, cmap, colors, planes);
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_alloc_color_cells_reply_t, xcb_alloc_color_cells_cookie_t> *reply = new Reply<xcb_alloc_color_cells_reply_t, xcb_alloc_color_cells_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetAllocColorCellsReply, EIO_PRI_DEFAULT, HandleAllocColorCellsReply, reply);
+  }
   return Undefined();
+}
+
+int GetAllocColorPlanesReply(eio_req *req) {
+  Reply<xcb_alloc_color_planes_reply_t, xcb_alloc_color_planes_cookie_t> *reply = static_cast<Reply<xcb_alloc_color_planes_reply_t, xcb_alloc_color_planes_cookie_t> *>(req->data);
+  reply->reply = xcb_alloc_color_planes_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleAllocColorPlanesReply(eio_req *req) {
+  Reply<xcb_alloc_color_planes_reply_t, xcb_alloc_color_planes_cookie_t> *reply = static_cast<Reply<xcb_alloc_color_planes_reply_t, xcb_alloc_color_planes_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
 }
 
 v8::Handle<v8::Value> AllocColorPlanes(const v8::Arguments& args) {
@@ -1912,8 +2422,12 @@ v8::Handle<v8::Value> AllocColorPlanes(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
+  v8::Local<v8::Function> callback;
   if (args.Length() >= 2 && !args[1]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
+  if (args.Length() >= 2) {
+    callback = v8::Local<v8::Function>::Cast(args[1]);
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t contiguous = (uint8_t) obj->Get(v8::String::New("contiguous"))->BooleanValue();
@@ -1922,7 +2436,14 @@ v8::Handle<v8::Value> AllocColorPlanes(const v8::Arguments& args) {
   uint16_t reds = (uint16_t) obj->Get(v8::String::New("reds"))->IntegerValue();
   uint16_t greens = (uint16_t) obj->Get(v8::String::New("greens"))->IntegerValue();
   uint16_t blues = (uint16_t) obj->Get(v8::String::New("blues"))->IntegerValue();
-  xcb_alloc_color_planes(XCBJS::Config::connection, contiguous, cmap, colors, reds, greens, blues);
+  xcb_alloc_color_planes_cookie_t cookie = xcb_alloc_color_planes(XCBJS::Config::connection, contiguous, cmap, colors, reds, greens, blues);
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_alloc_color_planes_reply_t, xcb_alloc_color_planes_cookie_t> *reply = new Reply<xcb_alloc_color_planes_reply_t, xcb_alloc_color_planes_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetAllocColorPlanesReply, EIO_PRI_DEFAULT, HandleAllocColorPlanesReply, reply);
+  }
   return Undefined();
 }
 
@@ -1934,9 +2455,6 @@ v8::Handle<v8::Value> FreeColors(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
@@ -1962,9 +2480,6 @@ v8::Handle<v8::Value> StoreColors(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
   uint32_t items_len = (uint32_t) obj->Get(v8::String::New("items_len"))->IntegerValue();
@@ -1988,9 +2503,6 @@ v8::Handle<v8::Value> StoreNamedColor(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t flags = (uint8_t) obj->Get(v8::String::New("flags"))->IntegerValue();
   xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
@@ -2005,6 +2517,22 @@ v8::Handle<v8::Value> StoreNamedColor(const v8::Arguments& args) {
   return Undefined();
 }
 
+int GetQueryColorsReply(eio_req *req) {
+  Reply<xcb_query_colors_reply_t, xcb_query_colors_cookie_t> *reply = static_cast<Reply<xcb_query_colors_reply_t, xcb_query_colors_cookie_t> *>(req->data);
+  reply->reply = xcb_query_colors_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleQueryColorsReply(eio_req *req) {
+  Reply<xcb_query_colors_reply_t, xcb_query_colors_cookie_t> *reply = static_cast<Reply<xcb_query_colors_reply_t, xcb_query_colors_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
+}
+
 v8::Handle<v8::Value> QueryColors(const v8::Arguments& args) {
   v8::HandleScope scope;
   if (args.Length() < 1) {
@@ -2014,8 +2542,12 @@ v8::Handle<v8::Value> QueryColors(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
+  v8::Local<v8::Function> callback;
   if (args.Length() >= 2 && !args[1]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
+  if (args.Length() >= 2) {
+    callback = v8::Local<v8::Function>::Cast(args[1]);
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
@@ -2026,9 +2558,32 @@ v8::Handle<v8::Value> QueryColors(const v8::Arguments& args) {
   for(unsigned int i = 0; i < pixels_list->Length(); ++i) {
     pixels[i] = (uint32_t) pixels_list->Get(i)->IntegerValue();
   }
-  xcb_query_colors(XCBJS::Config::connection, cmap, pixels_len, pixels);
+  xcb_query_colors_cookie_t cookie = xcb_query_colors(XCBJS::Config::connection, cmap, pixels_len, pixels);
   delete [] pixels;
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_query_colors_reply_t, xcb_query_colors_cookie_t> *reply = new Reply<xcb_query_colors_reply_t, xcb_query_colors_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetQueryColorsReply, EIO_PRI_DEFAULT, HandleQueryColorsReply, reply);
+  }
   return Undefined();
+}
+
+int GetLookupColorReply(eio_req *req) {
+  Reply<xcb_lookup_color_reply_t, xcb_lookup_color_cookie_t> *reply = static_cast<Reply<xcb_lookup_color_reply_t, xcb_lookup_color_cookie_t> *>(req->data);
+  reply->reply = xcb_lookup_color_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleLookupColorReply(eio_req *req) {
+  Reply<xcb_lookup_color_reply_t, xcb_lookup_color_cookie_t> *reply = static_cast<Reply<xcb_lookup_color_reply_t, xcb_lookup_color_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
 }
 
 v8::Handle<v8::Value> LookupColor(const v8::Arguments& args) {
@@ -2040,8 +2595,12 @@ v8::Handle<v8::Value> LookupColor(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
+  v8::Local<v8::Function> callback;
   if (args.Length() >= 2 && !args[1]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
+  if (args.Length() >= 2) {
+    callback = v8::Local<v8::Function>::Cast(args[1]);
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_colormap_t cmap = (xcb_colormap_t) obj->Get(v8::String::New("cmap"))->IntegerValue();
@@ -2050,8 +2609,15 @@ v8::Handle<v8::Value> LookupColor(const v8::Arguments& args) {
   v8::Local<v8::String> name_str = v8::Local<v8::String>::Cast(obj->Get(v8::String::New("name")));
   name = new char[name_str->Length()];
   strcpy(name, *v8::String::AsciiValue(name_str));
-  xcb_lookup_color(XCBJS::Config::connection, cmap, name_len, name);
+  xcb_lookup_color_cookie_t cookie = xcb_lookup_color(XCBJS::Config::connection, cmap, name_len, name);
   delete [] name;
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_lookup_color_reply_t, xcb_lookup_color_cookie_t> *reply = new Reply<xcb_lookup_color_reply_t, xcb_lookup_color_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetLookupColorReply, EIO_PRI_DEFAULT, HandleLookupColorReply, reply);
+  }
   return Undefined();
 }
 
@@ -2063,9 +2629,6 @@ v8::Handle<v8::Value> CreateCursor(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_cursor_t cid = (xcb_cursor_t) obj->Get(v8::String::New("cid"))->IntegerValue();
@@ -2092,9 +2655,6 @@ v8::Handle<v8::Value> CreateGlyphCursor(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_cursor_t cid = (xcb_cursor_t) obj->Get(v8::String::New("cid"))->IntegerValue();
   xcb_font_t source_font = (xcb_font_t) obj->Get(v8::String::New("source_font"))->IntegerValue();
@@ -2120,9 +2680,6 @@ v8::Handle<v8::Value> FreeCursor(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_cursor_t cursor = (xcb_cursor_t) obj->Get(v8::String::New("cursor"))->IntegerValue();
   xcb_free_cursor(XCBJS::Config::connection, cursor);
@@ -2138,9 +2695,6 @@ v8::Handle<v8::Value> RecolorCursor(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_cursor_t cursor = (xcb_cursor_t) obj->Get(v8::String::New("cursor"))->IntegerValue();
   uint16_t fore_red = (uint16_t) obj->Get(v8::String::New("fore_red"))->IntegerValue();
@@ -2153,6 +2707,22 @@ v8::Handle<v8::Value> RecolorCursor(const v8::Arguments& args) {
   return Undefined();
 }
 
+int GetQueryBestSizeReply(eio_req *req) {
+  Reply<xcb_query_best_size_reply_t, xcb_query_best_size_cookie_t> *reply = static_cast<Reply<xcb_query_best_size_reply_t, xcb_query_best_size_cookie_t> *>(req->data);
+  reply->reply = xcb_query_best_size_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleQueryBestSizeReply(eio_req *req) {
+  Reply<xcb_query_best_size_reply_t, xcb_query_best_size_cookie_t> *reply = static_cast<Reply<xcb_query_best_size_reply_t, xcb_query_best_size_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
+}
+
 v8::Handle<v8::Value> QueryBestSize(const v8::Arguments& args) {
   v8::HandleScope scope;
   if (args.Length() < 1) {
@@ -2162,16 +2732,43 @@ v8::Handle<v8::Value> QueryBestSize(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
+  v8::Local<v8::Function> callback;
   if (args.Length() >= 2 && !args[1]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
+  if (args.Length() >= 2) {
+    callback = v8::Local<v8::Function>::Cast(args[1]);
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t _class = (uint8_t) obj->Get(v8::String::New("class"))->IntegerValue();
   xcb_drawable_t drawable = (xcb_drawable_t) obj->Get(v8::String::New("drawable"))->IntegerValue();
   uint16_t width = (uint16_t) obj->Get(v8::String::New("width"))->IntegerValue();
   uint16_t height = (uint16_t) obj->Get(v8::String::New("height"))->IntegerValue();
-  xcb_query_best_size(XCBJS::Config::connection, _class, drawable, width, height);
+  xcb_query_best_size_cookie_t cookie = xcb_query_best_size(XCBJS::Config::connection, _class, drawable, width, height);
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_query_best_size_reply_t, xcb_query_best_size_cookie_t> *reply = new Reply<xcb_query_best_size_reply_t, xcb_query_best_size_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetQueryBestSizeReply, EIO_PRI_DEFAULT, HandleQueryBestSizeReply, reply);
+  }
   return Undefined();
+}
+
+int GetQueryExtensionReply(eio_req *req) {
+  Reply<xcb_query_extension_reply_t, xcb_query_extension_cookie_t> *reply = static_cast<Reply<xcb_query_extension_reply_t, xcb_query_extension_cookie_t> *>(req->data);
+  reply->reply = xcb_query_extension_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleQueryExtensionReply(eio_req *req) {
+  Reply<xcb_query_extension_reply_t, xcb_query_extension_cookie_t> *reply = static_cast<Reply<xcb_query_extension_reply_t, xcb_query_extension_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
 }
 
 v8::Handle<v8::Value> QueryExtension(const v8::Arguments& args) {
@@ -2183,8 +2780,12 @@ v8::Handle<v8::Value> QueryExtension(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
+  v8::Local<v8::Function> callback;
   if (args.Length() >= 2 && !args[1]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
+  if (args.Length() >= 2) {
+    callback = v8::Local<v8::Function>::Cast(args[1]);
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint16_t name_len = (uint16_t) obj->Get(v8::String::New("name_len"))->IntegerValue();
@@ -2192,9 +2793,32 @@ v8::Handle<v8::Value> QueryExtension(const v8::Arguments& args) {
   v8::Local<v8::String> name_str = v8::Local<v8::String>::Cast(obj->Get(v8::String::New("name")));
   name = new char[name_str->Length()];
   strcpy(name, *v8::String::AsciiValue(name_str));
-  xcb_query_extension(XCBJS::Config::connection, name_len, name);
+  xcb_query_extension_cookie_t cookie = xcb_query_extension(XCBJS::Config::connection, name_len, name);
   delete [] name;
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_query_extension_reply_t, xcb_query_extension_cookie_t> *reply = new Reply<xcb_query_extension_reply_t, xcb_query_extension_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetQueryExtensionReply, EIO_PRI_DEFAULT, HandleQueryExtensionReply, reply);
+  }
   return Undefined();
+}
+
+int GetListExtensionsReply(eio_req *req) {
+  Reply<xcb_list_extensions_reply_t, xcb_list_extensions_cookie_t> *reply = static_cast<Reply<xcb_list_extensions_reply_t, xcb_list_extensions_cookie_t> *>(req->data);
+  reply->reply = xcb_list_extensions_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleListExtensionsReply(eio_req *req) {
+  Reply<xcb_list_extensions_reply_t, xcb_list_extensions_cookie_t> *reply = static_cast<Reply<xcb_list_extensions_reply_t, xcb_list_extensions_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
 }
 
 v8::Handle<v8::Value> ListExtensions(const v8::Arguments& args) {
@@ -2203,10 +2827,19 @@ v8::Handle<v8::Value> ListExtensions(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: ListExtensions(cb)";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  v8::Local<v8::Function> callback;
   if (!args[0]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Callback.")));
   }
-  xcb_list_extensions(XCBJS::Config::connection);
+  callback = v8::Local<v8::Function>::Cast(args[0]);
+  xcb_list_extensions_cookie_t cookie = xcb_list_extensions(XCBJS::Config::connection);
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_list_extensions_reply_t, xcb_list_extensions_cookie_t> *reply = new Reply<xcb_list_extensions_reply_t, xcb_list_extensions_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetListExtensionsReply, EIO_PRI_DEFAULT, HandleListExtensionsReply, reply);
+  }
   return Undefined();
 }
 
@@ -2218,9 +2851,6 @@ v8::Handle<v8::Value> ChangeKeyboardMapping(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t keycode_count = (uint8_t) obj->Get(v8::String::New("keycode_count"))->IntegerValue();
@@ -2237,6 +2867,22 @@ v8::Handle<v8::Value> ChangeKeyboardMapping(const v8::Arguments& args) {
   return Undefined();
 }
 
+int GetGetKeyboardMappingReply(eio_req *req) {
+  Reply<xcb_get_keyboard_mapping_reply_t, xcb_get_keyboard_mapping_cookie_t> *reply = static_cast<Reply<xcb_get_keyboard_mapping_reply_t, xcb_get_keyboard_mapping_cookie_t> *>(req->data);
+  reply->reply = xcb_get_keyboard_mapping_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleGetKeyboardMappingReply(eio_req *req) {
+  Reply<xcb_get_keyboard_mapping_reply_t, xcb_get_keyboard_mapping_cookie_t> *reply = static_cast<Reply<xcb_get_keyboard_mapping_reply_t, xcb_get_keyboard_mapping_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
+}
+
 v8::Handle<v8::Value> GetKeyboardMapping(const v8::Arguments& args) {
   v8::HandleScope scope;
   if (args.Length() < 1) {
@@ -2246,13 +2892,24 @@ v8::Handle<v8::Value> GetKeyboardMapping(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
+  v8::Local<v8::Function> callback;
   if (args.Length() >= 2 && !args[1]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
+  if (args.Length() >= 2) {
+    callback = v8::Local<v8::Function>::Cast(args[1]);
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_keycode_t first_keycode = (xcb_keycode_t) obj->Get(v8::String::New("first_keycode"))->IntegerValue();
   uint8_t count = (uint8_t) obj->Get(v8::String::New("count"))->IntegerValue();
-  xcb_get_keyboard_mapping(XCBJS::Config::connection, first_keycode, count);
+  xcb_get_keyboard_mapping_cookie_t cookie = xcb_get_keyboard_mapping(XCBJS::Config::connection, first_keycode, count);
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_get_keyboard_mapping_reply_t, xcb_get_keyboard_mapping_cookie_t> *reply = new Reply<xcb_get_keyboard_mapping_reply_t, xcb_get_keyboard_mapping_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetGetKeyboardMappingReply, EIO_PRI_DEFAULT, HandleGetKeyboardMappingReply, reply);
+  }
   return Undefined();
 }
 
@@ -2264,9 +2921,6 @@ v8::Handle<v8::Value> ChangeKeyboardControl(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint32_t value_mask = (uint32_t) obj->Get(v8::String::New("value_mask"))->IntegerValue();
@@ -2281,16 +2935,41 @@ v8::Handle<v8::Value> ChangeKeyboardControl(const v8::Arguments& args) {
   return Undefined();
 }
 
+int GetGetKeyboardControlReply(eio_req *req) {
+  Reply<xcb_get_keyboard_control_reply_t, xcb_get_keyboard_control_cookie_t> *reply = static_cast<Reply<xcb_get_keyboard_control_reply_t, xcb_get_keyboard_control_cookie_t> *>(req->data);
+  reply->reply = xcb_get_keyboard_control_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleGetKeyboardControlReply(eio_req *req) {
+  Reply<xcb_get_keyboard_control_reply_t, xcb_get_keyboard_control_cookie_t> *reply = static_cast<Reply<xcb_get_keyboard_control_reply_t, xcb_get_keyboard_control_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
+}
+
 v8::Handle<v8::Value> GetKeyboardControl(const v8::Arguments& args) {
   v8::HandleScope scope;
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: GetKeyboardControl(cb)";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  v8::Local<v8::Function> callback;
   if (!args[0]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Callback.")));
   }
-  xcb_get_keyboard_control(XCBJS::Config::connection);
+  callback = v8::Local<v8::Function>::Cast(args[0]);
+  xcb_get_keyboard_control_cookie_t cookie = xcb_get_keyboard_control(XCBJS::Config::connection);
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_get_keyboard_control_reply_t, xcb_get_keyboard_control_cookie_t> *reply = new Reply<xcb_get_keyboard_control_reply_t, xcb_get_keyboard_control_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetGetKeyboardControlReply, EIO_PRI_DEFAULT, HandleGetKeyboardControlReply, reply);
+  }
   return Undefined();
 }
 
@@ -2302,9 +2981,6 @@ v8::Handle<v8::Value> Bell(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   int8_t percent = (int8_t) obj->Get(v8::String::New("percent"))->IntegerValue();
@@ -2321,9 +2997,6 @@ v8::Handle<v8::Value> ChangePointerControl(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   int16_t acceleration_numerator = (int16_t) obj->Get(v8::String::New("acceleration_numerator"))->IntegerValue();
   int16_t acceleration_denominator = (int16_t) obj->Get(v8::String::New("acceleration_denominator"))->IntegerValue();
@@ -2334,16 +3007,41 @@ v8::Handle<v8::Value> ChangePointerControl(const v8::Arguments& args) {
   return Undefined();
 }
 
+int GetGetPointerControlReply(eio_req *req) {
+  Reply<xcb_get_pointer_control_reply_t, xcb_get_pointer_control_cookie_t> *reply = static_cast<Reply<xcb_get_pointer_control_reply_t, xcb_get_pointer_control_cookie_t> *>(req->data);
+  reply->reply = xcb_get_pointer_control_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleGetPointerControlReply(eio_req *req) {
+  Reply<xcb_get_pointer_control_reply_t, xcb_get_pointer_control_cookie_t> *reply = static_cast<Reply<xcb_get_pointer_control_reply_t, xcb_get_pointer_control_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
+}
+
 v8::Handle<v8::Value> GetPointerControl(const v8::Arguments& args) {
   v8::HandleScope scope;
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: GetPointerControl(cb)";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  v8::Local<v8::Function> callback;
   if (!args[0]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Callback.")));
   }
-  xcb_get_pointer_control(XCBJS::Config::connection);
+  callback = v8::Local<v8::Function>::Cast(args[0]);
+  xcb_get_pointer_control_cookie_t cookie = xcb_get_pointer_control(XCBJS::Config::connection);
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_get_pointer_control_reply_t, xcb_get_pointer_control_cookie_t> *reply = new Reply<xcb_get_pointer_control_reply_t, xcb_get_pointer_control_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetGetPointerControlReply, EIO_PRI_DEFAULT, HandleGetPointerControlReply, reply);
+  }
   return Undefined();
 }
 
@@ -2356,9 +3054,6 @@ v8::Handle<v8::Value> SetScreenSaver(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   int16_t timeout = (int16_t) obj->Get(v8::String::New("timeout"))->IntegerValue();
   int16_t interval = (int16_t) obj->Get(v8::String::New("interval"))->IntegerValue();
@@ -2368,16 +3063,41 @@ v8::Handle<v8::Value> SetScreenSaver(const v8::Arguments& args) {
   return Undefined();
 }
 
+int GetGetScreenSaverReply(eio_req *req) {
+  Reply<xcb_get_screen_saver_reply_t, xcb_get_screen_saver_cookie_t> *reply = static_cast<Reply<xcb_get_screen_saver_reply_t, xcb_get_screen_saver_cookie_t> *>(req->data);
+  reply->reply = xcb_get_screen_saver_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleGetScreenSaverReply(eio_req *req) {
+  Reply<xcb_get_screen_saver_reply_t, xcb_get_screen_saver_cookie_t> *reply = static_cast<Reply<xcb_get_screen_saver_reply_t, xcb_get_screen_saver_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
+}
+
 v8::Handle<v8::Value> GetScreenSaver(const v8::Arguments& args) {
   v8::HandleScope scope;
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: GetScreenSaver(cb)";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  v8::Local<v8::Function> callback;
   if (!args[0]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Callback.")));
   }
-  xcb_get_screen_saver(XCBJS::Config::connection);
+  callback = v8::Local<v8::Function>::Cast(args[0]);
+  xcb_get_screen_saver_cookie_t cookie = xcb_get_screen_saver(XCBJS::Config::connection);
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_get_screen_saver_reply_t, xcb_get_screen_saver_cookie_t> *reply = new Reply<xcb_get_screen_saver_reply_t, xcb_get_screen_saver_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetGetScreenSaverReply, EIO_PRI_DEFAULT, HandleGetScreenSaverReply, reply);
+  }
   return Undefined();
 }
 
@@ -2389,9 +3109,6 @@ v8::Handle<v8::Value> ChangeHosts(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t mode = (uint8_t) obj->Get(v8::String::New("mode"))->IntegerValue();
@@ -2406,16 +3123,41 @@ v8::Handle<v8::Value> ChangeHosts(const v8::Arguments& args) {
   return Undefined();
 }
 
+int GetListHostsReply(eio_req *req) {
+  Reply<xcb_list_hosts_reply_t, xcb_list_hosts_cookie_t> *reply = static_cast<Reply<xcb_list_hosts_reply_t, xcb_list_hosts_cookie_t> *>(req->data);
+  reply->reply = xcb_list_hosts_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleListHostsReply(eio_req *req) {
+  Reply<xcb_list_hosts_reply_t, xcb_list_hosts_cookie_t> *reply = static_cast<Reply<xcb_list_hosts_reply_t, xcb_list_hosts_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
+}
+
 v8::Handle<v8::Value> ListHosts(const v8::Arguments& args) {
   v8::HandleScope scope;
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: ListHosts(cb)";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  v8::Local<v8::Function> callback;
   if (!args[0]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Callback.")));
   }
-  xcb_list_hosts(XCBJS::Config::connection);
+  callback = v8::Local<v8::Function>::Cast(args[0]);
+  xcb_list_hosts_cookie_t cookie = xcb_list_hosts(XCBJS::Config::connection);
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_list_hosts_reply_t, xcb_list_hosts_cookie_t> *reply = new Reply<xcb_list_hosts_reply_t, xcb_list_hosts_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetListHostsReply, EIO_PRI_DEFAULT, HandleListHostsReply, reply);
+  }
   return Undefined();
 }
 
@@ -2427,9 +3169,6 @@ v8::Handle<v8::Value> SetAccessControl(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t mode = (uint8_t) obj->Get(v8::String::New("mode"))->IntegerValue();
@@ -2446,9 +3185,6 @@ v8::Handle<v8::Value> SetCloseDownMode(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t mode = (uint8_t) obj->Get(v8::String::New("mode"))->IntegerValue();
   xcb_set_close_down_mode(XCBJS::Config::connection, mode);
@@ -2464,9 +3200,6 @@ v8::Handle<v8::Value> KillClient(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint32_t resource = (uint32_t) obj->Get(v8::String::New("resource"))->IntegerValue();
   xcb_kill_client(XCBJS::Config::connection, resource);
@@ -2481,9 +3214,6 @@ v8::Handle<v8::Value> RotateProperties(const v8::Arguments& args) {
   }
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
-  }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   xcb_window_t window = (xcb_window_t) obj->Get(v8::String::New("window"))->IntegerValue();
@@ -2509,13 +3239,26 @@ v8::Handle<v8::Value> ForceScreenSaver(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
-  if (args.Length() >= 2 && !args[1]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
-  }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t mode = (uint8_t) obj->Get(v8::String::New("mode"))->IntegerValue();
   xcb_force_screen_saver(XCBJS::Config::connection, mode);
   return Undefined();
+}
+
+int GetSetPointerMappingReply(eio_req *req) {
+  Reply<xcb_set_pointer_mapping_reply_t, xcb_set_pointer_mapping_cookie_t> *reply = static_cast<Reply<xcb_set_pointer_mapping_reply_t, xcb_set_pointer_mapping_cookie_t> *>(req->data);
+  reply->reply = xcb_set_pointer_mapping_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleSetPointerMappingReply(eio_req *req) {
+  Reply<xcb_set_pointer_mapping_reply_t, xcb_set_pointer_mapping_cookie_t> *reply = static_cast<Reply<xcb_set_pointer_mapping_reply_t, xcb_set_pointer_mapping_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
 }
 
 v8::Handle<v8::Value> SetPointerMapping(const v8::Arguments& args) {
@@ -2527,8 +3270,12 @@ v8::Handle<v8::Value> SetPointerMapping(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
+  v8::Local<v8::Function> callback;
   if (args.Length() >= 2 && !args[1]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
+  if (args.Length() >= 2) {
+    callback = v8::Local<v8::Function>::Cast(args[1]);
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t map_len = (uint8_t) obj->Get(v8::String::New("map_len"))->IntegerValue();
@@ -2538,9 +3285,32 @@ v8::Handle<v8::Value> SetPointerMapping(const v8::Arguments& args) {
   for(unsigned int i = 0; i < map_list->Length(); ++i) {
     map[i] = (uint8_t) map_list->Get(i)->IntegerValue();
   }
-  xcb_set_pointer_mapping(XCBJS::Config::connection, map_len, map);
+  xcb_set_pointer_mapping_cookie_t cookie = xcb_set_pointer_mapping(XCBJS::Config::connection, map_len, map);
   delete [] map;
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_set_pointer_mapping_reply_t, xcb_set_pointer_mapping_cookie_t> *reply = new Reply<xcb_set_pointer_mapping_reply_t, xcb_set_pointer_mapping_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetSetPointerMappingReply, EIO_PRI_DEFAULT, HandleSetPointerMappingReply, reply);
+  }
   return Undefined();
+}
+
+int GetGetPointerMappingReply(eio_req *req) {
+  Reply<xcb_get_pointer_mapping_reply_t, xcb_get_pointer_mapping_cookie_t> *reply = static_cast<Reply<xcb_get_pointer_mapping_reply_t, xcb_get_pointer_mapping_cookie_t> *>(req->data);
+  reply->reply = xcb_get_pointer_mapping_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleGetPointerMappingReply(eio_req *req) {
+  Reply<xcb_get_pointer_mapping_reply_t, xcb_get_pointer_mapping_cookie_t> *reply = static_cast<Reply<xcb_get_pointer_mapping_reply_t, xcb_get_pointer_mapping_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
 }
 
 v8::Handle<v8::Value> GetPointerMapping(const v8::Arguments& args) {
@@ -2549,11 +3319,36 @@ v8::Handle<v8::Value> GetPointerMapping(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: GetPointerMapping(cb)";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  v8::Local<v8::Function> callback;
   if (!args[0]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Callback.")));
   }
-  xcb_get_pointer_mapping(XCBJS::Config::connection);
+  callback = v8::Local<v8::Function>::Cast(args[0]);
+  xcb_get_pointer_mapping_cookie_t cookie = xcb_get_pointer_mapping(XCBJS::Config::connection);
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_get_pointer_mapping_reply_t, xcb_get_pointer_mapping_cookie_t> *reply = new Reply<xcb_get_pointer_mapping_reply_t, xcb_get_pointer_mapping_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetGetPointerMappingReply, EIO_PRI_DEFAULT, HandleGetPointerMappingReply, reply);
+  }
   return Undefined();
+}
+
+int GetSetModifierMappingReply(eio_req *req) {
+  Reply<xcb_set_modifier_mapping_reply_t, xcb_set_modifier_mapping_cookie_t> *reply = static_cast<Reply<xcb_set_modifier_mapping_reply_t, xcb_set_modifier_mapping_cookie_t> *>(req->data);
+  reply->reply = xcb_set_modifier_mapping_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleSetModifierMappingReply(eio_req *req) {
+  Reply<xcb_set_modifier_mapping_reply_t, xcb_set_modifier_mapping_cookie_t> *reply = static_cast<Reply<xcb_set_modifier_mapping_reply_t, xcb_set_modifier_mapping_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
 }
 
 v8::Handle<v8::Value> SetModifierMapping(const v8::Arguments& args) {
@@ -2565,8 +3360,12 @@ v8::Handle<v8::Value> SetModifierMapping(const v8::Arguments& args) {
   if (!args[0]->IsObject()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Object.")));
   }
+  v8::Local<v8::Function> callback;
   if (args.Length() >= 2 && !args[1]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("The Second argument should be a callback")));
+  }
+  if (args.Length() >= 2) {
+    callback = v8::Local<v8::Function>::Cast(args[1]);
   }
   v8::Handle<v8::Object> obj = args[0]->ToObject();
   uint8_t keycodes_per_modifier = (uint8_t) obj->Get(v8::String::New("keycodes_per_modifier"))->IntegerValue();
@@ -2576,9 +3375,32 @@ v8::Handle<v8::Value> SetModifierMapping(const v8::Arguments& args) {
   for(unsigned int i = 0; i < keycodes_list->Length(); ++i) {
     keycodes[i] = (xcb_keycode_t) keycodes_list->Get(i)->IntegerValue();
   }
-  xcb_set_modifier_mapping(XCBJS::Config::connection, keycodes_per_modifier, keycodes);
+  xcb_set_modifier_mapping_cookie_t cookie = xcb_set_modifier_mapping(XCBJS::Config::connection, keycodes_per_modifier, keycodes);
   delete [] keycodes;
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_set_modifier_mapping_reply_t, xcb_set_modifier_mapping_cookie_t> *reply = new Reply<xcb_set_modifier_mapping_reply_t, xcb_set_modifier_mapping_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetSetModifierMappingReply, EIO_PRI_DEFAULT, HandleSetModifierMappingReply, reply);
+  }
   return Undefined();
+}
+
+int GetGetModifierMappingReply(eio_req *req) {
+  Reply<xcb_get_modifier_mapping_reply_t, xcb_get_modifier_mapping_cookie_t> *reply = static_cast<Reply<xcb_get_modifier_mapping_reply_t, xcb_get_modifier_mapping_cookie_t> *>(req->data);
+  reply->reply = xcb_get_modifier_mapping_reply(Config::connection, reply->cookie, NULL); 
+  return 0;
+}
+
+int HandleGetModifierMappingReply(eio_req *req) {
+  Reply<xcb_get_modifier_mapping_reply_t, xcb_get_modifier_mapping_cookie_t> *reply = static_cast<Reply<xcb_get_modifier_mapping_reply_t, xcb_get_modifier_mapping_cookie_t> *>(req->data);
+  v8::Local<Value> args[0];
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+  reply->callback.Dispose();
+  delete reply->reply;
+  delete reply;
+  return 0;
 }
 
 v8::Handle<v8::Value> GetModifierMapping(const v8::Arguments& args) {
@@ -2587,10 +3409,19 @@ v8::Handle<v8::Value> GetModifierMapping(const v8::Arguments& args) {
     const char *usage = "Must have at least one argument\\nUsage: GetModifierMapping(cb)";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
   }
+  v8::Local<v8::Function> callback;
   if (!args[0]->IsFunction()) {
     return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Callback.")));
   }
-  xcb_get_modifier_mapping(XCBJS::Config::connection);
+  callback = v8::Local<v8::Function>::Cast(args[0]);
+  xcb_get_modifier_mapping_cookie_t cookie = xcb_get_modifier_mapping(XCBJS::Config::connection);
+  if (!callback->Equals(Undefined())) {
+    Reply<xcb_get_modifier_mapping_reply_t, xcb_get_modifier_mapping_cookie_t> *reply = new Reply<xcb_get_modifier_mapping_reply_t, xcb_get_modifier_mapping_cookie_t>;
+    reply->callback = v8::Persistent<v8::Function>::New(callback);
+    reply->cookie = cookie;
+    reply->reply = 0;
+    eio_custom(GetGetModifierMappingReply, EIO_PRI_DEFAULT, HandleGetModifierMappingReply, reply);
+  }
   return Undefined();
 }
 
@@ -2599,9 +3430,6 @@ v8::Handle<v8::Value> NoOperation(const v8::Arguments& args) {
   if (args.Length() < 1) {
     const char *usage = "Must have at least one argument\\nUsage: NoOperation(cb)";
     return v8::ThrowException(v8::Exception::Error(v8::String::New(usage)));
-  }
-  if (!args[0]->IsFunction()) {
-    return v8::ThrowException(v8::Exception::TypeError(v8::String::New("First argument must be an Callback.")));
   }
   xcb_no_operation(XCBJS::Config::connection);
   return Undefined();

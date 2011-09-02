@@ -27,6 +27,9 @@ var fs = require('fs')
     , listType: listType
     , listName: listName
     , tempListHolder: tempListHolder
+    , XCBReplyType: XCBReplyType
+    , XCBCookieType: XCBCookieType
+    , XCBReplyFunction: XCBReplyFunction
     , events: xProto.event
     , structs: xProto.struct
     , requests: xProto.request
@@ -171,3 +174,18 @@ function includeListLen(field, fields){
   })
 }
 
+function camelToUnder(name) {
+  return name.replace(/([A-Z])/g, '_$1').toLowerCase()
+}
+
+function XCBReplyType(requestName) {
+  return 'xcb' + camelToUnder(requestName) + '_reply_t'
+}
+
+function XCBCookieType(requestName) {
+  return 'xcb' + camelToUnder(requestName) + '_cookie_t'
+}
+
+function XCBReplyFunction(requestName) {
+  return 'xcb' + camelToUnder(requestName) + '_reply'
+}
