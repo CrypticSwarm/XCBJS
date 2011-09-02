@@ -14,7 +14,7 @@ var xcb = require ('./build/default/xcb')
 
 windows.forEach(function(window, i) {
   setTimeout(function(){
-    xcb.createWindow(
+    xcb.CreateWindow(
       { depth: 0
       , wid: window
       , parent: screen.root
@@ -28,15 +28,21 @@ windows.forEach(function(window, i) {
       , value_mask: 2050
       , value_list: [screen.white_pixel, 32768]
       })
-    xcb.createGC(draw[i], window)
-    xcb.mapWindow({ window: window })
+    xcb.CreateGC({ cid: draw[i], drawable: window })
+    xcb.MapWindow({ window: window })
   }, 1000 * i + 1000)
 })
 xcb.flush()
 
 setInterval(function() {
   windows.forEach(function(window, i) {
-    xcb.clearArea(window, 0, 0, 400, 400)
+    xcb.ClearArea(
+      { exposures: false
+      , window: window
+      , x: 0
+      , y: 0
+      , width: 400
+      , height: 400})
     rects.forEach(function(rect) {
       rect.rect.x += rect.dir
       rect.rect.y += rect.dir
@@ -45,7 +51,7 @@ setInterval(function() {
       if (rect.rect.x >= rect.range[1] || rect.rect.x <= rect.range[0]) rect.dir *= -1
     })
     var rectList = rects.map(function(r) { return r.rect })
-    xcb.drawRect({ drawable: window, gc: draw[i], rectangles_len: rectList.length, rectangles: rectList })
+    xcb.PolyRectangle({ drawable: window, gc: draw[i], rectangles_len: rectList.length, rectangles: rectList })
   })
   split += dir
   if (split > 500 || split < 300) dir *= -1

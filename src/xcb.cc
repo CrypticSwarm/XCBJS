@@ -30,15 +30,8 @@ public:
     const xcb_setup_t      *setup  = xcb_get_setup(Config::connection);
     xcb_screen_iterator_t   iter   = xcb_setup_roots_iterator(setup);
     screen = iter.data;
-    NODE_SET_METHOD(target, "drawRect", XCBJS::drawRect);
     NODE_SET_METHOD(target, "flush", XCBJS::flush);
-    NODE_SET_METHOD(target, "clearArea", XCBJS::clearArea);
     NODE_SET_METHOD(target, "generateId", XCBJS::generateId);
-    NODE_SET_METHOD(target, "createWindow", XCBJS::createWindow);
-    NODE_SET_METHOD(target, "createGC", XCBJS::createGC);
-    NODE_SET_METHOD(target, "mapWindow", XCBJS::mapWindow);
-    NODE_SET_METHOD(target, "unmapWindow", XCBJS::unmapWindow);
-    NODE_SET_METHOD(target, "configureWindow", XCBJS::configureWindow);
     NODE_SET_METHOD(target, "manageWindows", XCBJS::manageWindows);
     NODE_SET_METHOD(target, "getRoot", XCBJS::getRoot);
     NODE_SET_METHOD(target, "getScreen", XCBJS::getScreen);
@@ -54,29 +47,6 @@ public:
     return toJS(screen);
   }
 
-  static Handle<Value> drawRect(const Arguments& args) {
-    HandleScope scope;
-    Request::PolyRectangle(args);
-    return Undefined();
-  }
-
-  static Handle<Value> clearArea(const Arguments& args) {
-    HandleScope scope;
-    const char *usage = "usage: clearArea(window, x, y, width, height)";
-    if (args.Length() != 5) {
-      return ThrowException(Exception::Error(String::New(usage)));
-    }
-    xcb_window_t window = args[0]->Int32Value();
-    xcb_clear_area(Config::connection, 0
-      , window
-      , args[1]->Int32Value()
-      , args[2]->Int32Value()
-      , args[3]->Int32Value()
-      , args[4]->Int32Value()
-    );
-    return Undefined();
-  }
-
   static Handle<Value> flush(const Arguments& args) {
     HandleScope scope;
     xcb_flush(Config::connection);
@@ -89,12 +59,6 @@ public:
     return Integer::New(ret);
   }
 
-  static Handle<Value> createWindow(const Arguments& args) {
-    HandleScope scope;
-    Request::CreateWindow(args);
-    return Undefined();
-  }
-
   static Handle<Value> createGC(const Arguments& args) {
     HandleScope scope;
     uint32_t        mask       = XCB_GC_FOREGROUND | XCB_GC_GRAPHICS_EXPOSURES;
@@ -103,24 +67,6 @@ public:
     xcb_window_t window = args[1]->Int32Value();
     xcb_create_gc(Config::connection, black, window, mask, values);
     
-    return Undefined();
-  }
-
-  static Handle<Value> mapWindow(const Arguments& args) {
-    HandleScope scope;
-    Request::MapWindow(args);
-    return Undefined();
-  }
-
-  static Handle<Value> unmapWindow(const Arguments& args) {
-    HandleScope scope;
-    Request::UnmapWindow(args);
-    return Undefined();
-  }
-
-  static Handle<Value> configureWindow(const Arguments& args) {
-    HandleScope scope;
-    Request::ConfigureWindow(args);
     return Undefined();
   }
 
