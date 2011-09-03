@@ -33,8 +33,28 @@ int Handle${requestName}Reply(eio_req *req) {
 
   v8::Local<v8::Object> obj = v8::Object::New();
 {{each(i, field) request.reply.field}}
-  {{if field.fieldType == 'field' && JSType(field.type, requestName)}}
+  {{if field.fieldType == 'field' && !isLenSpecifier(field) && JSType(field.type, requestName)}}
   obj->Set(v8::String::New("${field.name}"), v8::${JSType(field.type)}::New(reply->reply->${prepPropName(field.name)}));
+  {{/if}}
+  {{if isListType(field)}}
+    {{if field.value}}
+
+    {{else field.type == 'char' || field.type == 'void'}}
+  obj->Set(v8::String::New("${field.name}"), v8::String::New((char*)${getXCBReqName(requestName)}_${prepPropName(field.name)}(reply->reply)));
+    {{else}}
+  v8::Local<v8::Array> ${tempListHolder(field)} = v8::Array::New();
+  obj->Set(v8::String::New("${field.name}"), ${tempListHolder(field)});
+      {{if JSType(field.type)}}
+  ${XCBType(field.type)} *${prepPropName(field.name)}_list_ptr = ${getXCBReqName(requestName)}_${field.name}(reply->reply);
+  for(int i = 0; i < ${getXCBReqName(requestName)}_${field.name}_length(reply->reply); ++i) {
+    ${tempListHolder(field)}->Set(i, v8::${JSType(field.type)}::New(${prepPropName(field.name)}_list_ptr[i]));
+      {{else}}
+  int i${field.name} = 0;
+  for(xcb_${field.type.toLowerCase()}_iterator_t itr = ${getXCBReqName(requestName)}_${field.name}_iterator(reply->reply); itr.rem; xcb_${field.type.toLowerCase()}_next(&itr), ++i${field.name}) {
+    ${tempListHolder(field)}->Set(i${field.name}, toJS(itr.data));
+      {{/if}}
+  }
+    {{/if}}
   {{/if}}
 {{/each}}
   v8::Local<Value> args[1] = { obj };

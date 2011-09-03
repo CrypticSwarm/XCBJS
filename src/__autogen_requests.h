@@ -366,7 +366,12 @@ int HandleQueryTreeReply(eio_req *req) {
   v8::Local<v8::Object> obj = v8::Object::New();
   obj->Set(v8::String::New("root"), v8::Integer::New(reply->reply->root));
   obj->Set(v8::String::New("parent"), v8::Integer::New(reply->reply->parent));
-  obj->Set(v8::String::New("children_len"), v8::Integer::New(reply->reply->children_len));
+  v8::Local<v8::Array> children_list = v8::Array::New();
+  obj->Set(v8::String::New("children"), children_list);
+  xcb_window_t *children_list_ptr = xcb_query_tree_children(reply->reply);
+  for(int i = 0; i < xcb_query_tree_children_length(reply->reply); ++i) {
+    children_list->Set(i, v8::Integer::New(children_list_ptr[i]));
+  }
   v8::Local<Value> args[1] = { obj };
   reply->callback->Call(v8::Context::GetCurrent()->Global(), 1, args);
   reply->callback.Dispose();
@@ -470,7 +475,7 @@ int HandleGetAtomNameReply(eio_req *req) {
   Reply<xcb_get_atom_name_reply_t, xcb_get_atom_name_cookie_t> *reply = static_cast<Reply<xcb_get_atom_name_reply_t, xcb_get_atom_name_cookie_t> *>(req->data);
 
   v8::Local<v8::Object> obj = v8::Object::New();
-  obj->Set(v8::String::New("name_len"), v8::Integer::New(reply->reply->name_len));
+  obj->Set(v8::String::New("name"), v8::String::New((char*)xcb_get_atom_name_name(reply->reply)));
   v8::Local<Value> args[1] = { obj };
   reply->callback->Call(v8::Context::GetCurrent()->Global(), 1, args);
   reply->callback.Dispose();
@@ -563,7 +568,7 @@ int HandleGetPropertyReply(eio_req *req) {
   obj->Set(v8::String::New("format"), v8::Integer::New(reply->reply->format));
   obj->Set(v8::String::New("type"), v8::Integer::New(reply->reply->type));
   obj->Set(v8::String::New("bytes_after"), v8::Integer::New(reply->reply->bytes_after));
-  obj->Set(v8::String::New("value_len"), v8::Integer::New(reply->reply->value_len));
+  obj->Set(v8::String::New("value"), v8::String::New((char*)xcb_get_property_value(reply->reply)));
   v8::Local<Value> args[1] = { obj };
   reply->callback->Call(v8::Context::GetCurrent()->Global(), 1, args);
   reply->callback.Dispose();
@@ -617,7 +622,12 @@ int HandleListPropertiesReply(eio_req *req) {
   Reply<xcb_list_properties_reply_t, xcb_list_properties_cookie_t> *reply = static_cast<Reply<xcb_list_properties_reply_t, xcb_list_properties_cookie_t> *>(req->data);
 
   v8::Local<v8::Object> obj = v8::Object::New();
-  obj->Set(v8::String::New("atoms_len"), v8::Integer::New(reply->reply->atoms_len));
+  v8::Local<v8::Array> atoms_list = v8::Array::New();
+  obj->Set(v8::String::New("atoms"), atoms_list);
+  xcb_atom_t *atoms_list_ptr = xcb_list_properties_atoms(reply->reply);
+  for(int i = 0; i < xcb_list_properties_atoms_length(reply->reply); ++i) {
+    atoms_list->Set(i, v8::Integer::New(atoms_list_ptr[i]));
+  }
   v8::Local<Value> args[1] = { obj };
   reply->callback->Call(v8::Context::GetCurrent()->Global(), 1, args);
   reply->callback.Dispose();
@@ -1098,7 +1108,12 @@ int HandleGetMotionEventsReply(eio_req *req) {
   Reply<xcb_get_motion_events_reply_t, xcb_get_motion_events_cookie_t> *reply = static_cast<Reply<xcb_get_motion_events_reply_t, xcb_get_motion_events_cookie_t> *>(req->data);
 
   v8::Local<v8::Object> obj = v8::Object::New();
-  obj->Set(v8::String::New("events_len"), v8::Integer::New(reply->reply->events_len));
+  v8::Local<v8::Array> events_list = v8::Array::New();
+  obj->Set(v8::String::New("events"), events_list);
+  int ievents = 0;
+  for(xcb_timecoord_iterator_t itr = xcb_get_motion_events_events_iterator(reply->reply); itr.rem; xcb_timecoord_next(&itr), ++ievents) {
+    events_list->Set(ievents, toJS(itr.data));
+  }
   v8::Local<Value> args[1] = { obj };
   reply->callback->Call(v8::Context::GetCurrent()->Global(), 1, args);
   reply->callback.Dispose();
@@ -1366,14 +1381,24 @@ int HandleQueryFontReply(eio_req *req) {
   obj->Set(v8::String::New("min_char_or_byte2"), v8::Integer::New(reply->reply->min_char_or_byte2));
   obj->Set(v8::String::New("max_char_or_byte2"), v8::Integer::New(reply->reply->max_char_or_byte2));
   obj->Set(v8::String::New("default_char"), v8::Integer::New(reply->reply->default_char));
-  obj->Set(v8::String::New("properties_len"), v8::Integer::New(reply->reply->properties_len));
   obj->Set(v8::String::New("draw_direction"), v8::Integer::New(reply->reply->draw_direction));
   obj->Set(v8::String::New("min_byte1"), v8::Integer::New(reply->reply->min_byte1));
   obj->Set(v8::String::New("max_byte1"), v8::Integer::New(reply->reply->max_byte1));
   obj->Set(v8::String::New("all_chars_exist"), v8::Boolean::New(reply->reply->all_chars_exist));
   obj->Set(v8::String::New("font_ascent"), v8::Integer::New(reply->reply->font_ascent));
   obj->Set(v8::String::New("font_descent"), v8::Integer::New(reply->reply->font_descent));
-  obj->Set(v8::String::New("char_infos_len"), v8::Integer::New(reply->reply->char_infos_len));
+  v8::Local<v8::Array> properties_list = v8::Array::New();
+  obj->Set(v8::String::New("properties"), properties_list);
+  int iproperties = 0;
+  for(xcb_fontprop_iterator_t itr = xcb_query_font_properties_iterator(reply->reply); itr.rem; xcb_fontprop_next(&itr), ++iproperties) {
+    properties_list->Set(iproperties, toJS(itr.data));
+  }
+  v8::Local<v8::Array> char_infos_list = v8::Array::New();
+  obj->Set(v8::String::New("char_infos"), char_infos_list);
+  int ichar_infos = 0;
+  for(xcb_charinfo_iterator_t itr = xcb_query_font_char_infos_iterator(reply->reply); itr.rem; xcb_charinfo_next(&itr), ++ichar_infos) {
+    char_infos_list->Set(ichar_infos, toJS(itr.data));
+  }
   v8::Local<Value> args[1] = { obj };
   reply->callback->Call(v8::Context::GetCurrent()->Global(), 1, args);
   reply->callback.Dispose();
@@ -1486,7 +1511,12 @@ int HandleListFontsReply(eio_req *req) {
   Reply<xcb_list_fonts_reply_t, xcb_list_fonts_cookie_t> *reply = static_cast<Reply<xcb_list_fonts_reply_t, xcb_list_fonts_cookie_t> *>(req->data);
 
   v8::Local<v8::Object> obj = v8::Object::New();
-  obj->Set(v8::String::New("names_len"), v8::Integer::New(reply->reply->names_len));
+  v8::Local<v8::Array> names_list = v8::Array::New();
+  obj->Set(v8::String::New("names"), names_list);
+  int inames = 0;
+  for(xcb_str_iterator_t itr = xcb_list_fonts_names_iterator(reply->reply); itr.rem; xcb_str_next(&itr), ++inames) {
+    names_list->Set(inames, toJS(itr.data));
+  }
   v8::Local<Value> args[1] = { obj };
   reply->callback->Call(v8::Context::GetCurrent()->Global(), 1, args);
   reply->callback.Dispose();
@@ -1541,11 +1571,9 @@ int HandleListFontsWithInfoReply(eio_req *req) {
   Reply<xcb_list_fonts_with_info_reply_t, xcb_list_fonts_with_info_cookie_t> *reply = static_cast<Reply<xcb_list_fonts_with_info_reply_t, xcb_list_fonts_with_info_cookie_t> *>(req->data);
 
   v8::Local<v8::Object> obj = v8::Object::New();
-  obj->Set(v8::String::New("name_len"), v8::Integer::New(reply->reply->name_len));
   obj->Set(v8::String::New("min_char_or_byte2"), v8::Integer::New(reply->reply->min_char_or_byte2));
   obj->Set(v8::String::New("max_char_or_byte2"), v8::Integer::New(reply->reply->max_char_or_byte2));
   obj->Set(v8::String::New("default_char"), v8::Integer::New(reply->reply->default_char));
-  obj->Set(v8::String::New("properties_len"), v8::Integer::New(reply->reply->properties_len));
   obj->Set(v8::String::New("draw_direction"), v8::Integer::New(reply->reply->draw_direction));
   obj->Set(v8::String::New("min_byte1"), v8::Integer::New(reply->reply->min_byte1));
   obj->Set(v8::String::New("max_byte1"), v8::Integer::New(reply->reply->max_byte1));
@@ -1553,6 +1581,13 @@ int HandleListFontsWithInfoReply(eio_req *req) {
   obj->Set(v8::String::New("font_ascent"), v8::Integer::New(reply->reply->font_ascent));
   obj->Set(v8::String::New("font_descent"), v8::Integer::New(reply->reply->font_descent));
   obj->Set(v8::String::New("replies_hint"), v8::Integer::New(reply->reply->replies_hint));
+  v8::Local<v8::Array> properties_list = v8::Array::New();
+  obj->Set(v8::String::New("properties"), properties_list);
+  int iproperties = 0;
+  for(xcb_fontprop_iterator_t itr = xcb_list_fonts_with_info_properties_iterator(reply->reply); itr.rem; xcb_fontprop_next(&itr), ++iproperties) {
+    properties_list->Set(iproperties, toJS(itr.data));
+  }
+  obj->Set(v8::String::New("name"), v8::String::New((char*)xcb_list_fonts_with_info_name(reply->reply)));
   v8::Local<Value> args[1] = { obj };
   reply->callback->Call(v8::Context::GetCurrent()->Global(), 1, args);
   reply->callback.Dispose();
@@ -1628,7 +1663,12 @@ int HandleGetFontPathReply(eio_req *req) {
   Reply<xcb_get_font_path_reply_t, xcb_get_font_path_cookie_t> *reply = static_cast<Reply<xcb_get_font_path_reply_t, xcb_get_font_path_cookie_t> *>(req->data);
 
   v8::Local<v8::Object> obj = v8::Object::New();
-  obj->Set(v8::String::New("path_len"), v8::Integer::New(reply->reply->path_len));
+  v8::Local<v8::Array> path_list = v8::Array::New();
+  obj->Set(v8::String::New("path"), path_list);
+  int ipath = 0;
+  for(xcb_str_iterator_t itr = xcb_get_font_path_path_iterator(reply->reply); itr.rem; xcb_str_next(&itr), ++ipath) {
+    path_list->Set(ipath, toJS(itr.data));
+  }
   v8::Local<Value> args[1] = { obj };
   reply->callback->Call(v8::Context::GetCurrent()->Global(), 1, args);
   reply->callback.Dispose();
@@ -2129,6 +2169,12 @@ int HandleGetImageReply(eio_req *req) {
   v8::Local<v8::Object> obj = v8::Object::New();
   obj->Set(v8::String::New("depth"), v8::Integer::New(reply->reply->depth));
   obj->Set(v8::String::New("visual"), v8::Integer::New(reply->reply->visual));
+  v8::Local<v8::Array> data_list = v8::Array::New();
+  obj->Set(v8::String::New("data"), data_list);
+  uint8_t *data_list_ptr = xcb_get_image_data(reply->reply);
+  for(int i = 0; i < xcb_get_image_data_length(reply->reply); ++i) {
+    data_list->Set(i, v8::Integer::New(data_list_ptr[i]));
+  }
   v8::Local<Value> args[1] = { obj };
   reply->callback->Call(v8::Context::GetCurrent()->Global(), 1, args);
   reply->callback.Dispose();
@@ -2364,7 +2410,12 @@ int HandleListInstalledColormapsReply(eio_req *req) {
   Reply<xcb_list_installed_colormaps_reply_t, xcb_list_installed_colormaps_cookie_t> *reply = static_cast<Reply<xcb_list_installed_colormaps_reply_t, xcb_list_installed_colormaps_cookie_t> *>(req->data);
 
   v8::Local<v8::Object> obj = v8::Object::New();
-  obj->Set(v8::String::New("cmaps_len"), v8::Integer::New(reply->reply->cmaps_len));
+  v8::Local<v8::Array> cmaps_list = v8::Array::New();
+  obj->Set(v8::String::New("cmaps"), cmaps_list);
+  xcb_colormap_t *cmaps_list_ptr = xcb_list_installed_colormaps_cmaps(reply->reply);
+  for(int i = 0; i < xcb_list_installed_colormaps_cmaps_length(reply->reply); ++i) {
+    cmaps_list->Set(i, v8::Integer::New(cmaps_list_ptr[i]));
+  }
   v8::Local<Value> args[1] = { obj };
   reply->callback->Call(v8::Context::GetCurrent()->Global(), 1, args);
   reply->callback.Dispose();
@@ -2529,8 +2580,18 @@ int HandleAllocColorCellsReply(eio_req *req) {
   Reply<xcb_alloc_color_cells_reply_t, xcb_alloc_color_cells_cookie_t> *reply = static_cast<Reply<xcb_alloc_color_cells_reply_t, xcb_alloc_color_cells_cookie_t> *>(req->data);
 
   v8::Local<v8::Object> obj = v8::Object::New();
-  obj->Set(v8::String::New("pixels_len"), v8::Integer::New(reply->reply->pixels_len));
-  obj->Set(v8::String::New("masks_len"), v8::Integer::New(reply->reply->masks_len));
+  v8::Local<v8::Array> pixels_list = v8::Array::New();
+  obj->Set(v8::String::New("pixels"), pixels_list);
+  uint32_t *pixels_list_ptr = xcb_alloc_color_cells_pixels(reply->reply);
+  for(int i = 0; i < xcb_alloc_color_cells_pixels_length(reply->reply); ++i) {
+    pixels_list->Set(i, v8::Integer::New(pixels_list_ptr[i]));
+  }
+  v8::Local<v8::Array> masks_list = v8::Array::New();
+  obj->Set(v8::String::New("masks"), masks_list);
+  uint32_t *masks_list_ptr = xcb_alloc_color_cells_masks(reply->reply);
+  for(int i = 0; i < xcb_alloc_color_cells_masks_length(reply->reply); ++i) {
+    masks_list->Set(i, v8::Integer::New(masks_list_ptr[i]));
+  }
   v8::Local<Value> args[1] = { obj };
   reply->callback->Call(v8::Context::GetCurrent()->Global(), 1, args);
   reply->callback.Dispose();
@@ -2582,10 +2643,15 @@ int HandleAllocColorPlanesReply(eio_req *req) {
   Reply<xcb_alloc_color_planes_reply_t, xcb_alloc_color_planes_cookie_t> *reply = static_cast<Reply<xcb_alloc_color_planes_reply_t, xcb_alloc_color_planes_cookie_t> *>(req->data);
 
   v8::Local<v8::Object> obj = v8::Object::New();
-  obj->Set(v8::String::New("pixels_len"), v8::Integer::New(reply->reply->pixels_len));
   obj->Set(v8::String::New("red_mask"), v8::Integer::New(reply->reply->red_mask));
   obj->Set(v8::String::New("green_mask"), v8::Integer::New(reply->reply->green_mask));
   obj->Set(v8::String::New("blue_mask"), v8::Integer::New(reply->reply->blue_mask));
+  v8::Local<v8::Array> pixels_list = v8::Array::New();
+  obj->Set(v8::String::New("pixels"), pixels_list);
+  uint32_t *pixels_list_ptr = xcb_alloc_color_planes_pixels(reply->reply);
+  for(int i = 0; i < xcb_alloc_color_planes_pixels_length(reply->reply); ++i) {
+    pixels_list->Set(i, v8::Integer::New(pixels_list_ptr[i]));
+  }
   v8::Local<Value> args[1] = { obj };
   reply->callback->Call(v8::Context::GetCurrent()->Global(), 1, args);
   reply->callback.Dispose();
@@ -2709,7 +2775,12 @@ int HandleQueryColorsReply(eio_req *req) {
   Reply<xcb_query_colors_reply_t, xcb_query_colors_cookie_t> *reply = static_cast<Reply<xcb_query_colors_reply_t, xcb_query_colors_cookie_t> *>(req->data);
 
   v8::Local<v8::Object> obj = v8::Object::New();
-  obj->Set(v8::String::New("colors_len"), v8::Integer::New(reply->reply->colors_len));
+  v8::Local<v8::Array> colors_list = v8::Array::New();
+  obj->Set(v8::String::New("colors"), colors_list);
+  int icolors = 0;
+  for(xcb_rgb_iterator_t itr = xcb_query_colors_colors_iterator(reply->reply); itr.rem; xcb_rgb_next(&itr), ++icolors) {
+    colors_list->Set(icolors, toJS(itr.data));
+  }
   v8::Local<Value> args[1] = { obj };
   reply->callback->Call(v8::Context::GetCurrent()->Global(), 1, args);
   reply->callback.Dispose();
@@ -3022,7 +3093,12 @@ int HandleListExtensionsReply(eio_req *req) {
   Reply<xcb_list_extensions_reply_t, xcb_list_extensions_cookie_t> *reply = static_cast<Reply<xcb_list_extensions_reply_t, xcb_list_extensions_cookie_t> *>(req->data);
 
   v8::Local<v8::Object> obj = v8::Object::New();
-  obj->Set(v8::String::New("names_len"), v8::Integer::New(reply->reply->names_len));
+  v8::Local<v8::Array> names_list = v8::Array::New();
+  obj->Set(v8::String::New("names"), names_list);
+  int inames = 0;
+  for(xcb_str_iterator_t itr = xcb_list_extensions_names_iterator(reply->reply); itr.rem; xcb_str_next(&itr), ++inames) {
+    names_list->Set(inames, toJS(itr.data));
+  }
   v8::Local<Value> args[1] = { obj };
   reply->callback->Call(v8::Context::GetCurrent()->Global(), 1, args);
   reply->callback.Dispose();
@@ -3089,6 +3165,12 @@ int HandleGetKeyboardMappingReply(eio_req *req) {
 
   v8::Local<v8::Object> obj = v8::Object::New();
   obj->Set(v8::String::New("keysyms_per_keycode"), v8::Integer::New(reply->reply->keysyms_per_keycode));
+  v8::Local<v8::Array> keysyms_list = v8::Array::New();
+  obj->Set(v8::String::New("keysyms"), keysyms_list);
+  xcb_keysym_t *keysyms_list_ptr = xcb_get_keyboard_mapping_keysyms(reply->reply);
+  for(int i = 0; i < xcb_get_keyboard_mapping_keysyms_length(reply->reply); ++i) {
+    keysyms_list->Set(i, v8::Integer::New(keysyms_list_ptr[i]));
+  }
   v8::Local<Value> args[1] = { obj };
   reply->callback->Call(v8::Context::GetCurrent()->Global(), 1, args);
   reply->callback.Dispose();
@@ -3371,7 +3453,12 @@ int HandleListHostsReply(eio_req *req) {
 
   v8::Local<v8::Object> obj = v8::Object::New();
   obj->Set(v8::String::New("mode"), v8::Integer::New(reply->reply->mode));
-  obj->Set(v8::String::New("hosts_len"), v8::Integer::New(reply->reply->hosts_len));
+  v8::Local<v8::Array> hosts_list = v8::Array::New();
+  obj->Set(v8::String::New("hosts"), hosts_list);
+  int ihosts = 0;
+  for(xcb_host_iterator_t itr = xcb_list_hosts_hosts_iterator(reply->reply); itr.rem; xcb_host_next(&itr), ++ihosts) {
+    hosts_list->Set(ihosts, toJS(itr.data));
+  }
   v8::Local<Value> args[1] = { obj };
   reply->callback->Call(v8::Context::GetCurrent()->Global(), 1, args);
   reply->callback.Dispose();
@@ -3553,7 +3640,12 @@ int HandleGetPointerMappingReply(eio_req *req) {
   Reply<xcb_get_pointer_mapping_reply_t, xcb_get_pointer_mapping_cookie_t> *reply = static_cast<Reply<xcb_get_pointer_mapping_reply_t, xcb_get_pointer_mapping_cookie_t> *>(req->data);
 
   v8::Local<v8::Object> obj = v8::Object::New();
-  obj->Set(v8::String::New("map_len"), v8::Integer::New(reply->reply->map_len));
+  v8::Local<v8::Array> map_list = v8::Array::New();
+  obj->Set(v8::String::New("map"), map_list);
+  uint8_t *map_list_ptr = xcb_get_pointer_mapping_map(reply->reply);
+  for(int i = 0; i < xcb_get_pointer_mapping_map_length(reply->reply); ++i) {
+    map_list->Set(i, v8::Integer::New(map_list_ptr[i]));
+  }
   v8::Local<Value> args[1] = { obj };
   reply->callback->Call(v8::Context::GetCurrent()->Global(), 1, args);
   reply->callback.Dispose();
@@ -3652,6 +3744,12 @@ int HandleGetModifierMappingReply(eio_req *req) {
 
   v8::Local<v8::Object> obj = v8::Object::New();
   obj->Set(v8::String::New("keycodes_per_modifier"), v8::Integer::New(reply->reply->keycodes_per_modifier));
+  v8::Local<v8::Array> keycodes_list = v8::Array::New();
+  obj->Set(v8::String::New("keycodes"), keycodes_list);
+  xcb_keycode_t *keycodes_list_ptr = xcb_get_modifier_mapping_keycodes(reply->reply);
+  for(int i = 0; i < xcb_get_modifier_mapping_keycodes_length(reply->reply); ++i) {
+    keycodes_list->Set(i, v8::Integer::New(keycodes_list_ptr[i]));
+  }
   v8::Local<Value> args[1] = { obj };
   reply->callback->Call(v8::Context::GetCurrent()->Global(), 1, args);
   reply->callback.Dispose();

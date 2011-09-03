@@ -30,6 +30,7 @@ var fs = require('fs')
     , XCBReplyType: XCBReplyType
     , XCBCookieType: XCBCookieType
     , XCBReplyFunction: XCBReplyFunction
+    , isLenSpecifier: isLenSpecifier
     , events: xProto.event
     , structs: xProto.struct
     , requests: xProto.request
@@ -188,4 +189,8 @@ function XCBCookieType(requestName) {
 
 function XCBReplyFunction(requestName) {
   return 'xcb' + camelToUnder(requestName) + '_reply'
+}
+
+function isLenSpecifier(field) {
+  return /_len$/.test(field.name)
 }

@@ -29,6 +29,11 @@ function sizeWindows() {
   xcb.flush();
 }
 
+xcb.QueryTree({ window: root.root }, function(resp) {
+  console.log("Query Tree Response")
+  console.log(resp)
+})
+
 function changeGroup(num) {
   if (num === curGroup) return
   console.log('switching groups to', num)
