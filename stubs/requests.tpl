@@ -28,9 +28,17 @@ int Get${requestName}Reply(eio_req *req) {
 }
 
 int Handle${requestName}Reply(eio_req *req) {
+  v8::HandleScope scope;
   Reply<${XCBReplyType(requestName)}, ${XCBCookieType(requestName)}> *reply = static_cast<Reply<${XCBReplyType(requestName)}, ${XCBCookieType(requestName)}> *>(req->data);
-  v8::Local<Value> args[0];
-  reply->callback->Call(v8::Context::GetCurrent()->Global(), 0, args);
+
+  v8::Local<v8::Object> obj = v8::Object::New();
+{{each(i, field) request.reply.field}}
+  {{if field.fieldType == 'field' && JSType(field.type, requestName)}}
+  obj->Set(v8::String::New("${field.name}"), v8::${JSType(field.type)}::New(reply->reply->${prepPropName(field.name)}));
+  {{/if}}
+{{/each}}
+  v8::Local<Value> args[1] = { obj };
+  reply->callback->Call(v8::Context::GetCurrent()->Global(), 1, args);
   reply->callback.Dispose();
   delete reply->reply;
   delete reply;
