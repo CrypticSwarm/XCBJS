@@ -29,9 +29,18 @@ function sizeWindows() {
   xcb.flush();
 }
 
-xcb.QueryTree({ window: root.root }, function(resp) {
+xcb.QueryTree({ window: root.root }, function(qtree) {
   console.log("Query Tree Response")
-  console.log(resp)
+  console.log(qtree)
+  qtree.children.forEach(function(child) {
+    xcb.GetWindowAttributes({ window: child }, function(attrs) {
+      console.log('wid', child, attrs)
+      if (!(attrs.override_redirect || attrs.map_state == xcb.MapState.Unmapped)) {
+        console.log('managing', child)
+        manage(child)
+      }
+    })
+  })
 })
 
 function changeGroup(num) {
@@ -51,13 +60,17 @@ xcb.manageWindows();
 xcb.onCreate = function(ev) {
   console.log("Window being created, indexing", ev.window)
   console.log('\tParent -> ', ev.parent)
-  wins.push(ev.window);
   xcb.GetWindowAttributes({ window: ev.window }, function(reply) {
     console.log('Response from window ', ev.window, ' configuration!', reply)
   })
+  manage(ev.window)
+}
+
+function manage(wid) {
+  wins.push(wid);
   if (groups[curGroup].length == 2) groups.push([])
     , changeGroup(groups.length - 1)
-  groups[curGroup].push(ev.window)
+  groups[curGroup].push(wid)
   sizeWindows()
 }
 
