@@ -1,0 +1,17 @@
+{ "name" : "xcbjs"
+, "description" : "Exposes libxcb to JS. "
+, "keywords" : [ "window manager", "xcb", "X", "X11", "X window" ]
+, "version" : "0.0.1"
+, "homepage" : "https://github.com/CrypticSwarm/XCBJS"
+, "author" : "Perrin Westrich <crypticswarm@gmail.com>"
+, "repository" :
+  { "type" : "git"
+  , "url" : "https://github.com/CrypticSwarm/XCBJS"
+  }
+, "main" : "xcb.js"
+, "dependencies" : {}
+, "devDependencies" : { "jqtpl": "" }
+, "engines" : { "node" : "0.4 || 0.5" }
+, "scripts" : { }
+, "licenses" : [ { "type" : "MIT" } ]
+}
