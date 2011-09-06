@@ -43,6 +43,8 @@ xcb.QueryTree({ window: root.root }, function(qtree) {
   })
 })
 
+console.log(xcb.getSetup());
+
 function changeGroup(num) {
   if (num === curGroup) return
   console.log('switching groups to', num)

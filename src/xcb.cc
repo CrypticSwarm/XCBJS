@@ -35,11 +35,17 @@ public:
     NODE_SET_METHOD(target, "manageWindows", XCBJS::manageWindows);
     NODE_SET_METHOD(target, "getRoot", XCBJS::getRoot);
     NODE_SET_METHOD(target, "getScreen", XCBJS::getScreen);
+    NODE_SET_METHOD(target, "getSetup", XCBJS::getSetup);
     NODE_SET_METHOD(target, "help", XCBJS::help);
     Event::Init(target);
     InitXCB2JSStructs(t);
     Enum::Init(t);
     Request::Init(t);
+  }
+
+  static Handle<Value> getSetup(const Arguments& args) {
+    HandleScope scope;
+    return toJS(const_cast<xcb_setup_t *>(xcb_get_setup(Config::connection)));
   }
 
   static Handle<Value> getScreen(const Arguments& args) {
