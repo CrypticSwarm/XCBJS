@@ -116,7 +116,12 @@ v8::Handle<v8::Object> toJS(xcb_depth_t *st) {
   v8::HandleScope scope;
   v8::Local<v8::Object> obj = v8::Object::New();
   obj->Set(v8::String::New("depth"), v8::Integer::New(st->depth));
-  obj->Set(v8::String::New("visuals_len"), v8::Integer::New(st->visuals_len));
+  v8::Local<v8::Array> visuals_list = v8::Array::New();
+  obj->Set(v8::String::New("visuals"), visuals_list);
+  int ivisuals = 0;
+  for(xcb_visualtype_iterator_t itr = xcb_depth_visuals_iterator(st); itr.rem; xcb_visualtype_next(&itr), ++ivisuals) {
+    visuals_list->Set(ivisuals, toJS(itr.data));
+  }
   return scope.Close(obj);
 }
 
@@ -144,7 +149,12 @@ v8::Handle<v8::Object> toJS(xcb_screen_t *st) {
   obj->Set(v8::String::New("backing_stores"), v8::Integer::New(st->backing_stores));
   obj->Set(v8::String::New("save_unders"), v8::Boolean::New(st->save_unders));
   obj->Set(v8::String::New("root_depth"), v8::Integer::New(st->root_depth));
-  obj->Set(v8::String::New("allowed_depths_len"), v8::Integer::New(st->allowed_depths_len));
+  v8::Local<v8::Array> allowed_depths_list = v8::Array::New();
+  obj->Set(v8::String::New("allowed_depths"), allowed_depths_list);
+  int iallowed_depths = 0;
+  for(xcb_depth_iterator_t itr = xcb_screen_allowed_depths_iterator(st); itr.rem; xcb_depth_next(&itr), ++iallowed_depths) {
+    allowed_depths_list->Set(iallowed_depths, toJS(itr.data));
+  }
   return scope.Close(obj);
 }
 
@@ -174,8 +184,8 @@ v8::Handle<v8::Object> toJS(xcb_setup_request_t *st) {
   obj->Set(v8::String::New("byte_order"), v8::Integer::New(st->byte_order));
   obj->Set(v8::String::New("protocol_major_version"), v8::Integer::New(st->protocol_major_version));
   obj->Set(v8::String::New("protocol_minor_version"), v8::Integer::New(st->protocol_minor_version));
-  obj->Set(v8::String::New("authorization_protocol_name_len"), v8::Integer::New(st->authorization_protocol_name_len));
-  obj->Set(v8::String::New("authorization_protocol_data_len"), v8::Integer::New(st->authorization_protocol_data_len));
+  obj->Set(v8::String::New("authorization_protocol_name"), v8::String::New((char*)xcb_setup_request_authorization_protocol_name(st)));
+  obj->Set(v8::String::New("authorization_protocol_data"), v8::String::New((char*)xcb_setup_request_authorization_protocol_data(st)));
   return scope.Close(obj);
 }
 
@@ -192,10 +202,10 @@ v8::Handle<v8::Object> toJS(xcb_setup_failed_t *st) {
   v8::HandleScope scope;
   v8::Local<v8::Object> obj = v8::Object::New();
   obj->Set(v8::String::New("status"), v8::Integer::New(st->status));
-  obj->Set(v8::String::New("reason_len"), v8::Integer::New(st->reason_len));
   obj->Set(v8::String::New("protocol_major_version"), v8::Integer::New(st->protocol_major_version));
   obj->Set(v8::String::New("protocol_minor_version"), v8::Integer::New(st->protocol_minor_version));
   obj->Set(v8::String::New("length"), v8::Integer::New(st->length));
+  obj->Set(v8::String::New("reason"), v8::String::New((char*)xcb_setup_failed_reason(st)));
   return scope.Close(obj);
 }
 
@@ -213,6 +223,7 @@ v8::Handle<v8::Object> toJS(xcb_setup_authenticate_t *st) {
   v8::Local<v8::Object> obj = v8::Object::New();
   obj->Set(v8::String::New("status"), v8::Integer::New(st->status));
   obj->Set(v8::String::New("length"), v8::Integer::New(st->length));
+  obj->Set(v8::String::New("reason"), v8::String::New((char*)xcb_setup_authenticate_reason(st)));
   return scope.Close(obj);
 }
 
@@ -233,16 +244,26 @@ v8::Handle<v8::Object> toJS(xcb_setup_t *st) {
   obj->Set(v8::String::New("resource_id_base"), v8::Integer::New(st->resource_id_base));
   obj->Set(v8::String::New("resource_id_mask"), v8::Integer::New(st->resource_id_mask));
   obj->Set(v8::String::New("motion_buffer_size"), v8::Integer::New(st->motion_buffer_size));
-  obj->Set(v8::String::New("vendor_len"), v8::Integer::New(st->vendor_len));
   obj->Set(v8::String::New("maximum_request_length"), v8::Integer::New(st->maximum_request_length));
-  obj->Set(v8::String::New("roots_len"), v8::Integer::New(st->roots_len));
-  obj->Set(v8::String::New("pixmap_formats_len"), v8::Integer::New(st->pixmap_formats_len));
   obj->Set(v8::String::New("image_byte_order"), v8::Integer::New(st->image_byte_order));
   obj->Set(v8::String::New("bitmap_format_bit_order"), v8::Integer::New(st->bitmap_format_bit_order));
   obj->Set(v8::String::New("bitmap_format_scanline_unit"), v8::Integer::New(st->bitmap_format_scanline_unit));
   obj->Set(v8::String::New("bitmap_format_scanline_pad"), v8::Integer::New(st->bitmap_format_scanline_pad));
   obj->Set(v8::String::New("min_keycode"), v8::Integer::New(st->min_keycode));
   obj->Set(v8::String::New("max_keycode"), v8::Integer::New(st->max_keycode));
+  obj->Set(v8::String::New("vendor"), v8::String::New((char*)xcb_setup_vendor(st)));
+  v8::Local<v8::Array> pixmap_formats_list = v8::Array::New();
+  obj->Set(v8::String::New("pixmap_formats"), pixmap_formats_list);
+  int ipixmap_formats = 0;
+  for(xcb_format_iterator_t itr = xcb_setup_pixmap_formats_iterator(st); itr.rem; xcb_format_next(&itr), ++ipixmap_formats) {
+    pixmap_formats_list->Set(ipixmap_formats, toJS(itr.data));
+  }
+  v8::Local<v8::Array> roots_list = v8::Array::New();
+  obj->Set(v8::String::New("roots"), roots_list);
+  int iroots = 0;
+  for(xcb_screen_iterator_t itr = xcb_setup_roots_iterator(st); itr.rem; xcb_screen_next(&itr), ++iroots) {
+    roots_list->Set(iroots, toJS(itr.data));
+  }
   return scope.Close(obj);
 }
 
@@ -323,7 +344,7 @@ void fromJS(v8::Handle<v8::Object> obj, xcb_charinfo_t *st) {
 v8::Handle<v8::Object> toJS(xcb_str_t *st) {
   v8::HandleScope scope;
   v8::Local<v8::Object> obj = v8::Object::New();
-  obj->Set(v8::String::New("name_len"), v8::Integer::New(st->name_len));
+  obj->Set(v8::String::New("name"), v8::String::New((char*)xcb_str_name(st)));
   return scope.Close(obj);
 }
 
@@ -390,7 +411,12 @@ v8::Handle<v8::Object> toJS(xcb_host_t *st) {
   v8::HandleScope scope;
   v8::Local<v8::Object> obj = v8::Object::New();
   obj->Set(v8::String::New("family"), v8::Integer::New(st->family));
-  obj->Set(v8::String::New("address_len"), v8::Integer::New(st->address_len));
+  v8::Local<v8::Array> address_list = v8::Array::New();
+  obj->Set(v8::String::New("address"), address_list);
+  uint8_t *address_list_ptr = xcb_host_address(st);
+  for(int i = 0; i < xcb_host_address_length(st); ++i) {
+    address_list->Set(i, v8::Integer::New(address_list_ptr[i]));
+  }
   return scope.Close(obj);
 }
 
@@ -407,7 +433,6 @@ void fromJS(v8::Handle<v8::Object> obj, xcb_host_t *st) {
 static v8::Persistent<v8::Object> lookup;
 
 void InitXCB2JSStructs(v8::Persistent<v8::Object> tar) {
-  t = tar;
   lookup = v8::Persistent<v8::Object>::New(v8::Object::New());
   lookup->Set(v8::String::New("char2b"), v8::String::New("CHAR2B: { byte1: Integer\n, byte2: Integer }")); 
   lookup->Set(v8::String::New("point"), v8::String::New("POINT: { x: Integer\n, y: Integer }")); 
