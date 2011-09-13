@@ -2,8 +2,8 @@
 #define __AUTOGENCTOJSXCBREQUESTS__
 #include <v8.h>
 #include <node.h>
+#include "xcb.h"
 
-#include <config.h>
 
 namespace XCBJS {
   namespace Request {
@@ -13,6 +13,7 @@ struct Reply {
   C cookie;
   R *reply;
   v8::Persistent<v8::Function> callback;
+  xcb_connection_t * connection;
 };
 
 //{ { { BEGIN REQUESTS 
@@ -23,7 +24,7 @@ struct Reply {
 
 int Get${requestName}Reply(eio_req *req) {
   Reply<${XCBReplyType(requestName)}, ${XCBCookieType(requestName)}> *reply = static_cast<Reply<${XCBReplyType(requestName)}, ${XCBCookieType(requestName)}> *>(req->data);
-  reply->reply = ${XCBReplyFunction(requestName)}(Config::connection, reply->cookie, NULL); 
+  reply->reply = ${XCBReplyFunction(requestName)}(reply->connection, reply->cookie, NULL); 
   return 0;
 }
 
@@ -121,11 +122,11 @@ v8::Handle<v8::Value> ${requestName}(const v8::Arguments& args) {
     {{/if}}
   {{/each}}
   {{/if}}
-
+  xcb_connection_t *connection = node::ObjectWrap::Unwrap<XCBJS>(args.This())->getConnection();
   {{if request.reply}}
-  ${XCBCookieType(requestName)} cookie = ${getXCBReqName(requestName)}(XCBJS::Config::connection${getParamList(request.field)});
+  ${XCBCookieType(requestName)} cookie = ${getXCBReqName(requestName)}(connection${getParamList(request.field)});
   {{else}}
-  ${getXCBReqName(requestName)}(XCBJS::Config::connection${getParamList(request.field)});
+  ${getXCBReqName(requestName)}(connection${getParamList(request.field)});
   {{/if}}
   {{each(num, field) request.field}}
     {{if isListType(field)}}
@@ -138,6 +139,7 @@ v8::Handle<v8::Value> ${requestName}(const v8::Arguments& args) {
     reply->callback = v8::Persistent<v8::Function>::New(callback);
     reply->cookie = cookie;
     reply->reply = 0;
+    reply->connection = connection;
     eio_custom(Get${requestName}Reply, EIO_PRI_DEFAULT, Handle${requestName}Reply, reply);
   }
   {{/if}}
@@ -155,7 +157,7 @@ v8::Handle<v8::String> Docs(v8::Handle<v8::String> what) {
 }
 
 
-void Init(v8::Persistent<v8::Object> reqs) {
+void Init(v8::Local<v8::ObjectTemplate> reqs) {
 {{each(requestName, request) requests}}
   NODE_SET_METHOD(reqs, "${requestName}", ${requestName});
   lookup->Set(v8::String::New("${requestName}"), v8::String::New("REQUEST -> ${requestName}({{if request.field}}${getDocHelp(requestName, requests)}[, cb]{{else}}cb{{/if}})")); 
