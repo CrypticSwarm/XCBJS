@@ -157,9 +157,9 @@ v8::Handle<v8::String> Docs(v8::Handle<v8::String> what) {
 }
 
 
-void Init(v8::Local<v8::ObjectTemplate> reqs) {
+void Init(v8::Handle<v8::FunctionTemplate> reqs) {
 {{each(requestName, request) requests}}
-  NODE_SET_METHOD(reqs, "${requestName}", ${requestName});
+  NODE_SET_PROTOTYPE_METHOD(reqs, "${requestName}", ${requestName});
   lookup->Set(v8::String::New("${requestName}"), v8::String::New("REQUEST -> ${requestName}({{if request.field}}${getDocHelp(requestName, requests)}[, cb]{{else}}cb{{/if}})")); 
 {{/each}}
 }
