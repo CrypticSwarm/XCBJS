@@ -432,7 +432,7 @@ void fromJS(v8::Handle<v8::Object> obj, xcb_host_t *st) {
 
 static v8::Persistent<v8::Object> lookup;
 
-void InitXCB2JSStructs(v8::Persistent<v8::Object> tar) {
+void InitXCB2JSStructs() {
   lookup = v8::Persistent<v8::Object>::New(v8::Object::New());
   lookup->Set(v8::String::New("char2b"), v8::String::New("CHAR2B: { byte1: Integer\n, byte2: Integer }")); 
   lookup->Set(v8::String::New("point"), v8::String::New("POINT: { x: Integer\n, y: Integer }")); 
