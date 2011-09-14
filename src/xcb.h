@@ -24,9 +24,11 @@ public:
   xcb_screen_t *getScreen() { return screen; }
 private:
   static v8::Persistent<v8::FunctionTemplate> constructor;
-  static xcb_screen_t *screen;
+  xcb_screen_t *screen;
   xcb_connection_t * connection;
 };
+
+v8::Persistent<v8::FunctionTemplate> XCBJS::constructor;
 
 };
 

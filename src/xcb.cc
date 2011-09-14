@@ -15,13 +15,11 @@ using namespace XCBJS;
 
 void XCBJS::Init(Handle<Object> target) {
   HandleScope scope;
-  t = Persistent<Object>::New(target);
+  Persistent<Object> t = Persistent<Object>::New(target);
 
   constructor = Persistent<FunctionTemplate>::New(FunctionTemplate::New(XCBJS::New));
   constructor->InstanceTemplate()->SetInternalFieldCount(1);
   constructor->SetClassName(String::NewSymbol("XConnection"));
-
-  Local<ObjectTemplate> proto = constructor->PrototypeTemplate();
 
   NODE_SET_PROTOTYPE_METHOD(constructor, "flush", XCBJS::flush);
   NODE_SET_PROTOTYPE_METHOD(constructor, "generateId", XCBJS::generateId);
@@ -30,10 +28,11 @@ void XCBJS::Init(Handle<Object> target) {
   NODE_SET_PROTOTYPE_METHOD(constructor, "getScreen", XCBJS::getScreen);
   NODE_SET_PROTOTYPE_METHOD(constructor, "getSetup", XCBJS::getSetup);
   NODE_SET_METHOD(target, "help", XCBJS::help);
-  Event::Init(target);
-  InitXCB2JSStructs(t);
+  Event::Init(t);
+  InitXCB2JSStructs();
   Enum::Init(t);
-  Request::Init(constructor->PrototypeTemplate());
+  Request::Init(constructor);
+  target->Set(String::New("Connection"), constructor->GetFunction());
 }
 
 Handle<Value> XCBJS::New(const Arguments& args) {
@@ -47,7 +46,7 @@ Handle<Value> XCBJS::New(const Arguments& args) {
   Handle<Object> obj = toJS(const_cast<xcb_setup_t *>(xcb_get_setup(xcbjs->getConnection())));
   Handle<Value> params[1] = { obj };
   cb->Call(args.This(), 1, params);
-  return Undefined();
+  return scope.Close(args.This());
 }
 
 XCBJS::XCBJS() {
@@ -86,6 +85,7 @@ Handle<Value> XCBJS::generateId(const Arguments& args) {
 Handle<Value> XCBJS::createGC(const Arguments& args) {
   HandleScope scope;
   xcb_connection_t *connection = ObjectWrap::Unwrap<XCBJS>(args.This())->getConnection();
+  xcb_screen_t *screen = ObjectWrap::Unwrap<XCBJS>(args.This())->getScreen();
   uint32_t        mask       = XCB_GC_FOREGROUND | XCB_GC_GRAPHICS_EXPOSURES;
   uint32_t        values[2]  = {screen->black_pixel, 0};
   xcb_gcontext_t black = args[0]->Int32Value();
@@ -97,6 +97,7 @@ Handle<Value> XCBJS::createGC(const Arguments& args) {
 
 Handle<Value> XCBJS::manageWindows(const Arguments& args) {
   HandleScope scope;
+  xcb_screen_t *screen = ObjectWrap::Unwrap<XCBJS>(args.This())->getScreen();
   xcb_connection_t *connection = ObjectWrap::Unwrap<XCBJS>(args.This())->getConnection();
   uint32_t values[1] = { XCB_EVENT_MASK_STRUCTURE_NOTIFY
                        | XCB_EVENT_MASK_SUBSTRUCTURE_REDIRECT
