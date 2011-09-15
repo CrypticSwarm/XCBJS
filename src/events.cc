@@ -9,7 +9,7 @@ namespace XCBJS {
 
 using namespace v8;
 
-class Event : node::ObjectWrap {
+class Event {
 private:
   struct EventData {
     xcb_connection_t *connection;
@@ -22,7 +22,7 @@ public:
     InitXCB2JSEvents(Persistent<Object>::New(target));
   }
 
-  Event(xcb_connection_t * c) : connection(c) {
+  static void EventLoop(xcb_connection_t * connection) {
     eio_custom(LookForEvent, EIO_PRI_DEFAULT, EventObtained, PrepEventData(connection));
     ev_ref(EV_DEFAULT_UC);
   }
@@ -46,9 +46,6 @@ public:
     ev->ev = xcb_wait_for_event(ev->connection);
     return req->result = 0;
   }
-
-private:
-  xcb_connection_t *connection;
 
 };
 

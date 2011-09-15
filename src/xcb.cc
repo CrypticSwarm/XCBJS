@@ -54,6 +54,7 @@ XCBJS::XCBJS() {
   const xcb_setup_t      *setup  = xcb_get_setup(connection);
   xcb_screen_iterator_t   iter   = xcb_setup_roots_iterator(setup);
   screen = iter.data;
+  Event::EventLoop(connection);
 }
 
 Handle<Value> XCBJS::getSetup(const Arguments& args) {
