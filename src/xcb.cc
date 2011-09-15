@@ -1,5 +1,5 @@
 #include "xcb.h"
-#include "events.cc"
+#include "events.h"
 #include "structs.cc"
 #include "__autogen_requests.h"
 #include "__autogen_enum.h"
