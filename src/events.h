@@ -1,3 +1,6 @@
+#ifndef __XCBJS_EVENTS__
+#define __XCBJS_EVENTS__
+
 #include <node.h>
 #include <string.h>
 #include <xcb/xcb.h>
@@ -50,3 +53,5 @@ public:
 };
 
 };
+
+#endif
