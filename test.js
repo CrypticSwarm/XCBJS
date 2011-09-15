@@ -1,4 +1,6 @@
-var xcb = require ('./build/default/xcb')
+var xcb = require('./build/default/xcb')
+new xcb.Connection(function(setup) {
+  var xcb = this
   , rects = 
     [ { rect: { x: 50, y: 50, width: 100, height: 100 }, dir: 1, range: [0, 100]   }
     , { rect: { x: 100, y: 200, width: 90, height: 90 }, dir: 2, range: [80, 120]  }
@@ -57,3 +59,4 @@ setInterval(function() {
   if (split > 500 || split < 300) dir *= -1
   xcb.flush()
 }, 100);
+})

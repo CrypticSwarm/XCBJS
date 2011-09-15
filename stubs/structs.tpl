@@ -55,7 +55,7 @@ void fromJS(v8::Handle<v8::Object> obj, ${XCBType(structName)} *st) {
 
 static v8::Persistent<v8::Object> lookup;
 
-void InitXCB2JSStructs(v8::Persistent<v8::Object> tar) {
+void InitXCB2JSStructs() {
   lookup = v8::Persistent<v8::Object>::New(v8::Object::New());
 {{each(structName, struct) structs}}
   lookup->Set(v8::String::New("${DocName(structName)}"), v8::String::New("${structName}: ${getDocHelp(structName, structs)}")); 
