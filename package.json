@@ -1,7 +1,7 @@
 { "name" : "xcbjs"
 , "description" : "Exposes libxcb to JS. "
 , "keywords" : [ "window manager", "xcb", "X", "X11", "X window" ]
-, "version" : "0.0.1"
+, "version" : "0.0.2"
 , "homepage" : "https://github.com/CrypticSwarm/XCBJS"
 , "author" : "Perrin Westrich <crypticswarm@gmail.com>"
 , "repository" :
